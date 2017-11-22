@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="libraries/commons-lang3-3.5.jar"/>
 	<classpathentry kind="lib" path="libraries/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="lib" path="libraries/jcommon-1.0.23.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/polyrec"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
