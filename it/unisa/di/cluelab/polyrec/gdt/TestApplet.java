@@ -271,7 +271,7 @@ public class TestApplet extends Applet implements MouseListener, MouseMotionList
 
 	public void paint(Graphics g)
 	{         
-		int pointCount = currentGesture.points.size();
+		int pointCount = currentGesture.getPoints().size();
 		if(pointCount < 2)
 		{
 			return;
@@ -281,8 +281,8 @@ public class TestApplet extends Applet implements MouseListener, MouseMotionList
 
 		for(int i = 0; i < pointCount - 1; i++)
 		{
-			TPoint p1 = currentGesture.points.get(i);
-			TPoint p2 = currentGesture.points.get(i+1);
+			TPoint p1 = currentGesture.getPoints().get(i);
+			TPoint p2 = currentGesture.getPoints().get(i+1);
 			g.drawLine((int)p1.getX(), (int)p1.getY(), (int)p2.getX(), (int)p2.getY());
 		}
 	}

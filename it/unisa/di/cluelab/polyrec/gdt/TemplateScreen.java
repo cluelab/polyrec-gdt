@@ -477,7 +477,7 @@ public class TemplateScreen extends JPanel
 				empty = false;
 
 		}
-		Result r = null;
+		ExtendedResult r = null;
 		String recognizedName = null;
 		
 	
@@ -494,7 +494,7 @@ public class TemplateScreen extends JPanel
 				pointerNumLabel.setFont(fontButtons);
 				controlTools.add(pointerNumLabel);
 		}
-			r = mainClass.getRecognizer().recognize(currentGesture);
+			r = mainClass.getRecognizer().recognizeExt(currentGesture);
 
 			recognizedName = r.getName();
 			score = r.getScore();
@@ -599,7 +599,7 @@ public class TemplateScreen extends JPanel
 	}
 
 	//tabella score e distanze
-	private void showScoreTable(Result r) {
+	private void showScoreTable(ExtendedResult r) {
 
 		scoreTableButton = new JButton();
 		scoreTableButton.setText("<html><font color='white' >Score Table</font></html>");
@@ -749,7 +749,7 @@ public class TemplateScreen extends JPanel
 		rotInvCommand.setFont(new Font("Arial", Font.PLAIN, 16));
 		rotInvCommand.setContentAreaFilled(false);
 
-		Result r = mainClass.getRecognizer().recognize(polylines.get(item).getGesture());
+		ExtendedResult r = mainClass.getRecognizer().recognizeExt(polylines.get(item).getGesture());
 		try {
 			System.out.println("is rot inv? " + polylines.get(item).getGesture().isRotInv() + " checkbox is selected?"
 					+ rotInvCommand.isSelected());

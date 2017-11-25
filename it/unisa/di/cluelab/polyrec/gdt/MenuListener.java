@@ -189,7 +189,7 @@ public class MenuListener implements ActionListener {
 					TemplateScreen screen = (TemplateScreen) mainFrame.getScreen();
 					screen.display.set("File Saved", 0);
 				}
-			} catch (ParserConfigurationException | TransformerException | IOException e1) {
+			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(mainFrame, "Error saving gesture set\n(" + e1.getMessage() + ")", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
@@ -207,7 +207,7 @@ public class MenuListener implements ActionListener {
 					TemplateScreen screen = (TemplateScreen) mainFrame.getScreen();
 					screen.display.set("File Saved", 0);
 				}
-			} catch (ParserConfigurationException | TransformerException | IOException e1) {
+			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(mainFrame, "Error saving gesture set\n(" + e1.getMessage() + ")", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
@@ -292,11 +292,9 @@ public class MenuListener implements ActionListener {
 	 * Save gesture set
 	 * @param saveas
 	 * @return
-	 * @throws ParserConfigurationException
-	 * @throws TransformerException
-	 * @throws IOException
+	 * @throws Exception
 	 */
-	boolean exports(boolean saveas) throws ParserConfigurationException, TransformerException, IOException {
+	boolean exports(boolean saveas) throws Exception {
 		String choosedFile = "";
 		String fileExt = "";
 		if (saveas) {
@@ -323,17 +321,12 @@ public class MenuListener implements ActionListener {
 
 			if (!choosedFile.endsWith(".xml"))
 				choosedFile = choosedFile + ".xml";
-			StreamResult result = new StreamResult(new File(choosedFile));
-		
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(mainFrame.getRecognizer().gsToXml());
-			transformer.transform(source, result);
+			mainFrame.getRecognizer().saveTemplatesXML(new File(choosedFile));
 
 		} else if (fileExt != null && fileExt.equals(MainFrame.EXTENSION_PGS)) {
 
-			mainFrame.getRecognizer().save();
 			File f1 = new File("gestures.pgs");
+			mainFrame.getRecognizer().saveTemplatesPGS(f1);
 		
 			if (!choosedFile.endsWith(".pgs"))
 				choosedFile = choosedFile + ".pgs";
@@ -412,7 +405,9 @@ public class MenuListener implements ActionListener {
 						return false;
 					}
 
-					mainFrame.getRecognizer().loadXml(method, openFile.getSelectedFile().toString());
+					mainFrame.getRecognizer().loadTemplatesXML(openFile.getSelectedFile(),
+							method == ExtendedPolyRecognizerGSS.REPLACE);
+					System.out.println(mainFrame.getRecognizer().getTamplatesNumber());
 
 				} else if (fileExt.equals(MainFrame.EXTENSION_PGS)) {
 
@@ -432,7 +427,7 @@ public class MenuListener implements ActionListener {
 					in.close();
 					out.close();
 
-					mainFrame.getRecognizer().load(method);
+					mainFrame.getRecognizer().loadTemplatesPGS(f1, method == ExtendedPolyRecognizerGSS.REPLACE);
 
 				}
 				mainFrame.setExtOpenedFile(fileExt);

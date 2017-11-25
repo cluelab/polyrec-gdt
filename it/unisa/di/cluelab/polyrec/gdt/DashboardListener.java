@@ -793,7 +793,7 @@ public class DashboardListener implements ActionListener, MouseListener {
 			for (int p = 0; p < polylines.size(); p++) {
 				
 				// controlla template con p della classe i
-				ArrayList<Result> r = mainClass.getRecognizer().verifyTemplate(polylines.get(p), classes[i],
+				ArrayList<ExtendedResult> r = mainClass.getRecognizer().verifyTemplate(polylines.get(p), classes[i],
 						scoreLimit);
 
 				if (r.size() > 0) {
@@ -866,7 +866,8 @@ public class DashboardListener implements ActionListener, MouseListener {
 
 				for (int p = 0; p < polylines.size(); p++) {
 					Polyline polyline = polylines.get(p);
-					Gesture normalizedGesture = polyline.getGesture().normalizedGesture(150, 150,0);
+					Gesture normalizedGesture = ExtendedPolyRecognizerGSS.normalizeGesture(polyline.getGesture(), 150,
+							150, 0);
 
 				
 					double sumangle = 0;

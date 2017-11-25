@@ -72,8 +72,8 @@ public class Thumbnail extends JLayeredPane {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 
-		Gesture normalizedGesture =  gesture.normalizedGesture(this.getWidth(),this.getHeight(),20);
-		
+		Gesture normalizedGesture = ExtendedPolyRecognizerGSS.normalizeGesture(gesture, this.getWidth(),
+				this.getHeight(), 20);		
 	
 		if (normalizedGesture.getPoints().size() < 2) {
 			return;
@@ -86,16 +86,16 @@ public class Thumbnail extends JLayeredPane {
 		
 		//primo punto 
 		g2.setStroke(new BasicStroke(5));
-		g2.drawLine((int) (normalizedGesture.points.get(0).getX() + fattorex),
-				(int) (normalizedGesture.points.get(0).getY() + fattorey),
-				(int) (normalizedGesture.points.get(0).getX() + fattorex),
-				(int) (normalizedGesture.points.get(0).getY() + fattorey));
+		g2.drawLine((int) (normalizedGesture.getPoints().get(0).getX() + fattorex),
+				(int) (normalizedGesture.getPoints().get(0).getY() + fattorey),
+				(int) (normalizedGesture.getPoints().get(0).getX() + fattorex),
+				(int) (normalizedGesture.getPoints().get(0).getY() + fattorey));
 		
 		g2.setStroke(new BasicStroke(1));
 		for (int i = 0; i < normalizedGesture.getPoints().size() - 1; i++) {
 
-			TPoint p1 = normalizedGesture.points.get(i);
-			TPoint p2 = normalizedGesture.points.get(i + 1);
+			TPoint p1 = normalizedGesture.getPoints().get(i);
+			TPoint p2 = normalizedGesture.getPoints().get(i + 1);
 			g2.drawLine((int) (p1.getX() + fattorex), (int) (p1.getY() + fattorey), (int) (p2.getX() + fattorex),
 					(int) (p2.getY() + fattorey));
 			

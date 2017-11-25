@@ -53,9 +53,9 @@ public class Canvas extends JPanel {
 		g2.setStroke(new BasicStroke(1));
 
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		if (this.screen.getCurrentGesture().points.size() > 0) {
+		if (this.screen.getCurrentGesture().getPoints().size() > 0) {
 
-			int pointCount = this.screen.getCurrentGesture().points.size();
+			int pointCount = this.screen.getCurrentGesture().getPoints().size();
 			if (pointCount < 2) {
 				return;
 			}
@@ -64,8 +64,8 @@ public class Canvas extends JPanel {
 			// (int)this.screen.getCurrentGesture().getBoundingBox().height);
 			for (int i = 0; i < pointCount - 1; i++) {
 
-				TPoint p1 = this.screen.getCurrentGesture().points.get(i);
-				TPoint p2 = this.screen.getCurrentGesture().points.get(i + 1);
+				TPoint p1 = this.screen.getCurrentGesture().getPoints().get(i);
+				TPoint p2 = this.screen.getCurrentGesture().getPoints().get(i + 1);
 
 				g2.drawLine((int) p1.getX(), (int) p1.getY(), (int) p2.getX(), (int) p2.getY());
 
@@ -125,7 +125,7 @@ public class Canvas extends JPanel {
 				g2.setStroke(new BasicStroke(6));
 
 				for (int i = 0; i < pointCount; i++) {
-					TPoint p1 = gesture.points.get(i);
+					TPoint p1 = gesture.getPoints().get(i);
 					g2.setColor(Color.red);
 					/*
 					 * if (i == 0) g2.setColor(Color.blue); else if (i ==
@@ -148,14 +148,14 @@ public class Canvas extends JPanel {
 				// gesture.getCentroid().getX(),
 				// (int)gesture.getCentroid().getY());
 
-				g2.drawLine((int) gesture.points.get(0).getX(), (int) gesture.points.get(0).getY(),
-						(int) gesture.points.get(0).getX(), (int) gesture.points.get(0).getY());
+				g2.drawLine((int) gesture.getPoints().get(0).getX(), (int) gesture.getPoints().get(0).getY(),
+						(int) gesture.getPoints().get(0).getX(), (int) gesture.getPoints().get(0).getY());
 				g2.setStroke(new BasicStroke(1));
 				
 				for (int i = 0; i < pointCount - 1; i++) {
 
-					TPoint p1 = gesture.points.get(i);
-					TPoint p2 = gesture.points.get(i + 1);
+					TPoint p1 = gesture.getPoints().get(i);
+					TPoint p2 = gesture.getPoints().get(i + 1);
 
 					g2.drawLine((int) p1.getX(), (int) p1.getY(), (int) p2.getX(), (int) p2.getY());
 
@@ -184,7 +184,7 @@ public class Canvas extends JPanel {
 
 		super.paintComponent(g);
 
-		if (this.screen.mode == TemplateScreen.CURRENT && this.screen.getCurrentGesture().points.size() > 0) {
+		if (this.screen.mode == TemplateScreen.CURRENT && this.screen.getCurrentGesture().getPoints().size() > 0) {
 			paintCurrentGesture(g);
 
 		} else if (this.screen.mode != TemplateScreen.GESTURE_TIMED) {
@@ -223,16 +223,16 @@ public class Canvas extends JPanel {
 
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Gesture gesture = this.screen.canvasGestures.get(TemplateScreen.GESTURE);
-		if (gesture.points.size() > 0) {
+		if (gesture.getPoints().size() > 0) {
 
-			int pointCount = gesture.points.size();
+			int pointCount = gesture.getPoints().size();
 			if (pointCount < 2) {
 				return;
 			}
 			for (int i = 0; i < pointCount - 1; i++) {
 
-				TPoint p1 = gesture.points.get(i);
-				TPoint p2 = gesture.points.get(i + 1);
+				TPoint p1 = gesture.getPoints().get(i);
+				TPoint p2 = gesture.getPoints().get(i + 1);
 
 				int wait = (int) (p2.getTime() - p1.getTime());
 

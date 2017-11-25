@@ -1,42 +1,30 @@
 package it.unisa.di.cluelab.polyrec.gdt;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
+import it.unisa.di.cluelab.polyrec.DouglasPeuckerReducer;
 import it.unisa.di.cluelab.polyrec.Gesture;
 import it.unisa.di.cluelab.polyrec.GestureInfo;
 import it.unisa.di.cluelab.polyrec.PolyRecognizerGSS;
 import it.unisa.di.cluelab.polyrec.Polyline;
+import it.unisa.di.cluelab.polyrec.PolylineAligner;
+import it.unisa.di.cluelab.polyrec.PolylineFinder;
 import it.unisa.di.cluelab.polyrec.TPoint;
+import it.unisa.di.cluelab.polyrec.Vector;
+import it.unisa.di.cluelab.polyrec.geom.Rectangle2D;
 
 public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
-
+	private static final Double[] DPR_PARAMS = new Double[] { 26d, 22d };
+	private static final boolean VERBOSE = false;
+	private static final boolean GSS = true;
 	
 	final static int REPLACE = 0; // removing previous and then add classes from
 									// file
@@ -50,133 +38,267 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
 		super();
 		
 	}
-	
-	
 
-	public int save() {
-		try {
-			FileOutputStream fout = new FileOutputStream(System.getProperty("user.dir") + File.separator + "gestures.pgs");
-			ObjectOutputStream oos = new ObjectOutputStream(fout);
+	public synchronized ExtendedResult recognizeExt(Gesture gesture) {
+		// this.rInvariant = _gesture.isRotInv(); if (this.rInvariant)
+		// this.angle = ANGLE_INVARIANT; else this.angle = ANGLE_SENSITIVE;
 
-			oos.writeObject(this.getTemplates());
-			oos.close();
-			fout.close();
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-			return 0;
+		final PolylineFinder pf = new DouglasPeuckerReducer(gesture, DPR_PARAMS);
+		// polyline del gesto da riconoscere
+		final Polyline u = pf.find();
+
+		Double a = Double.POSITIVE_INFINITY;
+		String templateName = null;
+		Polyline t = null;
+
+		final TreeMap<String, double[]> ranking = new TreeMap<String, double[]>();
+
+		for (Entry<String, ArrayList<Polyline>> e : templates.entrySet()) {
+			final ArrayList<Polyline> tempTemplates = e.getValue();
+			double classdistance = Double.POSITIVE_INFINITY;
+			for (int i = 0; i < tempTemplates.size(); i++) {
+				Double distance = 2.0;
+				t = tempTemplates.get(i);
+
+				if (tempTemplates.get(i).getGesture().getPointers() == gesture.getPointers()) {
+					final PolylineAligner aligner = new PolylineAligner(u, t);
+					final AbstractMap.SimpleEntry<Polyline, Polyline> polyPair = aligner.align();
+
+					final int addedAngles = aligner.getAddedAngles();
+					final double penalty = 1 + (double) addedAngles / (double) (addedAngles + aligner.getMatches());
+					// da riconoscere
+					final Polyline unknown = polyPair.getKey();
+					// confrontato con
+					final Polyline template = polyPair.getValue();
+
+					final List<Vector> vectorsU = unknown.getVectors();
+					if (VERBOSE) {
+						System.out.println(vectorsU);
+					}
+					final List<Vector> vectorsT = template.getVectors();
+					if (VERBOSE) {
+						System.out.println(vectorsT);
+					}
+					Double bestDist = null;
+					if (!GSS) {
+						final double uAngle = unknown.getGesture().getIndicativeAngle(!unknown.getGesture().isRotInv());
+						if (VERBOSE) {
+							System.out.println("Indicative angle = " + uAngle);
+						}
+						final double tAngle = template.getGesture()
+								.getIndicativeAngle(!template.getGesture().isRotInv());
+						if (VERBOSE) {
+							System.out.println("Indicative angleT = " + tAngle);
+						}
+						bestDist = getDistanceAtAngle(vectorsU, vectorsT, -uAngle, -tAngle);
+						if (VERBOSE) {
+							System.out.println("Distance at = " + (-uAngle) + "; dist = " + bestDist);
+						}
+					} else {
+						bestDist = getDistanceAtBestAngle(unknown, template, template.getGesture().isRotInv());
+					}
+					distance = penalty * bestDist;
+				}
+
+				if (distance < classdistance) {
+					classdistance = distance;
+				}
+				if (distance < a) {
+					a = distance;
+					templateName = e.getKey();
+				}
+			}
+
+			if (classdistance != Double.POSITIVE_INFINITY) {
+				final Double classscore = (2.0f - classdistance) / 2;
+
+				ranking.put(e.getKey(), new double[] { classdistance, Math.round(classscore * 10000) / 100. });
+			}
 		}
-		
-		return 1;
+
+		if (templateName != null) {
+			final Double score = (2.0f - a) / 2;
+
+			return new ExtendedResult(templateName, score, ranking);
+		}
+
+		// System.out.println(" null distance ");
+		return null;
 	}
 
 	/**
-	 * @param method
+	 * Verifica similarità tra un template di una classe e i template di tutte
+	 * le altre classi
+	 * 
+	 * @param u
+	 *            Template da veriticare
+	 * @param className
+	 *            Classe del template da verificare
+	 * @param scorelimit
+	 *            Score al di sopra del cui i template sono troppo simili
 	 * @return
-	 * @throws IOException
-	 * @throws ClassNotFoundException
 	 */
-	public boolean load(int method) throws IOException, ClassNotFoundException {
+	public synchronized ArrayList<ExtendedResult> verifyTemplate(Polyline u, String className, int scorelimit) {
+		// this.rInvariant = _gesture.isRotInv(); if (this.rInvariant)
+		// this.angle = ANGLE_INVARIANT; else this.angle = ANGLE_SENSITIVE;
 
-		ObjectInputStream objectinputstream = null;
+		// PolylineFinder pf = new DouglasPeuckerReducer(_gesture, params);
+		// Polyline u = pf.find();
 
-		FileInputStream streamIn = new FileInputStream(System.getProperty("user.dir") + File.separator + "gestures.pgs");
-		objectinputstream = new ObjectInputStream(streamIn);
-		TreeMap<String, ArrayList<Polyline>> mapFromFile = (TreeMap<String, ArrayList<Polyline>>) objectinputstream
-				.readObject();
-		if (method == REPLACE)
-			this.templates = mapFromFile;
-		else if (method == ADD)
-			this.templates.putAll(mapFromFile);
-		else if (method == ADD_TEMPLATES) {
-		
-			for (String k : this.templates.keySet()) {
-				if (mapFromFile.containsKey(k)) {
-					this.templates.get(k).addAll(mapFromFile.get(k));
-				}
-			}
-			for (String k : mapFromFile.keySet()) {
-				if (!this.templates.containsKey(k)) {
-					this.templates.put(k, mapFromFile.get(k));
+		Double a = Double.POSITIVE_INFINITY;
+		String templateName = null;
+		Polyline t = null;
 
-				}
-			}
+		ArrayList<ExtendedResult> results = new ArrayList<ExtendedResult>();
 
-		}
+		// per tutte le classi
+		for (Entry<String, ArrayList<Polyline>> en : templates.entrySet()) {
+			// classe diversa da quella del template da controllare
+			String key = en.getKey();
+			if (!Objects.equals(key, className)) {
+				ArrayList<Polyline> tempTemplates = en.getValue();
+				for (int i = 0; i < tempTemplates.size(); i++) {
+					t = tempTemplates.get(i);
 
-		if (objectinputstream != null) {
-		
-			objectinputstream.close();
+					PolylineAligner aligner = new PolylineAligner(u, t);
+					AbstractMap.SimpleEntry<Polyline, Polyline> polyPair = aligner.align();
 
-		}
+					int addedAngles = aligner.getAddedAngles();
+					double penalty = 1 + (double) addedAngles / (double) (addedAngles + aligner.getMatches());
+					Polyline unknown = polyPair.getKey();// da riconoscere
+					Polyline template = polyPair.getValue();// confrontato con
 
-		return true;
+					List<Vector> vectorsU = unknown.getVectors();
+					if (VERBOSE)
+						System.out.println(vectorsU);
+					List<Vector> vectorsT = template.getVectors();
+					if (VERBOSE)
+						System.out.println(vectorsT);
+					Double bestDist = null;
+					if (!GSS) {
+						double uAngle = unknown.getGesture().getIndicativeAngle(!unknown.getGesture().isRotInv());
+						if (VERBOSE)
+							System.out.println("Indicative angle = " + uAngle);
+						double tAngle = template.getGesture().getIndicativeAngle(!template.getGesture().isRotInv());
+						if (VERBOSE)
+							System.out.println("Indicative angleT = " + tAngle);
+						bestDist = getDistanceAtAngle(vectorsU, vectorsT, -uAngle, -tAngle);
+						if (VERBOSE)
+							System.out.println("Distance at = " + (-uAngle) + "; dist = " + bestDist);
+					} else
+						bestDist = getDistanceAtBestAngle(unknown, template, template.getGesture().isRotInv());
+					Double distance = penalty * bestDist;
+					if (VERBOSE)
+						System.out.println("Confronto con Gesture " + key + " ROTINV:"
+								+ template.getGesture().isRotInv() + " SCORE:" + (2.0f - distance) / 2);
 
-	}
+					Double score = (2.0f - distance) / 2;
+					ExtendedResult result = new ExtendedResult(key, score, i);
 
-	/**
-	 * @param method
-	 * @param file
-	 * @return
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws XPathExpressionException
-	 */
-	public boolean loadXml(int method, String file)
-			throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
-
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db;
-		db = dbf.newDocumentBuilder();
-
-		Document doc = db.parse(file);
-
-		XPathFactory xPathfactory = XPathFactory.newInstance();
-		XPath xpath = xPathfactory.newXPath();
-
-		XPathExpression expr = xpath.compile("/set/class");
-		NodeList classList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-		
-		if (method == REPLACE)
-			this.templates.clear();
-		for (int i = 0; i < classList.getLength(); i++) {
-			Node classNode = (classList.item(i));
-
-			if (classNode.getAttributes().getNamedItem("name") != null) {
-				// aggiungi classe
-				String className = classNode.getAttributes().getNamedItem("name").getNodeValue();
-				this.addClass(className);
-				NodeList templateList = (NodeList) classNode.getChildNodes();
-
-				for (int j = 0; j < templateList.getLength(); j++) {
-					Node templateNode = templateList.item(j);
-					NodeList pointList = (NodeList) templateNode.getChildNodes();
-					
-
-					Gesture gesture = new Gesture();
-					gesture.setPointers(Integer.parseInt(templateNode.getAttributes().getNamedItem("pointers").getNodeValue()));
-					gesture.setRotInv(Boolean.valueOf(templateNode.getAttributes().getNamedItem("rotinv").getNodeValue()));
-					for (int p = 0; p < pointList.getLength(); p++) {
-						Node point = pointList.item(p);
-						TPoint tpoint = new TPoint(
-								Double.parseDouble(point.getAttributes().getNamedItem("x").getNodeValue()),
-								Double.parseDouble(point.getAttributes().getNamedItem("y").getNodeValue()),
-								Long.parseLong(point.getAttributes().getNamedItem("t").getNodeValue()));
-						gesture.addPoint(tpoint);
-						gesture.setInfo(new GestureInfo(0, null, className, 0));
+					// template troppo simili
+					if (result.getScore() > scorelimit) {
+						results.add(result);
 
 					}
-					this.addTemplate(classNode.getAttributes().getNamedItem("name").getNodeValue().replace("_", "-"),
-							gesture);
-				}
+					if (VERBOSE)
+						System.out.println(
+								"Template troppo simile a polyline " + i + " ROTINV:" + template.getGesture().isRotInv()
+										+ " della classe " + key + "  (SCORE:" + (2.0f - distance) / 2 + ")");
+					if (distance < a) {
+						a = distance;
+						templateName = key;
+					}
 
+				}
 			}
 
 		}
 
-		return true;
+		return results;
+	}
 
+	/**
+	 * Confronto tra due template
+	 * 
+	 * @param u
+	 *            Primo dei template da confrontare
+	 * @param t
+	 *            Secondo dei template da confrontare
+	 * @return Distanza tra i due template
+	 */
+	public synchronized Double checkTemplate(Polyline u, Polyline t) {
+		PolylineAligner aligner = new PolylineAligner(u, t);
+		AbstractMap.SimpleEntry<Polyline, Polyline> polyPair = aligner.align();
+
+		int addedAngles = aligner.getAddedAngles();
+		double penalty = 1 + (double) addedAngles / (double) (addedAngles + aligner.getMatches());
+		Polyline unknown = polyPair.getKey();// da riconoscere
+		Polyline template = polyPair.getValue();// confrontato con
+
+		List<Vector> vectorsU = unknown.getVectors();
+		if (VERBOSE)
+			System.out.println(vectorsU);
+		List<Vector> vectorsT = template.getVectors();
+		if (VERBOSE)
+			System.out.println(vectorsT);
+		Double bestDist = null;
+		if (!GSS) {
+			double uAngle = unknown.getGesture().getIndicativeAngle(!unknown.getGesture().isRotInv());
+			if (VERBOSE)
+				System.out.println("Indicative angle = " + uAngle);
+			double tAngle = template.getGesture().getIndicativeAngle(!template.getGesture().isRotInv());
+			if (VERBOSE)
+				System.out.println("Indicative angleT = " + tAngle);
+			bestDist = getDistanceAtAngle(vectorsU, vectorsT, -uAngle, -tAngle);
+			if (VERBOSE)
+				System.out.println("Distance at = " + (-uAngle) + "; dist = " + bestDist);
+		} else
+			bestDist = getDistanceAtBestAngle(unknown, template, template.getGesture().isRotInv());
+		Double distance = penalty * bestDist;
+		return distance;
+
+	}
+
+	// copiato da PolyRecognizerGSS
+	private static Double getDistanceAtAngle(List<Vector> v1, List<Vector> v2, double theta1, double theta2) {
+		final boolean VERBOSE = false;
+		double cost = 0;
+		if (VERBOSE) {
+			System.out.println(v1);
+		}
+		if (VERBOSE) {
+			System.out.println(v2);
+		}
+		if (v1.size() != v2.size()) {
+			System.out.println("distance at angle " + v1.size() + " " + v2.size());
+		}
+		for (int i = 0; i < v1.size(); i++) {
+			final double diff = v1.get(i).difference(v2.get(i), theta1, theta2);
+			if (VERBOSE) {
+				System.out.print(diff + " + ");
+			}
+			cost += diff;
+		}
+		if (VERBOSE) {
+			System.out.println();
+		}
+		return cost;
+	}
+
+	public static Gesture normalizeGesture(Gesture gesture, double targetWidth, double targetHeight, int padding) {
+		final Rectangle2D.Double bbox = gesture.getBoundingBox();
+		final double zoom = Math.max(targetHeight - padding, targetWidth - padding) / Math.max(bbox.height, bbox.width);
+
+		final Gesture normalizedGesture = new Gesture();
+		normalizedGesture.setInfo(gesture.getInfo());
+		normalizedGesture.setRotInv(gesture.isRotInv());
+		normalizedGesture.setPointers(gesture.getPointers());
+
+		for (TPoint p : gesture.getPoints()) {
+			normalizedGesture.addPoint(new TPoint(p.getX() * zoom, p.getY() * zoom, p.getTime()));
+		}
+
+		return normalizedGesture;
 	}
 
 	/**
@@ -189,14 +311,6 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
 	public ArrayList<Polyline> getTemplate(String name) {
 		return templates.get(name);
 
-	}
-
-	/**
-	 * get all templates of gesture set
-	 * @return
-	 */
-	public TreeMap<String, ArrayList<Polyline>> getTemplates() {
-		return templates;
 	}
 
 
@@ -305,7 +419,7 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
 	@Override
 	public int addTemplate(String name, Gesture gesture) {
 		
-		gesture = gesture.normalizedGesture(Canvas.WIDTH, Canvas.HEIGHT,150);
+		gesture = normalizeGesture(gesture, Canvas.WIDTH, Canvas.HEIGHT, 150);
 		return super.addTemplate(name, gesture);
 
 		
@@ -335,53 +449,6 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
 		for (Polyline p : templates)
 			addTemplate(className, p);
 
-	}
-
-	
-	/**
-	 * Trasforma gesture set in XML (Document)
-	 * @return Document doc
-	 * @throws ParserConfigurationException
-	 * @throws TransformerConfigurationException
-	 */
-	Document gsToXml() throws ParserConfigurationException, TransformerConfigurationException {
-		String[] classes = getClassNames().toArray(new String[0]);
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-		// root elements
-		Document doc = docBuilder.newDocument();
-		Element rootElement = doc.createElement("set");
-		doc.appendChild(rootElement);
-		for (int i = 0; i < classes.length; i++) {
-
-			Element classElement = doc.createElement("class");
-			classElement.setAttribute("name", classes[i]);
-			rootElement.appendChild(classElement);
-			ArrayList<Polyline> templates = getTemplate(classes[i]);
-
-			for (int j = 0; j < templates.size(); j++) {
-
-				Element templateElement = doc.createElement("template");
-				classElement.appendChild(templateElement);
-				templateElement.setAttribute("pointers", Integer.toString(templates.get(j).getGesture().getPointers()));
-				templateElement.setAttribute("rotinv", String.valueOf(templates.get(j).getGesture().isRotInv()));
-				ArrayList<TPoint> points = templates.get(j).getGesture().getPoints();
-				for (int p = 0; p < points.size(); p++) {
-					Element pointElement = doc.createElement("point");
-					pointElement.setAttribute("x", String.valueOf(points.get(p).getX()));
-					pointElement.setAttribute("y", String.valueOf(points.get(p).getY()));
-					pointElement.setAttribute("t", String.valueOf(points.get(p).getTime()));
-					templateElement.appendChild(pointElement);
-
-				}
-			}
-
-			rootElement.appendChild(classElement);
-		}
-
-		
-		return doc;
 	}
 	
 	
