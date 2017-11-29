@@ -93,7 +93,7 @@ public class Menu {
 
 		updateMenu();
 		menu.add(send);
-		menu.add(exportRecognizer);
+		// menu.add(exportRecognizer);
 		menu.addSeparator();
 		menu.add(addSamplesMenu);
 
