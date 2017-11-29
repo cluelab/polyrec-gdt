@@ -10,67 +10,67 @@ import javax.obex.*;
 
 public class ObexPutClient {
 
-	private String serverURL;
-	private String apkfile = "BluetoothGestures.apk";
+    private String serverURL;
+    private String apkfile = "BluetoothGestures.apk";
 
-	/**
-	 * send apk to mobile device
-	 * @throws IOException
-	 */
-	public void send() throws IOException{
+    /**
+     * send apk to mobile device
+     * 
+     * @throws IOException
+     */
+    public void send() throws IOException {
 
-		
-		System.out.println("Connecting to " + serverURL);
+        System.out.println("Connecting to " + serverURL);
 
-		ClientSession clientSession;
-		
-			clientSession = (ClientSession) Connector.open(serverURL);
-			System.out.println(clientSession);
+        ClientSession clientSession;
 
-			HeaderSet hsConnectReply;
+        clientSession = (ClientSession) Connector.open(serverURL);
+        System.out.println(clientSession);
 
-			hsConnectReply = clientSession.connect(null);
+        HeaderSet hsConnectReply;
 
-			if (hsConnectReply.getResponseCode() != ResponseCodes.OBEX_HTTP_OK) {
-				System.out.println("Failed to connect");
-				return;
-			}
+        hsConnectReply = clientSession.connect(null);
 
-			// convert file into array of bytes
-			final byte[] bFile;
-			try (InputStream bInputStream = getClass().getResourceAsStream("/BluetoothGestures.apk")) {
-				final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				final byte[] buffer = new byte[4096];
-				for (int read; (read = bInputStream.read(buffer, 0, buffer.length)) != -1;) {
-					baos.write(buffer, 0, read);
-				}
-				bFile = baos.toByteArray();
-			}
+        if (hsConnectReply.getResponseCode() != ResponseCodes.OBEX_HTTP_OK) {
+            System.out.println("Failed to connect");
+            return;
+        }
 
-			HeaderSet hsOperation = clientSession.createHeaderSet();
-			hsOperation.setHeader(HeaderSet.NAME, apkfile);
-			hsOperation.setHeader(HeaderSet.TYPE, "application/vnd.android.package-archive");
+        // convert file into array of bytes
+        final byte[] bFile;
+        try (InputStream bInputStream = getClass().getResourceAsStream("/BluetoothGestures.apk")) {
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final byte[] buffer = new byte[4096];
+            for (int read; (read = bInputStream.read(buffer, 0, buffer.length)) != -1;) {
+                baos.write(buffer, 0, read);
+            }
+            bFile = baos.toByteArray();
+        }
 
-			long lenght = bFile.length;
+        HeaderSet hsOperation = clientSession.createHeaderSet();
+        hsOperation.setHeader(HeaderSet.NAME, apkfile);
+        hsOperation.setHeader(HeaderSet.TYPE, "application/vnd.android.package-archive");
 
-			hsOperation.setHeader(HeaderSet.LENGTH, lenght);
+        long lenght = bFile.length;
 
-			// Create PUT Operation
-			Operation putOperation = clientSession.put(hsOperation);
+        hsOperation.setHeader(HeaderSet.LENGTH, lenght);
 
-			OutputStream os = putOperation.openOutputStream();
-			os.write(bFile);
-			os.close();
+        // Create PUT Operation
+        Operation putOperation = clientSession.put(hsOperation);
 
-			putOperation.close();
+        OutputStream os = putOperation.openOutputStream();
+        os.write(bFile);
+        os.close();
 
-			clientSession.disconnect(null);
+        putOperation.close();
 
-			clientSession.close();
-		
-	}
+        clientSession.disconnect(null);
 
-	public ObexPutClient(String obexServiceURL) {
-		this.serverURL = obexServiceURL;
-	}
+        clientSession.close();
+
+    }
+
+    public ObexPutClient(String obexServiceURL) {
+        this.serverURL = obexServiceURL;
+    }
 }

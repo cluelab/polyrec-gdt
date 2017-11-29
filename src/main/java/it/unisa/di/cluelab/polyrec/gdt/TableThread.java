@@ -22,144 +22,138 @@ import it.unisa.di.cluelab.polyrec.Polyline;
 
 public class TableThread implements Runnable {
 
+    private DashboardScreen dashboardScreen;
+    private String[] classes;
 
-	private DashboardScreen dashboardScreen;
-	private String[] classes;
-	
-	   public TableThread(String[] classes, DashboardScreen dashboardScreen) {
+    public TableThread(String[] classes, DashboardScreen dashboardScreen) {
 
+        this.dashboardScreen = dashboardScreen;
 
-		  this.dashboardScreen = dashboardScreen;
-	
-		  this.classes = classes;
-		
-	   }
+        this.classes = classes;
 
-	   public void run() {
-		   GridBagConstraints c = new GridBagConstraints();
-			GridBagConstraints last = new GridBagConstraints();
-		   for (int m = 0; m < classes.length; m++) {
-				ArrayList<Polyline> polylines = dashboardScreen.mainClass.getRecognizer().getTemplate(classes[m]);
+    }
 
-				dashboardScreen.templatesNum += polylines.size();
+    public void run() {
+        GridBagConstraints c = new GridBagConstraints();
+        GridBagConstraints last = new GridBagConstraints();
+        for (int m = 0; m < classes.length; m++) {
+            ArrayList<Polyline> polylines = dashboardScreen.mainClass.getRecognizer().getTemplate(classes[m]);
 
-				if (polylines.size() > 0)
-					dashboardScreen.notEmptyClasses++;
+            dashboardScreen.templatesNum += polylines.size();
 
-				// pannello nome classe (prima colonna)
-				JPanel panel = new JPanel();
+            if (polylines.size() > 0)
+                dashboardScreen.notEmptyClasses++;
 
-				panel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.lightGray));
-				panel.setOpaque(false);
-				
-				c.gridx = 0;
-				c.gridy = m;
-				c.ipady = 20;
-				c.fill = GridBagConstraints.BOTH;
-				c.anchor = GridBagConstraints.PAGE_START;
-				c.weighty = 1;
+            // pannello nome classe (prima colonna)
+            JPanel panel = new JPanel();
 
-				
-				panel.add(dashboardScreen.classPanel(classes[m], polylines.size()));
-				dashboardScreen.table.add(panel, c);
+            panel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.lightGray));
+            panel.setOpaque(false);
 
-				// pannello colonna dei templates
-				panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-				panel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
-				panel.setOpaque(false);
+            c.gridx = 0;
+            c.gridy = m;
+            c.ipady = 20;
+            c.fill = GridBagConstraints.BOTH;
+            c.anchor = GridBagConstraints.PAGE_START;
+            c.weighty = 1;
 
-				// per ogni template nella classe
-				Box[] templateBoxes = new Box[polylines.size()];
-				
-				for (int p = 0; p < polylines.size(); p++) {
+            panel.add(dashboardScreen.classPanel(classes[m], polylines.size()));
+            dashboardScreen.table.add(panel, c);
 
-					// pannello del template
-					// JToolBar toolbar = new JToolBar();//per poter spostare
-					
+            // pannello colonna dei templates
+            panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            panel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
+            panel.setOpaque(false);
 
-					// aggiungi pannello del template
-					// panel.add(toolbar);
-					
-					/*MyThreadCallable task = new MyThreadCallable(classes[m], p, this, polylines.get(p));
-					templateBoxes[p] = task.call();*/
-					
-					templateBoxes[p] = dashboardScreen.templatePanel(classes[m], polylines.get(p), p);
-					
-					panel.add(templateBoxes[p]);
-					 
-					//  mainScreen.repaint();
+            // per ogni template nella classe
+            Box[] templateBoxes = new Box[polylines.size()];
 
-				}
-			
-				dashboardScreen.panelsMap.put(classes[m], templateBoxes);
-				// fine ciclo pannello anteprima dei template della classe
+            for (int p = 0; p < polylines.size(); p++) {
 
-				last.gridy = m;
-				last.ipady = 20;
-				last.weightx = 1;
-				// last.anchor = GridBagConstraints.WEST;
-				// last.anchor = GridBagConstraints.NORTHEAST;
-				last.fill = GridBagConstraints.BOTH;
-				last.gridx = 1;
-				// last.gridheight =0;
+                // pannello del template
+                // JToolBar toolbar = new JToolBar();//per poter spostare
 
-				// pannello pulsante 'add gesture' dopo i template
-				dashboardScreen.addGesturePanel[m] = new JPanel(new GridBagLayout());
-				dashboardScreen.addGesturePanel[m].setPreferredSize(new Dimension(100, 90));
-				dashboardScreen.addGesturePanel[m].setOpaque(false);
+                // aggiungi pannello del template
+                // panel.add(toolbar);
 
-				try {
+                // MyThreadCallable task = new MyThreadCallable(classes[m], p, this, polylines.get(p));
+                // templateBoxes[p] = task.call();
 
-					dashboardScreen.addGestureButtons[m] = new JButton(
-							new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
-					dashboardScreen.addGestureButtons[m].setContentAreaFilled(false);
+                templateBoxes[p] = dashboardScreen.templatePanel(classes[m], polylines.get(p), p);
 
-					dashboardScreen.addGestureButtons[m].setName("addgesture_" + classes[m]);
+                panel.add(templateBoxes[p]);
 
-					dashboardScreen.addGestureButtons[m].setToolTipText("Add Template to " + classes[m] + " Class");
-					dashboardScreen.addGestureButtons[m].setCursor(new Cursor(Cursor.HAND_CURSOR));
+                // mainScreen.repaint();
 
-					dashboardScreen.addGestureButtons[m].addMouseListener(new java.awt.event.MouseAdapter() {
-						public void mouseEntered(java.awt.event.MouseEvent evt) {
-							try {
-								((JButton) evt.getSource()).setIcon(
-										new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-green-32.png"))));
+            }
 
-							} catch (IOException e) {
+            dashboardScreen.panelsMap.put(classes[m], templateBoxes);
+            // fine ciclo pannello anteprima dei template della classe
 
-								e.printStackTrace();
-							}
-						}
+            last.gridy = m;
+            last.ipady = 20;
+            last.weightx = 1;
+            // last.anchor = GridBagConstraints.WEST;
+            // last.anchor = GridBagConstraints.NORTHEAST;
+            last.fill = GridBagConstraints.BOTH;
+            last.gridx = 1;
+            // last.gridheight =0;
 
-						public void mouseExited(java.awt.event.MouseEvent evt) {
-							try {
-								((JButton) evt.getSource()).setIcon(
-										new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
-							} catch (IOException e) {
+            // pannello pulsante 'add gesture' dopo i template
+            dashboardScreen.addGesturePanel[m] = new JPanel(new GridBagLayout());
+            dashboardScreen.addGesturePanel[m].setPreferredSize(new Dimension(100, 90));
+            dashboardScreen.addGesturePanel[m].setOpaque(false);
 
-								e.printStackTrace();
-							}
-						}
-					});
-					dashboardScreen.addGestureButtons[m].addActionListener(dashboardScreen.dashboardListener);
-				} catch (IOException e) {
+            try {
 
-					e.printStackTrace();
-				}
+                dashboardScreen.addGestureButtons[m] = new JButton(
+                        new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
+                dashboardScreen.addGestureButtons[m].setContentAreaFilled(false);
 
-				dashboardScreen.addGesturePanel[m].add(dashboardScreen.addGestureButtons[m]);
+                dashboardScreen.addGestureButtons[m].setName("addgesture_" + classes[m]);
 
-				// table.add(addGesturePanel[m], c);
-				panel.add(dashboardScreen.addGesturePanel[m]);
-				dashboardScreen.table.add(panel, last);
-				 dashboardScreen.validate();
-				 
-				
-				
-	   }
-		dashboardScreen.upadateCommandsButtons();  
-		dashboardScreen.statusMessage();
-		dashboardScreen.repaint();
-		 
-	}
+                dashboardScreen.addGestureButtons[m].setToolTipText("Add Template to " + classes[m] + " Class");
+                dashboardScreen.addGestureButtons[m].setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+                dashboardScreen.addGestureButtons[m].addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseEntered(java.awt.event.MouseEvent evt) {
+                        try {
+                            ((JButton) evt.getSource()).setIcon(
+                                    new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-green-32.png"))));
+
+                        } catch (IOException e) {
+
+                            e.printStackTrace();
+                        }
+                    }
+
+                    public void mouseExited(java.awt.event.MouseEvent evt) {
+                        try {
+                            ((JButton) evt.getSource()).setIcon(
+                                    new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
+                        } catch (IOException e) {
+
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                dashboardScreen.addGestureButtons[m].addActionListener(dashboardScreen.dashboardListener);
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
+
+            dashboardScreen.addGesturePanel[m].add(dashboardScreen.addGestureButtons[m]);
+
+            // table.add(addGesturePanel[m], c);
+            panel.add(dashboardScreen.addGesturePanel[m]);
+            dashboardScreen.table.add(panel, last);
+            dashboardScreen.validate();
+
+        }
+        dashboardScreen.upadateCommandsButtons();
+        dashboardScreen.statusMessage();
+        dashboardScreen.repaint();
+
+    }
 }

@@ -48,294 +48,287 @@ import org.jfree.data.xy.*;
 
 public class Chart extends JFrame implements ItemListener {
 
-	private JTable rankingTable;
-	private String title;
-	private int columnIndex;
-	private int secondaryColumnIndex;
-	private int type;
-	private SortOrder sortOrder;
-	private Choice featureChoice = new Choice();
+    private JTable rankingTable;
+    private String title;
+    private int columnIndex;
+    private int secondaryColumnIndex;
+    private int type;
+    private SortOrder sortOrder;
+    private Choice featureChoice = new Choice();
 
-	private ChartPanel chartPanel;
-	private Choice orderChoice;
-	private Choice typeChoice;
-	private int columnLabels;
-	private Choice secondaryFeatureChoice= new Choice(); 
+    private ChartPanel chartPanel;
+    private Choice orderChoice;
+    private Choice typeChoice;
+    private int columnLabels;
+    private Choice secondaryFeatureChoice = new Choice();
 
-	static final int LINE = 1;
-	static final int BAR = 0;
+    static final int LINE = 1;
+    static final int BAR = 0;
 
-	public Chart(JTable rankingTable, String title, int columnIndex, int secondaryColumnIndex, int columnLabels,
-			int type, SortOrder sortOrder) {
-		System.out.println("column labels"+columnLabels);
-		this.rankingTable = rankingTable;
-		this.title = title;
-		this.columnIndex = columnIndex;
-		this.secondaryColumnIndex = secondaryColumnIndex;
-		this.type = type;
-		this.sortOrder = sortOrder;
-		this.columnLabels = columnLabels;
-		initUI();
-		
+    public Chart(JTable rankingTable, String title, int columnIndex, int secondaryColumnIndex, int columnLabels,
+            int type, SortOrder sortOrder) {
+        System.out.println("column labels" + columnLabels);
+        this.rankingTable = rankingTable;
+        this.title = title;
+        this.columnIndex = columnIndex;
+        this.secondaryColumnIndex = secondaryColumnIndex;
+        this.type = type;
+        this.sortOrder = sortOrder;
+        this.columnLabels = columnLabels;
+        initUI();
 
-	}
+    }
 
-	private void initUI() {
+    private void initUI() {
 
-		setLayout(new BorderLayout());
-		CategoryDataset dataset = createDataset(this.columnIndex, true);
-	
-		JFreeChart chart;
-	
-		if (secondaryFeatureChoice.getSelectedItem()!=null && secondaryFeatureChoice.getSelectedItem() != " - ") {
-			CategoryDataset dataset2 = createDataset(this.secondaryColumnIndex, false);
+        setLayout(new BorderLayout());
+        CategoryDataset dataset = createDataset(this.columnIndex, true);
 
-			System.out.println("righe del dataset" + dataset2.getRowCount());
+        JFreeChart chart;
 
-			chart = createChart(dataset, dataset2);
-		} else
-			chart = createChart(dataset, null);
+        if (secondaryFeatureChoice.getSelectedItem() != null && secondaryFeatureChoice.getSelectedItem() != " - ") {
+            CategoryDataset dataset2 = createDataset(this.secondaryColumnIndex, false);
 
-	
+            System.out.println("righe del dataset" + dataset2.getRowCount());
 
-		chartPanel = new ChartPanel(chart);
-		chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-		chartPanel.setBackground(Color.white);
-		add(chartPanel, BorderLayout.CENTER);
+            chart = createChart(dataset, dataset2);
+        } else
+            chart = createChart(dataset, null);
 
-		JPanel northPanel = new JPanel(new FlowLayout());
-	
+        chartPanel = new ChartPanel(chart);
+        chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        chartPanel.setBackground(Color.white);
+        add(chartPanel, BorderLayout.CENTER);
 
-		for (int i = columnLabels; i < rankingTable.getModel().getColumnCount(); i++) {
-			featureChoice.add(rankingTable.getModel().getColumnName(i));
+        JPanel northPanel = new JPanel(new FlowLayout());
 
-		}
-		featureChoice.select(this.columnIndex - columnLabels);
-		featureChoice.addItemListener(this);
-		northPanel.add(new JLabel("Primary:"));
-		northPanel.add(featureChoice);
+        for (int i = columnLabels; i < rankingTable.getModel().getColumnCount(); i++) {
+            featureChoice.add(rankingTable.getModel().getColumnName(i));
 
-		typeChoice = new Choice();
-		typeChoice.add("Bar Chart");
-		typeChoice.add("Line Chart");
-		typeChoice.select(this.type);
+        }
+        featureChoice.select(this.columnIndex - columnLabels);
+        featureChoice.addItemListener(this);
+        northPanel.add(new JLabel("Primary:"));
+        northPanel.add(featureChoice);
 
-		typeChoice.addItemListener(this);
-		northPanel.add(typeChoice);
+        typeChoice = new Choice();
+        typeChoice.add("Bar Chart");
+        typeChoice.add("Line Chart");
+        typeChoice.select(this.type);
 
-		orderChoice = new Choice();
+        typeChoice.addItemListener(this);
+        northPanel.add(typeChoice);
 
-		orderChoice.add("Discending");
-		orderChoice.add("Ascending");
-		orderChoice.add("Unsorted");
-		if (sortOrder == SortOrder.DESCENDING)
+        orderChoice = new Choice();
 
-			orderChoice.select(0);
-		if (sortOrder == SortOrder.ASCENDING)
+        orderChoice.add("Discending");
+        orderChoice.add("Ascending");
+        orderChoice.add("Unsorted");
+        if (sortOrder == SortOrder.DESCENDING)
 
-			orderChoice.select(1);
-		if (sortOrder == SortOrder.UNSORTED)
+            orderChoice.select(0);
+        if (sortOrder == SortOrder.ASCENDING)
 
-			orderChoice.select(2);
-		orderChoice.addItemListener(this);
-		northPanel.add(orderChoice);
+            orderChoice.select(1);
+        if (sortOrder == SortOrder.UNSORTED)
 
-	
+            orderChoice.select(2);
+        orderChoice.addItemListener(this);
+        northPanel.add(orderChoice);
 
-		
-		for (int i = columnLabels; i < rankingTable.getModel().getColumnCount(); i++) {
-			secondaryFeatureChoice.add(rankingTable.getModel().getColumnName(i));
+        for (int i = columnLabels; i < rankingTable.getModel().getColumnCount(); i++) {
+            secondaryFeatureChoice.add(rankingTable.getModel().getColumnName(i));
 
-		}
-		secondaryFeatureChoice.add(" - ");
+        }
+        secondaryFeatureChoice.add(" - ");
 
-		secondaryFeatureChoice.select(this.secondaryColumnIndex - columnLabels);
-		secondaryFeatureChoice.addItemListener(this);
-		
-		northPanel.add(new JLabel("Secondary:"));
-		northPanel.add(secondaryFeatureChoice);
+        secondaryFeatureChoice.select(this.secondaryColumnIndex - columnLabels);
+        secondaryFeatureChoice.addItemListener(this);
 
-		add(northPanel, BorderLayout.NORTH);
+        northPanel.add(new JLabel("Secondary:"));
+        northPanel.add(secondaryFeatureChoice);
 
-		pack();
-		setTitle("Chart");
-		setLocationRelativeTo(null);
+        add(northPanel, BorderLayout.NORTH);
 
-	}
+        pack();
+        setTitle("Chart");
+        setLocationRelativeTo(null);
 
-	private CategoryDataset createDataset(int columnIndex, boolean setOrder) {
+    }
 
-		// ordina dati
-		if (setOrder) {
-			System.out.println("ordina dati");
-			rankingTable.setAutoCreateRowSorter(true);
-			DefaultRowSorter sorter = ((DefaultRowSorter) rankingTable.getRowSorter());
-			ArrayList list = new ArrayList();
+    private CategoryDataset createDataset(int columnIndex, boolean setOrder) {
 
-			list.add(new RowSorter.SortKey(columnIndex, this.sortOrder));
-			sorter.setSortKeys(list);
-			sorter.sort();
-		}
-		System.out.println("create dataset (column index: " + columnIndex + ")");
-		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        // ordina dati
+        if (setOrder) {
+            System.out.println("ordina dati");
+            rankingTable.setAutoCreateRowSorter(true);
+            DefaultRowSorter sorter = ((DefaultRowSorter) rankingTable.getRowSorter());
+            ArrayList list = new ArrayList();
 
-		for (int i = 0; i < rankingTable.getRowCount(); i++) {
+            list.add(new RowSorter.SortKey(columnIndex, this.sortOrder));
+            sorter.setSortKeys(list);
+            sorter.sort();
+        }
+        System.out.println("create dataset (column index: " + columnIndex + ")");
+        final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-			if (rankingTable.getValueAt(i, columnIndex) instanceof Double)
-				dataset.addValue((Double) rankingTable.getValueAt(i, columnIndex),
-						rankingTable.getModel().getColumnName(columnIndex),
-						(String) rankingTable.getValueAt(i, 0) + rankingTable.getValueAt(i, 1));
-			else if (rankingTable.getValueAt(i, columnIndex) instanceof Integer)
-				dataset.addValue((Integer) rankingTable.getValueAt(i, columnIndex),
-						rankingTable.getModel().getColumnName(columnIndex),
-						(String) rankingTable.getValueAt(i, 0) + rankingTable.getValueAt(i, 1));
-			else
+        for (int i = 0; i < rankingTable.getRowCount(); i++) {
 
-				dataset.addValue(Double.valueOf((String) rankingTable.getValueAt(i, columnIndex)),
-						rankingTable.getModel().getColumnName(columnIndex), (String) rankingTable.getValueAt(i, 0));
+            if (rankingTable.getValueAt(i, columnIndex) instanceof Double)
+                dataset.addValue((Double) rankingTable.getValueAt(i, columnIndex),
+                        rankingTable.getModel().getColumnName(columnIndex),
+                        (String) rankingTable.getValueAt(i, 0) + rankingTable.getValueAt(i, 1));
+            else if (rankingTable.getValueAt(i, columnIndex) instanceof Integer)
+                dataset.addValue((Integer) rankingTable.getValueAt(i, columnIndex),
+                        rankingTable.getModel().getColumnName(columnIndex),
+                        (String) rankingTable.getValueAt(i, 0) + rankingTable.getValueAt(i, 1));
+            else
 
-		}
+                dataset.addValue(Double.valueOf((String) rankingTable.getValueAt(i, columnIndex)),
+                        rankingTable.getModel().getColumnName(columnIndex), (String) rankingTable.getValueAt(i, 0));
 
-		return dataset;
-	}
+        }
 
-	private JFreeChart createChart(final CategoryDataset dataset1, final CategoryDataset dataset2) {
-		System.out.println("dataset 2="+dataset2);
-		JFreeChart chart;
-		if (this.type == LINE)
-			chart = ChartFactory.createLineChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
-					dataset1, PlotOrientation.VERTICAL, true, true, false);
-		else
-			chart = ChartFactory.createBarChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
-					dataset1, PlotOrientation.VERTICAL, true, true, false);
+        return dataset;
+    }
 
-		// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
-		chart.setBackgroundPaint(Color.white);
-		// chart.getLegend().setAnchor(Legend.SOUTH);
+    private JFreeChart createChart(final CategoryDataset dataset1, final CategoryDataset dataset2) {
+        System.out.println("dataset 2=" + dataset2);
+        JFreeChart chart;
+        if (this.type == LINE)
+            chart = ChartFactory.createLineChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
+                    dataset1, PlotOrientation.VERTICAL, true, true, false);
+        else
+            chart = ChartFactory.createBarChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
+                    dataset1, PlotOrientation.VERTICAL, true, true, false);
 
-		// get a reference to the plot for further customisation...
-		final CategoryPlot plot = chart.getCategoryPlot();
-		plot.setBackgroundPaint(Color.lightGray);
-		plot.setDomainGridlinePaint(Color.white);
-		plot.setRangeGridlinePaint(Color.white);
-		((CategoryAxis) plot.getDomainAxis()).setTickLabelFont(new Font("Arial", Font.PLAIN, 16));
-		((CategoryAxis) plot.getDomainAxis()).setLabelFont(new Font("Arial", Font.PLAIN, 20));
-		((ValueAxis) plot.getRangeAxis()).setTickLabelFont(new Font("Arial", Font.PLAIN, 14));
-		((ValueAxis) plot.getRangeAxis()).setLabelFont(new Font("Arial", Font.PLAIN, 20));
+        // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
+        chart.setBackgroundPaint(Color.white);
+        // chart.getLegend().setAnchor(Legend.SOUTH);
 
-		if (this.type == BAR)
-			((BarRenderer) plot.getRenderer()).setBarPainter(new StandardBarPainter());
-		else {
-			LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
-			renderer.setBaseShapesVisible(true);
-		}
+        // get a reference to the plot for further customisation...
+        final CategoryPlot plot = chart.getCategoryPlot();
+        plot.setBackgroundPaint(Color.lightGray);
+        plot.setDomainGridlinePaint(Color.white);
+        plot.setRangeGridlinePaint(Color.white);
+        ((CategoryAxis) plot.getDomainAxis()).setTickLabelFont(new Font("Arial", Font.PLAIN, 16));
+        ((CategoryAxis) plot.getDomainAxis()).setLabelFont(new Font("Arial", Font.PLAIN, 20));
+        ((ValueAxis) plot.getRangeAxis()).setTickLabelFont(new Font("Arial", Font.PLAIN, 14));
+        ((ValueAxis) plot.getRangeAxis()).setLabelFont(new Font("Arial", Font.PLAIN, 20));
 
-		plot.setDataset(1, dataset2);
-		plot.mapDatasetToRangeAxis(1, 1);
+        if (this.type == BAR)
+            ((BarRenderer) plot.getRenderer()).setBarPainter(new StandardBarPainter());
+        else {
+            LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+            renderer.setBaseShapesVisible(true);
+        }
 
-		final CategoryAxis domainAxis = plot.getDomainAxis();
-		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
-		if (dataset2 != null) {
+        plot.setDataset(1, dataset2);
+        plot.mapDatasetToRangeAxis(1, 1);
 
-			final ValueAxis axis2 = new NumberAxis(rankingTable.getModel().getColumnName(this.secondaryColumnIndex));
-			axis2.setTickLabelFont(new Font("Arial", Font.PLAIN, 14));
-			axis2.setLabelFont(new Font("Arial", Font.PLAIN, 20));
-			plot.setRangeAxis(1, axis2);
+        final CategoryAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
+        if (dataset2 != null) {
 
-			final LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
-			renderer2.setSeriesShapesVisible(1, true);
-			// renderer2.setToolTipGenerator(new
-			// StandardCategoryToolTipGenerator());
+            final ValueAxis axis2 = new NumberAxis(rankingTable.getModel().getColumnName(this.secondaryColumnIndex));
+            axis2.setTickLabelFont(new Font("Arial", Font.PLAIN, 14));
+            axis2.setLabelFont(new Font("Arial", Font.PLAIN, 20));
+            plot.setRangeAxis(1, axis2);
 
-			plot.setRenderer(1, renderer2);
-			plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
-		}
-		return chart;
-	}
+            final LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
+            renderer2.setSeriesShapesVisible(1, true);
+            // renderer2.setToolTipGenerator(new
+            // StandardCategoryToolTipGenerator());
 
-	// con singolo dataset (non usato)
-	private JFreeChart createChart(final CategoryDataset dataset) {
-		JFreeChart chart;
-		if (this.type == LINE)
-			chart = ChartFactory.createLineChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
-					dataset, PlotOrientation.VERTICAL, true, true, false);
-		else
-			chart = ChartFactory.createBarChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
-					dataset, PlotOrientation.VERTICAL, true, true, false);
+            plot.setRenderer(1, renderer2);
+            plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
+        }
+        return chart;
+    }
 
-		chart.setBackgroundPaint(Color.white);
+    // con singolo dataset (non usato)
+    private JFreeChart createChart(final CategoryDataset dataset) {
+        JFreeChart chart;
+        if (this.type == LINE)
+            chart = ChartFactory.createLineChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
+                    dataset, PlotOrientation.VERTICAL, true, true, false);
+        else
+            chart = ChartFactory.createBarChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
+                    dataset, PlotOrientation.VERTICAL, true, true, false);
 
-		// get a reference to the plot for further customisation...
-		final CategoryPlot plot = chart.getCategoryPlot();
-		plot.setBackgroundPaint(Color.lightGray);
-		plot.setDomainGridlinePaint(Color.white);
-		plot.setRangeGridlinePaint(Color.white);
-		((CategoryAxis) plot.getDomainAxis()).setTickLabelFont(new Font("Arial", Font.PLAIN, 16));
-		((CategoryAxis) plot.getDomainAxis()).setLabelFont(new Font("Arial", Font.PLAIN, 20));
-		((ValueAxis) plot.getRangeAxis()).setTickLabelFont(new Font("Arial", Font.PLAIN, 16));
-		((ValueAxis) plot.getRangeAxis()).setLabelFont(new Font("Arial", Font.PLAIN, 20));
+        chart.setBackgroundPaint(Color.white);
 
-		if (this.type == BAR)
-			((BarRenderer) plot.getRenderer()).setBarPainter(new StandardBarPainter());
-		else {
-			LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
-			renderer.setBaseShapesVisible(true);
-		}
-		final CategoryAxis domainAxis = plot.getDomainAxis();
-		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6.0));
+        // get a reference to the plot for further customisation...
+        final CategoryPlot plot = chart.getCategoryPlot();
+        plot.setBackgroundPaint(Color.lightGray);
+        plot.setDomainGridlinePaint(Color.white);
+        plot.setRangeGridlinePaint(Color.white);
+        ((CategoryAxis) plot.getDomainAxis()).setTickLabelFont(new Font("Arial", Font.PLAIN, 16));
+        ((CategoryAxis) plot.getDomainAxis()).setLabelFont(new Font("Arial", Font.PLAIN, 20));
+        ((ValueAxis) plot.getRangeAxis()).setTickLabelFont(new Font("Arial", Font.PLAIN, 16));
+        ((ValueAxis) plot.getRangeAxis()).setLabelFont(new Font("Arial", Font.PLAIN, 20));
 
-		return chart;
-	}
+        if (this.type == BAR)
+            ((BarRenderer) plot.getRenderer()).setBarPainter(new StandardBarPainter());
+        else {
+            LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+            renderer.setBaseShapesVisible(true);
+        }
+        final CategoryAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6.0));
 
-	@Override
-	public void itemStateChanged(ItemEvent e) {
+        return chart;
+    }
 
-		if (e.getSource() == featureChoice) {
+    @Override
+    public void itemStateChanged(ItemEvent e) {
 
-			this.columnIndex = ((Choice) e.getSource()).getSelectedIndex() + columnLabels;
+        if (e.getSource() == featureChoice) {
 
-		}
+            this.columnIndex = ((Choice) e.getSource()).getSelectedIndex() + columnLabels;
 
-		if (e.getSource() == secondaryFeatureChoice) {
+        }
 
-			this.secondaryColumnIndex = ((Choice) e.getSource()).getSelectedIndex() + columnLabels;
-			System.out.println("seconday" + this.secondaryColumnIndex);
-		}
+        if (e.getSource() == secondaryFeatureChoice) {
 
-		if (e.getSource() == orderChoice) {
-			if (orderChoice.getSelectedIndex() == 0)
-				this.sortOrder = SortOrder.DESCENDING;
-			if (orderChoice.getSelectedIndex() == 1)
-				this.sortOrder = SortOrder.ASCENDING;
-			if (orderChoice.getSelectedIndex() == 2)
-				this.sortOrder = SortOrder.UNSORTED;
+            this.secondaryColumnIndex = ((Choice) e.getSource()).getSelectedIndex() + columnLabels;
+            System.out.println("seconday" + this.secondaryColumnIndex);
+        }
 
-		}
-		if (e.getSource() == typeChoice) {
-			this.type = typeChoice.getSelectedIndex();
+        if (e.getSource() == orderChoice) {
+            if (orderChoice.getSelectedIndex() == 0)
+                this.sortOrder = SortOrder.DESCENDING;
+            if (orderChoice.getSelectedIndex() == 1)
+                this.sortOrder = SortOrder.ASCENDING;
+            if (orderChoice.getSelectedIndex() == 2)
+                this.sortOrder = SortOrder.UNSORTED;
 
-		}
-		remove(chartPanel);
-		CategoryDataset dataset = createDataset(this.columnIndex, true);
-	
-		JFreeChart chart;
-		System.out.println("secondary index"+this.secondaryColumnIndex);
-		if (secondaryFeatureChoice.getSelectedItem() != " - ") {
-			CategoryDataset dataset2 = createDataset(this.secondaryColumnIndex, false);
+        }
+        if (e.getSource() == typeChoice) {
+            this.type = typeChoice.getSelectedIndex();
 
-			System.out.println("righe del dataset" + dataset2.getRowCount());
+        }
+        remove(chartPanel);
+        CategoryDataset dataset = createDataset(this.columnIndex, true);
 
-			chart = createChart(dataset, dataset2);
-		} else
-			chart = createChart(dataset, null);
+        JFreeChart chart;
+        System.out.println("secondary index" + this.secondaryColumnIndex);
+        if (secondaryFeatureChoice.getSelectedItem() != " - ") {
+            CategoryDataset dataset2 = createDataset(this.secondaryColumnIndex, false);
 
-		chartPanel = new ChartPanel(chart);
-		chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-		chartPanel.setBackground(Color.white);
-		add(chartPanel, BorderLayout.CENTER);
-		validate();
-		repaint();
+            System.out.println("righe del dataset" + dataset2.getRowCount());
 
-	}
+            chart = createChart(dataset, dataset2);
+        } else
+            chart = createChart(dataset, null);
+
+        chartPanel = new ChartPanel(chart);
+        chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        chartPanel.setBackground(Color.white);
+        add(chartPanel, BorderLayout.CENTER);
+        validate();
+        repaint();
+
+    }
 
 }

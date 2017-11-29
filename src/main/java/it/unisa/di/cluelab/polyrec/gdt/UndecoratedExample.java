@@ -1,4 +1,5 @@
 package it.unisa.di.cluelab.polyrec.gdt;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -15,7 +16,6 @@ public class UndecoratedExample {
 
     private JFrame frame = new JFrame();
 
-  
     class BorderPanel extends JPanel {
 
         private JButton label;
@@ -23,15 +23,15 @@ public class UndecoratedExample {
 
         public BorderPanel() {
             try {
-				label = new JButton(new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-white-16.png"))));
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+                label = new JButton(new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-white-16.png"))));
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
             label.setBorder(BorderFactory.createEmptyBorder());
             label.setContentAreaFilled(false);
             label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            
+
             setBackground(Color.gray);
             setLayout(new FlowLayout(FlowLayout.RIGHT));
 
@@ -39,7 +39,7 @@ public class UndecoratedExample {
 
             label.addMouseListener(new MouseAdapter() {
                 public void mouseReleased(MouseEvent e) {
-                   frame.dispose();
+                    frame.dispose();
                 }
             });
             addMouseListener(new MouseAdapter() {
@@ -50,18 +50,16 @@ public class UndecoratedExample {
 
                 }
 
-                 public void mouseDragged(MouseEvent me) {
+                public void mouseDragged(MouseEvent me) {
 
-                    frame.setLocation(frame.getLocation().x + me.getX() - pX,
-                            frame.getLocation().y + me.getY() - pY);
+                    frame.setLocation(frame.getLocation().x + me.getX() - pX, frame.getLocation().y + me.getY() - pY);
                 }
             });
 
             addMouseMotionListener(new MouseMotionAdapter() {
                 public void mouseDragged(MouseEvent me) {
 
-                    frame.setLocation(frame.getLocation().x + me.getX() - pX,
-                            frame.getLocation().y + me.getY() - pY);
+                    frame.setLocation(frame.getLocation().x + me.getX() - pX, frame.getLocation().y + me.getY() - pY);
                 }
             });
         }
@@ -83,9 +81,9 @@ public class UndecoratedExample {
         cr.setMaximumSize(new Dimension(800, 800));
         cr.registerComponent(frame);
         cr.setSnapSize(new Dimension(10, 10));
-       // frame.setUndecorated(true);
-        
-      // frame.add(new OutsidePanel(gesture));
+        // frame.setUndecorated(true);
+
+        // frame.add(new OutsidePanel(gesture));
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.pack();
         frame.setSize(200, 200);
@@ -93,17 +91,17 @@ public class UndecoratedExample {
         frame.setVisible(true);
         frame.setAlwaysOnTop(true);
         frame.add(new Thumbnail(gesture), BorderLayout.CENTER);
-		System.setProperty("sun.java2d.noddraw", "true");
-		
-		//WindowUtils.setWindowTransparent(this.getFrames()[0], true);
-		
+        System.setProperty("sun.java2d.noddraw", "true");
+
+        // WindowUtils.setWindowTransparent(this.getFrames()[0], true);
+
     }
 
-  /*  public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new UndecoratedExample().createAnsShowGui();
-            }
-        });
-    }*/
+    // public static void main(String[] args) {
+    // SwingUtilities.invokeLater(new Runnable() {
+    // public void run() {
+    // new UndecoratedExample().createAnsShowGui();
+    // }
+    // });
+    // }
 }

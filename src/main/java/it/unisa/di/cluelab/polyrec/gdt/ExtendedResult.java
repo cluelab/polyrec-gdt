@@ -49,126 +49,126 @@ import javax.swing.table.DefaultTableCellRenderer;
 import it.unisa.di.cluelab.polyrec.Result;
 
 public class ExtendedResult extends Result {
-	private int templateIndex = -1;
-	private TreeMap<String, double[]> ranking = new TreeMap<String, double[]>();
+    private int templateIndex = -1;
+    private TreeMap<String, double[]> ranking = new TreeMap<String, double[]>();
 
-	public ExtendedResult(String name, Double score, TreeMap<String, double[]> ranking) {
-		super(name, score);
-		this.ranking = ranking;
-	}
+    public ExtendedResult(String name, Double score, TreeMap<String, double[]> ranking) {
+        super(name, score);
+        this.ranking = ranking;
+    }
 
-	protected ExtendedResult(String name, Double score, int templateIndex) {
-		super(name, score);
-		this.templateIndex = templateIndex;
-	}
+    protected ExtendedResult(String name, Double score, int templateIndex) {
+        super(name, score);
+        this.templateIndex = templateIndex;
+    }
 
-	public int getTemplateIndex() {
-		return this.templateIndex;
-	}
+    public int getTemplateIndex() {
+        return this.templateIndex;
+    }
 
-	public TreeMap<String, double[]> getRanking() {
-		return this.ranking;
-	}
+    public TreeMap<String, double[]> getRanking() {
+        return this.ranking;
+    }
 
-	public String toString() {
-		return (this.getTemplateIndex() >= 0
-				? "Template " + this.getTemplateIndex() + " of Class " + this.getName().toUpperCase()
-				: "Class " + this.getName()) + " (score: " + this.getScore() + ")";
-	}
+    public String toString() {
+        return (this.getTemplateIndex() >= 0
+                ? "Template " + this.getTemplateIndex() + " of Class " + this.getName().toUpperCase()
+                : "Class " + this.getName()) + " (score: " + this.getScore() + ")";
+    }
 
-	public JTable getRankingTable() {
+    public JTable getRankingTable() {
 
-		Set<Entry<String, double[]>> entries = this.ranking.entrySet();
+        Set<Entry<String, double[]>> entries = this.ranking.entrySet();
 
-		// String[] columnHeaders = {"<html><font color='white'
-		// >CLASS</font></html>", "<html><font color='white'
-		// >DISTANCE</font></html>", "<html><font color='white'
-		// >SCORE</font></html>"};
-		String[] columnHeaders = { "CLASS", "DISTANCE", "SCORE" };
+        // String[] columnHeaders = {"<html><font color='white'
+        // >CLASS</font></html>", "<html><font color='white'
+        // >DISTANCE</font></html>", "<html><font color='white'
+        // >SCORE</font></html>"};
+        String[] columnHeaders = {"CLASS", "DISTANCE", "SCORE"};
 
-		String[][] rowData = new String[entries.size()][columnHeaders.length];
+        String[][] rowData = new String[entries.size()][columnHeaders.length];
 
-		int i = 0;
-		for (Entry<String, double[]> e : entries) {
+        int i = 0;
+        for (Entry<String, double[]> e : entries) {
 
-			rowData[i][0] = e.getKey();
+            rowData[i][0] = e.getKey();
 
-			rowData[i][1] = String.valueOf(round(e.getValue()[0], 5));
-			rowData[i][2] = String.valueOf(round(e.getValue()[1], 5));
-			i++;
-		}
-		JTable table = new JTable(rowData, columnHeaders);
+            rowData[i][1] = String.valueOf(round(e.getValue()[0], 5));
+            rowData[i][2] = String.valueOf(round(e.getValue()[1], 5));
+            i++;
+        }
+        JTable table = new JTable(rowData, columnHeaders);
 
-		table.setEnabled(false);
+        table.setEnabled(false);
 
-		// headers
-		// table.getTableHeader().setBackground(Color.gray);
-		// table.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		// table.getTableHeader().setOpaque(false);
+        // headers
+        // table.getTableHeader().setBackground(Color.gray);
+        // table.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        // table.getTableHeader().setOpaque(false);
 
-		// sorting
-		table.setAutoCreateRowSorter(true);
-		DefaultRowSorter sorter = ((DefaultRowSorter) table.getRowSorter());
-		ArrayList list = new ArrayList();
+        // sorting
+        table.setAutoCreateRowSorter(true);
+        DefaultRowSorter sorter = ((DefaultRowSorter) table.getRowSorter());
+        ArrayList list = new ArrayList();
 
-		list.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
-		sorter.setSortKeys(list);
-		sorter.sort();
+        list.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
+        sorter.setSortKeys(list);
+        sorter.sort();
 
-		// column alignment
-		// DefaultTableCellRenderer rightRenderer = new
-		// DefaultTableCellRenderer();
-		// rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-		// table.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
-		// table.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
-		// ((JLabel)
-		// table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
+        // column alignment
+        // DefaultTableCellRenderer rightRenderer = new
+        // DefaultTableCellRenderer();
+        // rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+        // table.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+        // table.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
+        // ((JLabel)
+        // table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
-		table.getColumn(table.getColumnName(0)).setCellRenderer(new DefaultTableCellRenderer() {
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-					boolean hasFocus, int row, int column) {
-				setText(value.toString());
-				setBackground(new Color(00, 00, 00, 10));
-				return this;
-			}
-		});
+        table.getColumn(table.getColumnName(0)).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+                setText(value.toString());
+                setBackground(new Color(00, 00, 00, 10));
+                return this;
+            }
+        });
 
-		// table.getColumn(table.getColumnName(2)).setCellRenderer(
-		// new DefaultTableCellRenderer() {
-		// @Override
-		// public Component getTableCellRendererComponent(JTable table, Object
-		// value, boolean isSelected, boolean
-		// hasFocus, int row, int column) {
-		// setText(value.toString());
-		// System.out.println("classname "+classname+" name "+name+" row"+row+"
-		// col"+column);
-		// System.out.println(classname.equals(name));
-		//
-		//
-		// Double scorevalue = Math.round(Double.parseDouble(value.toString()) *
-		// 10000) / 100.;
-		//
-		// System.out.println("valore "+scorevalue+" setting "+
-		// java.lang.Double.parseDouble(Settings.applicationProps.getProperty("scorelimit")));
-		// System.out.println(scorevalue >
-		// Double.parseDouble(Settings.applicationProps.getProperty("scorelimit")));
-		// if (!classname.equals(name) && scorevalue >
-		// Double.parseDouble(Settings.applicationProps.getProperty("scorelimit")))
-		// setBackground(Color.red);
-		// return this;
-		// }
-		// }
-		// );
+        // table.getColumn(table.getColumnName(2)).setCellRenderer(
+        // new DefaultTableCellRenderer() {
+        // @Override
+        // public Component getTableCellRendererComponent(JTable table, Object
+        // value, boolean isSelected, boolean
+        // hasFocus, int row, int column) {
+        // setText(value.toString());
+        // System.out.println("classname "+classname+" name "+name+" row"+row+"
+        // col"+column);
+        // System.out.println(classname.equals(name));
+        //
+        //
+        // Double scorevalue = Math.round(Double.parseDouble(value.toString()) *
+        // 10000) / 100.;
+        //
+        // System.out.println("valore "+scorevalue+" setting "+
+        // java.lang.Double.parseDouble(Settings.applicationProps.getProperty("scorelimit")));
+        // System.out.println(scorevalue >
+        // Double.parseDouble(Settings.applicationProps.getProperty("scorelimit")));
+        // if (!classname.equals(name) && scorevalue >
+        // Double.parseDouble(Settings.applicationProps.getProperty("scorelimit")))
+        // setBackground(Color.red);
+        // return this;
+        // }
+        // }
+        // );
 
-		return table;
+        return table;
 
-	}
+    }
 
-	// round 'n' to 'd' decimals
-	private static double round(double n, double d) {
-		d = Math.pow(10, d);
-		return Math.round(n * d) / d;
-	}
+    // round 'n' to 'd' decimals
+    private static double round(double n, double d) {
+        d = Math.pow(10, d);
+        return Math.round(n * d) / d;
+    }
 
 }
