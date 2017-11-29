@@ -521,7 +521,7 @@ public class TemplateScreen extends JPanel
 			}
 		}
 
-		// se in modalit� add template predisponi interfaccia per salvataggio
+		// se in modalità add template predisponi interfaccia per salvataggio
 		if (this.className != "") {
 
 			// pointers number
@@ -715,8 +715,8 @@ public class TemplateScreen extends JPanel
 	// imposta interfaccia per mostrare dettagli template
 	public void showTemplate() {
 		ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(className);
-		title2.setText("<html><font color='white'> � " + className.substring(0, 1).toUpperCase()
-				+ className.substring(1) + "  � Detail</font></html>");
+		title2.setText("<html><font color='white'> \u2022 " + className.substring(0, 1).toUpperCase()
+				+ className.substring(1) + "  \u2022 Detail</font></html>");
 		// pointers number
 		SpinnerModel model = new SpinnerNumberModel(polylines.get(item).getGesture().getPointers(), // initial
 				0, // min
@@ -965,10 +965,10 @@ public class TemplateScreen extends JPanel
 		this.mode = mode;
 		this.drawMode = drawmode;
 		if (this.mode == CURRENT && !this.testing)
-			title2.setText("<html><font color='white'> � " + className.substring(0, 1).toUpperCase()
-					+ className.substring(1) + " � Add Template</font></html>");
+			title2.setText("<html><font color='white'> \u2022 " + className.substring(0, 1).toUpperCase()
+					+ className.substring(1) + " \u2022 Add Template</font></html>");
 		if (this.mode == CURRENT && this.testing)
-			title2.setText("<html><font color='white'>  � Test Recognizer</font></html>");
+			title2.setText("<html><font color='white'>  \u2022 Test Recognizer</font></html>");
 
 		System.out.println("drawTemplate mode:" + mode + " drawmode: " + drawMode);
 		controlTools.removeAll();

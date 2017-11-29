@@ -808,7 +808,7 @@ public class DashboardScreen extends JPanel {
 					panel.add(templateBoxes[p]);
 
 				}
-				System.out.println("gi� fuori");
+				System.out.println("già fuori");
 				panelsMap.put(classes[m], templateBoxes);
 
 				last.gridy = m;

@@ -122,7 +122,7 @@ public class DashboardListener implements ActionListener, MouseListener {
 				} while (k >= mainClass.getRecognizer().getTemplate(classname).size() || k < 1);
 
 				double minCost = Double.MAX_VALUE;
-				// esegui pi� volte per evitare minimo locale
+				// esegui più volte per evitare minimo locale
 				for (int i = 0; i < (int) mainClass.getRecognizer().getTemplate(classname).size() / 2 || i < 5; i++) {
 
 					ClusteringResult result = clustering.kmedoids(classname, k, 0);
@@ -834,7 +834,7 @@ public class DashboardListener implements ActionListener, MouseListener {
 		return table;
 	}
 
-	// Se � il parametro className � impostato visualizza feature dei template
+	// Se è il parametro className è impostato visualizza feature dei template
 	// della classe, altrimenti tabella globale di tutti i tamplate del set
 	private void showFeaturesTable(String className) {
 		System.out.println("Show features per classe" + className);

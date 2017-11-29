@@ -95,7 +95,7 @@ public class Clustering {
 
 		}
 		
-		//assegnazione dei non medoidi al cluster con medoide pi� vicino
+		//assegnazione dei non medoidi al cluster con medoide più vicino
 		double cost = assignNonMedoid(polylines, nonmedoids, clusteringMatrix, k);
 		
 		int it = 0;// iterazioni;
@@ -125,7 +125,7 @@ public class Clustering {
 
 			double newcost = assignNonMedoid(polylines, tempnonmedoids, tempClusteringMatrix, k);
 	
-			// se il nuovo costo del clustering � migliore del precedente,
+			// se il nuovo costo del clustering è migliore del precedente,
 			if (newcost < cost) {
 				nonmedoids.clear();
 				nonmedoids.addAll(tempnonmedoids);
@@ -168,7 +168,7 @@ public class Clustering {
 					}
 				}
 				
-				//assegna a cluster con medoide pi� vicino
+				//assegna a cluster con medoide più vicino
 				clusteringMatrix.get(minValueIndex).add(nonmedoid);
 				
 				cost+=  minDistance;
@@ -190,7 +190,7 @@ public class Clustering {
 
 			double minCost = Double.MAX_VALUE;
 			ClusteringResult bestResult = null;
-			// eseguo kmedoids per pi� volte per evitare il problema del minimo
+			// eseguo kmedoids per più volte per evitare il problema del minimo
 			// locale
 
 			for (int i = 0; i < (int) recognizer.getTemplate(classname).size() / 2 && i<=4; i++) {
@@ -260,7 +260,7 @@ public class Clustering {
 							}
 
 						}
-						//calcola distanza con cluster pi� vicino (neighbour)
+						//calcola distanza con cluster più vicino (neighbour)
 						b[cluster.get(i)] = Double.MAX_VALUE;
 						for (int occount = 0; occount < distancefromOtherClauster.length; occount++) {
 							if (distancefromOtherClauster[occount] != 0) {
