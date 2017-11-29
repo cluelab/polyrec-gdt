@@ -1,8 +1,8 @@
 package it.unisa.di.cluelab.polyrec.bluetooh.sendapp;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.microedition.io.Connector;
@@ -36,17 +36,16 @@ public class ObexPutClient {
 				return;
 			}
 
-			FileInputStream fileInputStream = null;
-
-			File file = new File("BluetoothGestures.apk");
-
-			byte[] bFile = new byte[(int) file.length()];
-
 			// convert file into array of bytes
-			fileInputStream = new FileInputStream(file);
-			fileInputStream.read(bFile);
-
-			fileInputStream.close();
+			final byte[] bFile;
+			try (InputStream bInputStream = getClass().getResourceAsStream("/BluetoothGestures.apk")) {
+				final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				final byte[] buffer = new byte[4096];
+				for (int read; (read = bInputStream.read(buffer, 0, buffer.length)) != -1;) {
+					baos.write(buffer, 0, read);
+				}
+				bFile = baos.toByteArray();
+			}
 
 			HeaderSet hsOperation = clientSession.createHeaderSet();
 			hsOperation.setHeader(HeaderSet.NAME, apkfile);

@@ -391,7 +391,7 @@ public class MenuListener implements ActionListener {
 				CursorToolkit.startWaitCursor(mainFrame.getRootPane());
 				if (fileExt.equals(MainFrame.EXTENSION_XML)) {
 
-					File schemaFile = new File("schema-validator.xsd");
+					StreamSource schemaFile = new StreamSource(getClass().getResourceAsStream("/schema-validator.xsd"));
 					Source xmlFile = new StreamSource(new File(selectedFile));
 					SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 					Schema schema = schemaFactory.newSchema(schemaFile);
