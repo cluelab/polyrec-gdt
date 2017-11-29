@@ -271,17 +271,7 @@ public class DashboardListener implements ActionListener, MouseListener {
 
 			if (e.getSource() == dashboardScreen.checkTemplates) {
 				CursorToolkit.startWaitCursor(mainClass.getRootPane());
-				Properties applicationProps = new Properties();
-
-				FileInputStream in;
-				try {
-					in = new FileInputStream("config.properties");
-
-					applicationProps.load(in);
-				} catch (IOException e1) {
-
-					e1.printStackTrace();
-				}
+				Properties applicationProps = Settings.applicationProps;
 
 				
 

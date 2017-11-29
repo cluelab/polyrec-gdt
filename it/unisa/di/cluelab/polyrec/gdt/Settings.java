@@ -88,6 +88,7 @@ public class Settings extends JFrame {
 			
 			e.printStackTrace();
 		}
+		applicationProps.putIfAbsent("scorelimit", "87");
 	}
 
 	public static void saveSettings() {
