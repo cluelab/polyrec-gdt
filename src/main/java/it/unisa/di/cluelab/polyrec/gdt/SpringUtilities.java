@@ -31,9 +31,11 @@
 
 package it.unisa.di.cluelab.polyrec.gdt;
 
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Container;
+
+import javax.swing.Spring;
 import javax.swing.SpringLayout;
-import java.awt.*;
 
 /**
  * A 1.4 file that provides utility methods for creating form- or grid-style layouts with SpringLayout. These utilities
@@ -71,23 +73,23 @@ public class SpringUtilities {
         SpringLayout layout;
         try {
             layout = (SpringLayout) parent.getLayout();
-        } catch (ClassCastException exc) {
+        } catch (final ClassCastException exc) {
             System.err.println("The first argument to makeGrid must use SpringLayout.");
             return;
         }
 
-        Spring xPadSpring = Spring.constant(xPad);
-        Spring yPadSpring = Spring.constant(yPad);
-        Spring initialXSpring = Spring.constant(initialX);
-        Spring initialYSpring = Spring.constant(initialY);
-        int max = rows * cols;
+        final Spring xPadSpring = Spring.constant(xPad);
+        final Spring yPadSpring = Spring.constant(yPad);
+        final Spring initialXSpring = Spring.constant(initialX);
+        final Spring initialYSpring = Spring.constant(initialY);
+        final int max = rows * cols;
 
         // Calculate Springs that are the max of the width/height so that all
         // cells have the same size.
         Spring maxWidthSpring = layout.getConstraints(parent.getComponent(0)).getWidth();
         Spring maxHeightSpring = layout.getConstraints(parent.getComponent(0)).getHeight();
         for (int i = 1; i < max; i++) {
-            SpringLayout.Constraints cons = layout.getConstraints(parent.getComponent(i));
+            final SpringLayout.Constraints cons = layout.getConstraints(parent.getComponent(i));
 
             maxWidthSpring = Spring.max(maxWidthSpring, cons.getWidth());
             maxHeightSpring = Spring.max(maxHeightSpring, cons.getHeight());
@@ -96,7 +98,7 @@ public class SpringUtilities {
         // Apply the new width/height Spring. This forces all the
         // components to have the same size.
         for (int i = 0; i < max; i++) {
-            SpringLayout.Constraints cons = layout.getConstraints(parent.getComponent(i));
+            final SpringLayout.Constraints cons = layout.getConstraints(parent.getComponent(i));
 
             cons.setWidth(maxWidthSpring);
             cons.setHeight(maxHeightSpring);
@@ -107,7 +109,7 @@ public class SpringUtilities {
         SpringLayout.Constraints lastCons = null;
         SpringLayout.Constraints lastRowCons = null;
         for (int i = 0; i < max; i++) {
-            SpringLayout.Constraints cons = layout.getConstraints(parent.getComponent(i));
+            final SpringLayout.Constraints cons = layout.getConstraints(parent.getComponent(i));
             if (i % cols == 0) { // start of new row
                 lastRowCons = lastCons;
                 cons.setX(initialXSpring);
@@ -124,7 +126,7 @@ public class SpringUtilities {
         }
 
         // Set the parent's size.
-        SpringLayout.Constraints pCons = layout.getConstraints(parent);
+        final SpringLayout.Constraints pCons = layout.getConstraints(parent);
         pCons.setConstraint(SpringLayout.SOUTH,
                 Spring.sum(Spring.constant(yPad), lastCons.getConstraint(SpringLayout.SOUTH)));
         pCons.setConstraint(SpringLayout.EAST,
@@ -133,8 +135,8 @@ public class SpringUtilities {
 
     /* Used by makeCompactGrid. */
     private static SpringLayout.Constraints getConstraintsForCell(int row, int col, Container parent, int cols) {
-        SpringLayout layout = (SpringLayout) parent.getLayout();
-        Component c = parent.getComponent(row * cols + col);
+        final SpringLayout layout = (SpringLayout) parent.getLayout();
+        final Component c = parent.getComponent(row * cols + col);
         return layout.getConstraints(c);
     }
 
@@ -161,7 +163,7 @@ public class SpringUtilities {
         SpringLayout layout;
         try {
             layout = (SpringLayout) parent.getLayout();
-        } catch (ClassCastException exc) {
+        } catch (final ClassCastException exc) {
             System.err.println("The first argument to makeCompactGrid must use SpringLayout.");
             return;
         }
@@ -174,7 +176,7 @@ public class SpringUtilities {
                 width = Spring.max(width, getConstraintsForCell(r, c, parent, cols).getWidth());
             }
             for (int r = 0; r < rows; r++) {
-                SpringLayout.Constraints constraints = getConstraintsForCell(r, c, parent, cols);
+                final SpringLayout.Constraints constraints = getConstraintsForCell(r, c, parent, cols);
                 constraints.setX(x);
                 constraints.setWidth(width);
             }
@@ -189,7 +191,7 @@ public class SpringUtilities {
                 height = Spring.max(height, getConstraintsForCell(r, c, parent, cols).getHeight());
             }
             for (int c = 0; c < cols; c++) {
-                SpringLayout.Constraints constraints = getConstraintsForCell(r, c, parent, cols);
+                final SpringLayout.Constraints constraints = getConstraintsForCell(r, c, parent, cols);
                 constraints.setY(y);
                 constraints.setHeight(height);
             }
@@ -197,7 +199,7 @@ public class SpringUtilities {
         }
 
         // Set the parent's size.
-        SpringLayout.Constraints pCons = layout.getConstraints(parent);
+        final SpringLayout.Constraints pCons = layout.getConstraints(parent);
         pCons.setConstraint(SpringLayout.SOUTH, y);
         pCons.setConstraint(SpringLayout.EAST, x);
     }

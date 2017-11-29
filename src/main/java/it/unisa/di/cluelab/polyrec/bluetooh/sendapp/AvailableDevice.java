@@ -28,6 +28,7 @@ public class AvailableDevice {
         this.obexServiceURL = obexServiceURL;
     }
 
+    @Override
     public String toString() {
         return device.getBluetoothAddress() + " " + obexServiceURL;
 

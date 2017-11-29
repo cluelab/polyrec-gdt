@@ -8,12 +8,13 @@ import javax.swing.table.TableCellRenderer;
 
 public class TableRenderer extends JLabel implements TableCellRenderer {
 
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {
 
         setText(value.toString());
 
-        String text = "Row = " + row + " and column = " + column;
+        final String text = "Row = " + row + " and column = " + column;
         setToolTipText(text);
         return this;
     }

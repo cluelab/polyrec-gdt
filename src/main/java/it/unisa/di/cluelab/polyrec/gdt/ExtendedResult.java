@@ -70,6 +70,7 @@ public class ExtendedResult extends Result {
         return this.ranking;
     }
 
+    @Override
     public String toString() {
         return (this.getTemplateIndex() >= 0
                 ? "Template " + this.getTemplateIndex() + " of Class " + this.getName().toUpperCase()
@@ -78,18 +79,18 @@ public class ExtendedResult extends Result {
 
     public JTable getRankingTable() {
 
-        Set<Entry<String, double[]>> entries = this.ranking.entrySet();
+        final Set<Entry<String, double[]>> entries = this.ranking.entrySet();
 
         // String[] columnHeaders = {"<html><font color='white'
         // >CLASS</font></html>", "<html><font color='white'
         // >DISTANCE</font></html>", "<html><font color='white'
         // >SCORE</font></html>"};
-        String[] columnHeaders = {"CLASS", "DISTANCE", "SCORE"};
+        final String[] columnHeaders = {"CLASS", "DISTANCE", "SCORE"};
 
-        String[][] rowData = new String[entries.size()][columnHeaders.length];
+        final String[][] rowData = new String[entries.size()][columnHeaders.length];
 
         int i = 0;
-        for (Entry<String, double[]> e : entries) {
+        for (final Entry<String, double[]> e : entries) {
 
             rowData[i][0] = e.getKey();
 
@@ -97,7 +98,7 @@ public class ExtendedResult extends Result {
             rowData[i][2] = String.valueOf(round(e.getValue()[1], 5));
             i++;
         }
-        JTable table = new JTable(rowData, columnHeaders);
+        final JTable table = new JTable(rowData, columnHeaders);
 
         table.setEnabled(false);
 
@@ -108,8 +109,8 @@ public class ExtendedResult extends Result {
 
         // sorting
         table.setAutoCreateRowSorter(true);
-        DefaultRowSorter sorter = ((DefaultRowSorter) table.getRowSorter());
-        ArrayList list = new ArrayList();
+        final DefaultRowSorter sorter = ((DefaultRowSorter) table.getRowSorter());
+        final ArrayList list = new ArrayList();
 
         list.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
         sorter.setSortKeys(list);

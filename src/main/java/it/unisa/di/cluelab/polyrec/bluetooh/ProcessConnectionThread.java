@@ -13,7 +13,7 @@ import it.unisa.di.cluelab.polyrec.gdt.TemplateScreen;
 //not used
 public class ProcessConnectionThread implements Runnable {
 
-    private StreamConnection connection;
+    private final StreamConnection connection;
     ProcessConnectionThread thread;
 
     // Constant that indicate command from devices
@@ -36,7 +36,7 @@ public class ProcessConnectionThread implements Runnable {
     public void run() {
         try {
 
-            InputStream inputStream = connection.openInputStream();
+            final InputStream inputStream = connection.openInputStream();
 
             boolean first = true;
             ObjectInputStream ois = null;
@@ -44,7 +44,7 @@ public class ProcessConnectionThread implements Runnable {
 
                 ois = new ObjectInputStream(inputStream);
 
-                TPoint tpoint = (TPoint) ois.readObject();
+                final TPoint tpoint = (TPoint) ois.readObject();
 
                 if (tpoint.getX() == -1) {
                     gui.strokeCompleted();
@@ -82,17 +82,17 @@ public class ProcessConnectionThread implements Runnable {
                 }
 
             }
-        } catch (EOFException e) {
+        } catch (final EOFException e) {
             e.printStackTrace();
 
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         // ProcessConnectionThread connectionThread = new ProcessConnectionThread(connection, gui);
         // Thread processThread = new Thread(connectionThread);
         // processThread.start();
-        catch (IOException e) {
+        catch (final IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

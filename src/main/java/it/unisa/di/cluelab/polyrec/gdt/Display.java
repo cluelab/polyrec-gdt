@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 /**
  * @author rbufano
@@ -28,7 +29,7 @@ public class Display extends JLabel {
         super();
 
         setFont(new Font("Arial", Font.PLAIN, 20));
-        setVerticalAlignment(JLabel.CENTER);
+        setVerticalAlignment(SwingConstants.CENTER);
 
     }
 
@@ -38,7 +39,7 @@ public class Display extends JLabel {
     public Display(String arg0) {
         super(arg0);
         setFont(new Font("Arial", Font.PLAIN, 20));
-        setVerticalAlignment(JLabel.CENTER);
+        setVerticalAlignment(SwingConstants.CENTER);
 
     }
 
@@ -53,7 +54,7 @@ public class Display extends JLabel {
             try {
 
                 setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/info.png"))));
-            } catch (IOException e2) {
+            } catch (final IOException e2) {
 
                 e2.printStackTrace();
             }
@@ -63,7 +64,7 @@ public class Display extends JLabel {
             try {
 
                 setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/warning.png"))));
-            } catch (IOException e2) {
+            } catch (final IOException e2) {
 
                 e2.printStackTrace();
             }

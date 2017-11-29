@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -22,7 +22,7 @@ import it.unisa.di.cluelab.polyrec.Vector;
 import it.unisa.di.cluelab.polyrec.geom.Rectangle2D;
 
 public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
-    private static final Double[] DPR_PARAMS = new Double[] { 26d, 22d };
+    private static final Double[] DPR_PARAMS = new Double[] {26d, 22d};
     private static final boolean VERBOSE = false;
     private static final boolean GSS = true;
 
@@ -53,7 +53,7 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
 
         final TreeMap<String, double[]> ranking = new TreeMap<String, double[]>();
 
-        for (Entry<String, ArrayList<Polyline>> e : templates.entrySet()) {
+        for (final Entry<String, ArrayList<Polyline>> e : templates.entrySet()) {
             final ArrayList<Polyline> tempTemplates = e.getValue();
             double classdistance = Double.POSITIVE_INFINITY;
             for (int i = 0; i < tempTemplates.size(); i++) {
@@ -112,7 +112,7 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
             if (classdistance != Double.POSITIVE_INFINITY) {
                 final Double classscore = (2.0f - classdistance) / 2;
 
-                ranking.put(e.getKey(), new double[] { classdistance, Math.round(classscore * 10000) / 100. });
+                ranking.put(e.getKey(), new double[] {classdistance, Math.round(classscore * 10000) / 100.});
             }
         }
 
@@ -148,61 +148,70 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
         String templateName = null;
         Polyline t = null;
 
-        ArrayList<ExtendedResult> results = new ArrayList<ExtendedResult>();
+        final ArrayList<ExtendedResult> results = new ArrayList<ExtendedResult>();
 
         // per tutte le classi
-        for (Entry<String, ArrayList<Polyline>> en : templates.entrySet()) {
+        for (final Entry<String, ArrayList<Polyline>> en : templates.entrySet()) {
             // classe diversa da quella del template da controllare
-            String key = en.getKey();
+            final String key = en.getKey();
             if (!Objects.equals(key, className)) {
-                ArrayList<Polyline> tempTemplates = en.getValue();
+                final ArrayList<Polyline> tempTemplates = en.getValue();
                 for (int i = 0; i < tempTemplates.size(); i++) {
                     t = tempTemplates.get(i);
 
-                    PolylineAligner aligner = new PolylineAligner(u, t);
-                    AbstractMap.SimpleEntry<Polyline, Polyline> polyPair = aligner.align();
+                    final PolylineAligner aligner = new PolylineAligner(u, t);
+                    final AbstractMap.SimpleEntry<Polyline, Polyline> polyPair = aligner.align();
 
-                    int addedAngles = aligner.getAddedAngles();
-                    double penalty = 1 + (double) addedAngles / (double) (addedAngles + aligner.getMatches());
-                    Polyline unknown = polyPair.getKey();// da riconoscere
-                    Polyline template = polyPair.getValue();// confrontato con
+                    final int addedAngles = aligner.getAddedAngles();
+                    final double penalty = 1 + (double) addedAngles / (double) (addedAngles + aligner.getMatches());
+                    final Polyline unknown = polyPair.getKey();// da riconoscere
+                    final Polyline template = polyPair.getValue();// confrontato con
 
-                    List<Vector> vectorsU = unknown.getVectors();
-                    if (VERBOSE)
+                    final List<Vector> vectorsU = unknown.getVectors();
+                    if (VERBOSE) {
                         System.out.println(vectorsU);
-                    List<Vector> vectorsT = template.getVectors();
-                    if (VERBOSE)
+                    }
+                    final List<Vector> vectorsT = template.getVectors();
+                    if (VERBOSE) {
                         System.out.println(vectorsT);
+                    }
                     Double bestDist = null;
                     if (!GSS) {
-                        double uAngle = unknown.getGesture().getIndicativeAngle(!unknown.getGesture().isRotInv());
-                        if (VERBOSE)
+                        final double uAngle = unknown.getGesture().getIndicativeAngle(!unknown.getGesture().isRotInv());
+                        if (VERBOSE) {
                             System.out.println("Indicative angle = " + uAngle);
-                        double tAngle = template.getGesture().getIndicativeAngle(!template.getGesture().isRotInv());
-                        if (VERBOSE)
+                        }
+                        final double tAngle = template.getGesture()
+                                .getIndicativeAngle(!template.getGesture().isRotInv());
+                        if (VERBOSE) {
                             System.out.println("Indicative angleT = " + tAngle);
+                        }
                         bestDist = getDistanceAtAngle(vectorsU, vectorsT, -uAngle, -tAngle);
-                        if (VERBOSE)
+                        if (VERBOSE) {
                             System.out.println("Distance at = " + (-uAngle) + "; dist = " + bestDist);
-                    } else
+                        }
+                    } else {
                         bestDist = getDistanceAtBestAngle(unknown, template, template.getGesture().isRotInv());
-                    Double distance = penalty * bestDist;
-                    if (VERBOSE)
+                    }
+                    final Double distance = penalty * bestDist;
+                    if (VERBOSE) {
                         System.out.println("Confronto con Gesture " + key + " ROTINV:"
                                 + template.getGesture().isRotInv() + " SCORE:" + (2.0f - distance) / 2);
+                    }
 
-                    Double score = (2.0f - distance) / 2;
-                    ExtendedResult result = new ExtendedResult(key, score, i);
+                    final Double score = (2.0f - distance) / 2;
+                    final ExtendedResult result = new ExtendedResult(key, score, i);
 
                     // template troppo simili
                     if (result.getScore() > scorelimit) {
                         results.add(result);
 
                     }
-                    if (VERBOSE)
+                    if (VERBOSE) {
                         System.out.println(
                                 "Template troppo simile a polyline " + i + " ROTINV:" + template.getGesture().isRotInv()
                                         + " della classe " + key + "  (SCORE:" + (2.0f - distance) / 2 + ")");
+                    }
                     if (distance < a) {
                         a = distance;
                         templateName = key;
@@ -226,34 +235,40 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
      * @return Distanza tra i due template
      */
     public synchronized Double checkTemplate(Polyline u, Polyline t) {
-        PolylineAligner aligner = new PolylineAligner(u, t);
-        AbstractMap.SimpleEntry<Polyline, Polyline> polyPair = aligner.align();
+        final PolylineAligner aligner = new PolylineAligner(u, t);
+        final AbstractMap.SimpleEntry<Polyline, Polyline> polyPair = aligner.align();
 
-        int addedAngles = aligner.getAddedAngles();
-        double penalty = 1 + (double) addedAngles / (double) (addedAngles + aligner.getMatches());
-        Polyline unknown = polyPair.getKey();// da riconoscere
-        Polyline template = polyPair.getValue();// confrontato con
+        final int addedAngles = aligner.getAddedAngles();
+        final double penalty = 1 + (double) addedAngles / (double) (addedAngles + aligner.getMatches());
+        final Polyline unknown = polyPair.getKey();// da riconoscere
+        final Polyline template = polyPair.getValue();// confrontato con
 
-        List<Vector> vectorsU = unknown.getVectors();
-        if (VERBOSE)
+        final List<Vector> vectorsU = unknown.getVectors();
+        if (VERBOSE) {
             System.out.println(vectorsU);
-        List<Vector> vectorsT = template.getVectors();
-        if (VERBOSE)
+        }
+        final List<Vector> vectorsT = template.getVectors();
+        if (VERBOSE) {
             System.out.println(vectorsT);
+        }
         Double bestDist = null;
         if (!GSS) {
-            double uAngle = unknown.getGesture().getIndicativeAngle(!unknown.getGesture().isRotInv());
-            if (VERBOSE)
+            final double uAngle = unknown.getGesture().getIndicativeAngle(!unknown.getGesture().isRotInv());
+            if (VERBOSE) {
                 System.out.println("Indicative angle = " + uAngle);
-            double tAngle = template.getGesture().getIndicativeAngle(!template.getGesture().isRotInv());
-            if (VERBOSE)
+            }
+            final double tAngle = template.getGesture().getIndicativeAngle(!template.getGesture().isRotInv());
+            if (VERBOSE) {
                 System.out.println("Indicative angleT = " + tAngle);
+            }
             bestDist = getDistanceAtAngle(vectorsU, vectorsT, -uAngle, -tAngle);
-            if (VERBOSE)
+            if (VERBOSE) {
                 System.out.println("Distance at = " + (-uAngle) + "; dist = " + bestDist);
-        } else
+            }
+        } else {
             bestDist = getDistanceAtBestAngle(unknown, template, template.getGesture().isRotInv());
-        Double distance = penalty * bestDist;
+        }
+        final Double distance = penalty * bestDist;
         return distance;
 
     }
@@ -293,7 +308,7 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
         normalizedGesture.setRotInv(gesture.isRotInv());
         normalizedGesture.setPointers(gesture.getPointers());
 
-        for (TPoint p : gesture.getPoints()) {
+        for (final TPoint p : gesture.getPoints()) {
             normalizedGesture.addPoint(new TPoint(p.getX() * zoom, p.getY() * zoom, p.getTime()));
         }
 
@@ -330,7 +345,7 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
      * @param newname
      */
     public void editClassName(String oldname, String newname) {
-        ArrayList<Polyline> polylines = templates.get(oldname);
+        final ArrayList<Polyline> polylines = templates.get(oldname);
         templates.remove(oldname);
         templates.put(newname.toLowerCase(), polylines);
 
@@ -354,7 +369,7 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
      *            Index of polyline to remove
      */
     public void removePolyline(String name, int index) {
-        ArrayList<Polyline> polylines = templates.get(name);
+        final ArrayList<Polyline> polylines = templates.get(name);
         polylines.remove(index);
 
     };
@@ -366,9 +381,10 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
      *            Class name
      */
     public void addClass(String name) {
-        if (!getClassNames().contains(name.toLowerCase()))
+        if (!getClassNames().contains(name.toLowerCase())) {
             templates.put(name.replace('_', '-').toLowerCase(), new ArrayList());
-        // this.save();
+            // this.save();
+        }
     }
 
     /**
@@ -380,16 +396,17 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
      */
     public int getClassIndex(String classname) {
 
-        Set<Entry<String, ArrayList<Polyline>>> set = templates.entrySet();
-        Iterator<Entry<String, ArrayList<Polyline>>> it = set.iterator();
+        final Set<Entry<String, ArrayList<Polyline>>> set = templates.entrySet();
+        final Iterator<Entry<String, ArrayList<Polyline>>> it = set.iterator();
 
         int i = -1;
         while (it.hasNext()) {
             i++;
-            Map.Entry entry = (Map.Entry) it.next();
+            final Map.Entry entry = it.next();
 
-            if (entry.getKey().equals(classname))
+            if (entry.getKey().equals(classname)) {
                 return i;
+            }
 
         }
         return i;
@@ -403,10 +420,11 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
      */
     public int addTemplate(String name, Polyline polyline) {
 
-        if (!templates.containsKey(name))
+        if (!templates.containsKey(name)) {
             templates.put(name, new ArrayList<Polyline>());
+        }
 
-        ArrayList<Polyline> templateClass = templates.get(name);
+        final ArrayList<Polyline> templateClass = templates.get(name);
 
         templateClass.add(polyline);
         return templateClass.size();
@@ -427,9 +445,10 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
      */
     public int getTamplatesNumber() {
         int templatesNum = 0;
-        String[] classes = getClassNames().toArray(new String[0]);
-        for (int m = 0; m < classes.length; m++)
-            templatesNum += ((ArrayList<Polyline>) getTemplate(classes[m])).size();
+        final String[] classes = getClassNames().toArray(new String[0]);
+        for (int m = 0; m < classes.length; m++) {
+            templatesNum += getTemplate(classes[m]).size();
+        }
         return templatesNum;
     }
 
@@ -438,8 +457,9 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
      * @param templates
      */
     public void addTemplates(String className, ArrayList<Polyline> templates) {
-        for (Polyline p : templates)
+        for (final Polyline p : templates) {
             addTemplate(className, p);
+        }
 
     }
 

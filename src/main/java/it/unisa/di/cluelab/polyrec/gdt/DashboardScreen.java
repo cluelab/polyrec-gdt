@@ -2,6 +2,7 @@ package it.unisa.di.cluelab.polyrec.gdt;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -30,11 +31,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.RootPaneContainer;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import it.unisa.di.cluelab.polyrec.Gesture;
 import it.unisa.di.cluelab.polyrec.Polyline;
 
 @SuppressWarnings("serial")
@@ -103,7 +103,7 @@ public class DashboardScreen extends JPanel {
 
         // main
 
-        String[] classes = mainClass.getRecognizer().getClassNames().toArray(new String[0]);
+        final String[] classes = mainClass.getRecognizer().getClassNames().toArray(new String[0]);
 
         classesNum = classes.length;
 
@@ -139,14 +139,16 @@ public class DashboardScreen extends JPanel {
         statusBar = new JPanel(new GridLayout());
         statusBar.setBackground(new Color(28, 28, 28));
         statusBar.setPreferredSize(new Dimension(getWidth(), 50));
-        if (!thread)
+        if (!thread) {
             statusMessage();
+        }
         add(statusBar, BorderLayout.SOUTH);
 
         // mainClass.repaint();
 
     }
 
+    @Override
     protected void paintComponent(Graphics g) {
         // verticalScrollValue = scrollPane.getVerticalScrollBar().getValue();
         super.paintComponent(g);
@@ -159,16 +161,16 @@ public class DashboardScreen extends JPanel {
 
     private Box topBar() {
         // pannello TOP
-        Box top = Box.createVerticalBox();
+        final Box top = Box.createVerticalBox();
 
         // titolo
-        JPanel firstRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        final JPanel firstRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         firstRow.setBackground(Color.black);
-        JLabel title = new JLabel("<html><font color='white'>Dashboard</font></html>");
+        final JLabel title = new JLabel("<html><font color='white'>Dashboard</font></html>");
         try {
 
             title.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/list.png"))));
-        } catch (IOException e2) {
+        } catch (final IOException e2) {
 
             e2.printStackTrace();
         }
@@ -203,15 +205,17 @@ public class DashboardScreen extends JPanel {
             @Override
             public void focusGained(FocusEvent arg0) {
 
-                if (className.getText().equals(DEFAULT_USER_DEFINED_STRING))
+                if (className.getText().equals(DEFAULT_USER_DEFINED_STRING)) {
                     className.setText("");
+                }
 
             }
 
             @Override
             public void focusLost(FocusEvent arg0) {
-                if (className.getText() == "")
+                if (className.getText() == "") {
                     className.setText(DEFAULT_USER_DEFINED_STRING);
+                }
             }
         });
         className.addActionListener(new ActionListener() {
@@ -232,29 +236,31 @@ public class DashboardScreen extends JPanel {
             addClass.setCursor(new Cursor(Cursor.HAND_CURSOR));
             addClass.addActionListener(dashboardListener);
             addClass.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     try {
                         ((JButton) evt.getSource())
                                 .setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-green-32.png"))));
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
 
                         e.printStackTrace();
                     }
                 }
 
+                @Override
                 public void mouseExited(java.awt.event.MouseEvent evt) {
 
                     try {
                         ((JButton) evt.getSource())
                                 .setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
 
                         e.printStackTrace();
                     }
 
                 }
             });
-        } catch (IOException e) {
+        } catch (final IOException e) {
 
             e.printStackTrace();
         }
@@ -284,8 +290,8 @@ public class DashboardScreen extends JPanel {
     }
 
     void classesButtons() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
+        final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        final JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
         separator.setPreferredSize(new Dimension(1, 30));
         panel.add(separator);
         panel.setOpaque(false);
@@ -298,7 +304,7 @@ public class DashboardScreen extends JPanel {
         mergeClasses.setContentAreaFilled(false);
         try {
             mergeClasses.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/merge.png"))));
-        } catch (IOException e2) {
+        } catch (final IOException e2) {
 
             e2.printStackTrace();
         }
@@ -315,7 +321,7 @@ public class DashboardScreen extends JPanel {
         deleteAllClasses.setContentAreaFilled(false);
         try {
             deleteAllClasses.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/error-24-white.png"))));
-        } catch (IOException e2) {
+        } catch (final IOException e2) {
 
             e2.printStackTrace();
         }
@@ -350,11 +356,11 @@ public class DashboardScreen extends JPanel {
     }
 
     void commandsButtons() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         panel.setOpaque(false);
 
-        JSeparator separator1 = new JSeparator(SwingConstants.VERTICAL);
+        final JSeparator separator1 = new JSeparator(SwingConstants.VERTICAL);
         separator1.setPreferredSize(new Dimension(1, 30));
         panel.add(separator1);
         // verify templates similarity
@@ -365,7 +371,7 @@ public class DashboardScreen extends JPanel {
         checkTemplates.setContentAreaFilled(false);
         try {
             checkTemplates.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/success.png"))));
-        } catch (IOException e2) {
+        } catch (final IOException e2) {
 
             e2.printStackTrace();
         }
@@ -383,7 +389,7 @@ public class DashboardScreen extends JPanel {
         try {
 
             featuresButton.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/table.png"))));
-        } catch (IOException e2) {
+        } catch (final IOException e2) {
 
             e2.printStackTrace();
         }
@@ -397,7 +403,7 @@ public class DashboardScreen extends JPanel {
         try {
 
             testRecognizer.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/target.png"))));
-        } catch (IOException e2) {
+        } catch (final IOException e2) {
 
             e2.printStackTrace();
         }
@@ -419,12 +425,13 @@ public class DashboardScreen extends JPanel {
     void statusMessage() {
         // status bar
 
-        JLabel statusLabel = new JLabel();
+        final JLabel statusLabel = new JLabel();
 
-        if (classesNum > 0)
+        if (classesNum > 0) {
             statusLabel.setText("<html><font color='white'>" + classesNum + " classes - " + templatesNum
                     + " templates - average number of templates in a class: "
                     + String.format(Locale.US, "%.2f", (float) templatesNum / classesNum) + "</font></html>");
+        }
 
         // else statusLabel.setText("<html><font color='white'>" + classesNum +
         // " classes - " + templatesNum + " templates</font></html>");
@@ -437,49 +444,51 @@ public class DashboardScreen extends JPanel {
     }
 
     Box classPanel(String className, int templatesNum) {
-        Box classPanel = Box.createVerticalBox();
+        final Box classPanel = Box.createVerticalBox();
         classPanel.setMinimumSize(new Dimension(210, 10));
 
-        JPanel controlTemplate = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JPanel controlTemplate = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         // controlTemplate.setBorder(new EmptyBorder(5, 5, 5, 5));
         controlTemplate.setBackground(Color.gray);
 
         try {
 
-            JButton editClass = new JButton(new ImageIcon(ImageIO.read(getClass().getResource("/img/edit.png"))));
+            final JButton editClass = new JButton(new ImageIcon(ImageIO.read(getClass().getResource("/img/edit.png"))));
             editClass.setBorder(BorderFactory.createEmptyBorder());
             editClass.setContentAreaFilled(false);
             editClass.setName("editclass_" + className);
-            editClass.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+            editClass.setAlignmentX(Component.LEFT_ALIGNMENT);
             editClass.setToolTipText("Edit Class Name");
             editClass.setCursor(new Cursor(Cursor.HAND_CURSOR));
             editClass.addActionListener(dashboardListener);
 
-            JButton deleteClass = new JButton(
+            final JButton deleteClass = new JButton(
                     new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-white-16.png"))));
             deleteClass.setBorder(BorderFactory.createEmptyBorder());
             deleteClass.setContentAreaFilled(false);
             deleteClass.setName("deleteclass_" + className);
-            deleteClass.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+            deleteClass.setAlignmentX(Component.LEFT_ALIGNMENT);
             deleteClass.setToolTipText("Delete Class");
             deleteClass.setCursor(new Cursor(Cursor.HAND_CURSOR));
             deleteClass.addActionListener(dashboardListener);
             deleteClass.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     try {
                         ((JButton) evt.getSource()).setIcon(
                                 new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-red-16.png"))));
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
 
                         e.printStackTrace();
                     }
                 }
 
+                @Override
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     try {
                         ((JButton) evt.getSource()).setIcon(
                                 new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-white-16.png"))));
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
 
                         e.printStackTrace();
                     }
@@ -490,19 +499,20 @@ public class DashboardScreen extends JPanel {
             // controlTemplate.add(panelBuottons,BorderLayout.EAST);
 
             classPanel.add(controlTemplate);
-        } catch (IOException e1) {
+        } catch (final IOException e1) {
 
             e1.printStackTrace();
         }
 
         // pannello nome classe
-        JPanel namePanel = new JPanel();
+        final JPanel namePanel = new JPanel();
 
         // label nome classe
-        JTextArea label = new JTextArea();
+        final JTextArea label = new JTextArea();
         label.setSize(210, 200);
-        if (templatesNum == 1)
+        if (templatesNum == 1) {
             label.setText(className.toUpperCase() + "\n(" + templatesNum + " template)");
+        }
         label.setText(className.toUpperCase() + "\n(" + templatesNum + " templates)");
 
         label.setOpaque(false);
@@ -517,7 +527,7 @@ public class DashboardScreen extends JPanel {
         if (mainClass.getRecognizer().getTemplate(className).size() > 0) {
             JPanel footerPanel = new JPanel();
             footerPanel.setOpaque(false);
-            JButton classRotInv = new JButton(/* "<html><font color='white'>Rotation Invariant</font></html>" */);
+            final JButton classRotInv = new JButton(/* "<html><font color='white'>Rotation Invariant</font></html>" */);
             classRotInv.setFont(fontButtons);
             classRotInv.setName("rotinv_" + className);
             classRotInv.setToolTipText("set rotation invariant attribute for this class");
@@ -527,7 +537,7 @@ public class DashboardScreen extends JPanel {
 
             try {
                 classRotInv.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/repeat.png"))));
-            } catch (IOException e2) {
+            } catch (final IOException e2) {
 
                 e2.printStackTrace();
             }
@@ -536,7 +546,9 @@ public class DashboardScreen extends JPanel {
 
             // footerPanel = new JPanel();
             // footerPanel.setOpaque(false);
-            JButton classNotRotInv = new JButton(/* "<html><font color='white'>Rotation Invariance</font></html>" */);
+            final JButton classNotRotInv = new JButton(/*
+                                                        * "<html><font color='white'>Rotation Invariance</font></html>"
+                                                        */);
             classNotRotInv.setFont(fontButtons);
             classNotRotInv.setName("notrotinv_" + className);
             classNotRotInv.setToolTipText("unset rotation invariant attribute for this class");
@@ -546,7 +558,7 @@ public class DashboardScreen extends JPanel {
 
             try {
                 classNotRotInv.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/notrotinv.png"))));
-            } catch (IOException e2) {
+            } catch (final IOException e2) {
 
                 e2.printStackTrace();
             }
@@ -566,7 +578,7 @@ public class DashboardScreen extends JPanel {
 
             try {
                 classFeatures.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/table.png"))));
-            } catch (IOException e2) {
+            } catch (final IOException e2) {
 
                 e2.printStackTrace();
             }
@@ -576,7 +588,7 @@ public class DashboardScreen extends JPanel {
 
         }
         if (mainClass.getRecognizer().getTemplate(className).size() > 2) {
-            JPanel footerPanel = new JPanel();
+            final JPanel footerPanel = new JPanel();
             footerPanel.setOpaque(false);
             editing = new JButton("<html><font color='white'>AutoSelect Templates</font></html>");
             editing.setFont(fontButtons);
@@ -587,7 +599,7 @@ public class DashboardScreen extends JPanel {
             editing.setContentAreaFilled(false);
             try {
                 editing.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/radar.png"))));
-            } catch (IOException e2) {
+            } catch (final IOException e2) {
 
                 e2.printStackTrace();
             }
@@ -600,19 +612,20 @@ public class DashboardScreen extends JPanel {
 
     Box templatePanel(String className, Polyline template, int templateIndex) {
 
-        Box templatePanel = Box.createVerticalBox();
+        final Box templatePanel = Box.createVerticalBox();
         // toolbar.add(templatePanel);
 
         templatePanel.setBorder(new LineBorder(new Color(0, 0, 0, 0), 2));
 
         // riga panel delete template
-        JPanel controlTemplate = new JPanel(new BorderLayout());
+        final JPanel controlTemplate = new JPanel(new BorderLayout());
         // controlTemplate.setBorder(new EmptyBorder(3, 3, 3, 3));
 
         controlTemplate.setBackground(Color.gray);
 
         try {
-            JButton detach = new JButton(new ImageIcon(ImageIO.read(getClass().getResource("/img/move-window2.png"))));
+            final JButton detach = new JButton(
+                    new ImageIcon(ImageIO.read(getClass().getResource("/img/move-window2.png"))));
             detach.setName("detach_" + className + "_" + templateIndex);
             detach.addActionListener(dashboardListener);
             detach.setBorder(BorderFactory.createEmptyBorder());
@@ -620,9 +633,10 @@ public class DashboardScreen extends JPanel {
             detach.setCursor(new Cursor(Cursor.HAND_CURSOR));
             detach.setToolTipText("Detach thumbnail window");
 
-            JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             buttonsPanel.setOpaque(false);
-            JButton move = new JButton(new ImageIcon(ImageIO.read(getClass().getResource("/img/exit-16-white.png"))));
+            final JButton move = new JButton(
+                    new ImageIcon(ImageIO.read(getClass().getResource("/img/exit-16-white.png"))));
             move.setBorder(BorderFactory.createEmptyBorder());
             move.setContentAreaFilled(false);
             move.setName("movetemplate_" + className + "_" + templateIndex);
@@ -630,7 +644,7 @@ public class DashboardScreen extends JPanel {
             move.setCursor(new Cursor(Cursor.HAND_CURSOR));
             move.addActionListener(dashboardListener);
 
-            JButton delete = new JButton(
+            final JButton delete = new JButton(
                     new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-white-16.png"))));
             delete.setBorder(BorderFactory.createEmptyBorder());
             delete.setContentAreaFilled(false);
@@ -639,20 +653,22 @@ public class DashboardScreen extends JPanel {
             delete.setCursor(new Cursor(Cursor.HAND_CURSOR));
             delete.addActionListener(dashboardListener);
             delete.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     try {
                         delete.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-red-16.png"))));
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
 
                         e.printStackTrace();
                     }
                 }
 
+                @Override
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     try {
                         delete.setIcon(
                                 new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-white-16.png"))));
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
 
                         e.printStackTrace();
                     }
@@ -662,7 +678,7 @@ public class DashboardScreen extends JPanel {
             buttonsPanel.add(move);
             buttonsPanel.add(delete);
 
-            JLabel number = new JLabel("<html><font color='white'>&nbsp;" + (templateIndex) + "</font></html>");
+            final JLabel number = new JLabel("<html><font color='white'>&nbsp;" + (templateIndex) + "</font></html>");
             if (template.getGesture().getInfo() != null) {
                 number.setToolTipText(template.getGesture().getInfo().toString());
                 number.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -671,7 +687,7 @@ public class DashboardScreen extends JPanel {
             controlTemplate.add(number, BorderLayout.WEST);
             controlTemplate.add(buttonsPanel, BorderLayout.EAST);
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
 
             e.printStackTrace();
         }
@@ -681,22 +697,26 @@ public class DashboardScreen extends JPanel {
         // Runnable r = new MyThread(template.getGesture(), templatePanel, className, this, templateIndex);
         // new Thread(r).start();
 
-        Thumbnail tempThumbnail = new Thumbnail(template.getGesture());
+        final Thumbnail tempThumbnail = new Thumbnail(template.getGesture());
         tempThumbnail.addMouseListener(dashboardListener);
         tempThumbnail.setName("thumbnail_" + className + "_" + templateIndex);
         tempThumbnail.setToolTipText("Show Template Detail");
         tempThumbnail.setCursor(new Cursor(Cursor.HAND_CURSOR));
         tempThumbnail.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
 
-                if (!MainFrame.isModalDialogShowing())
+                if (!MainFrame.isModalDialogShowing()) {
                     templatePanel.setBorder(new LineBorder(Color.lightGray, 2));
+                }
 
             }
 
+            @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                if (!MainFrame.isModalDialogShowing())
+                if (!MainFrame.isModalDialogShowing()) {
                     templatePanel.setBorder(new LineBorder(new Color(0, 0, 0, 0), 2));
+                }
 
             }
         });
@@ -704,13 +724,13 @@ public class DashboardScreen extends JPanel {
         templatePanel.add(tempThumbnail);
 
         // panel opzioni (rotinv)
-        JPanel optionPanel = new JPanel(new BorderLayout());
+        final JPanel optionPanel = new JPanel(new BorderLayout());
         optionPanel.setBackground(Color.lightGray);
         optionPanel.setPreferredSize(new Dimension(150, 35));
 
-        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.setOpaque(false);
-        JButton rotInv = new JButton();
+        final JButton rotInv = new JButton();
         rotInv.setCursor(new Cursor(Cursor.HAND_CURSOR));
         rotInv.setName("rotinv_" + className + "_" + templateIndex);
         rotInv.addActionListener(dashboardListener);
@@ -724,7 +744,7 @@ public class DashboardScreen extends JPanel {
                 rotInv.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/notrotinv-black.png"))));
                 rotInv.setToolTipText("Is Not Rotation Invariant (click to set RI)");
             }
-        } catch (IOException e2) {
+        } catch (final IOException e2) {
 
             e2.printStackTrace();
         }
@@ -733,14 +753,15 @@ public class DashboardScreen extends JPanel {
 
         // System.out.println("NUMERO DI PUNTATORI:"+template.getGesture().getPointers());
         // if (template.getGesture().getPointers() > 1) {
-        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         leftPanel.setOpaque(false);
-        JButton pointers = new JButton(template.getGesture().getPointers() + "P");
+        final JButton pointers = new JButton(template.getGesture().getPointers() + "P");
         pointers.setName("pointers_" + className + "_" + templateIndex);
-        if (template.getGesture().getPointers() > 1)
+        if (template.getGesture().getPointers() > 1) {
             pointers.setToolTipText(template.getGesture().getPointers() + " pointers");
-        else
+        } else {
             pointers.setToolTipText(template.getGesture().getPointers() + " pointer");
+        }
         pointers.addActionListener(dashboardListener);
         pointers.setContentAreaFilled(false);
         pointers.setFont(fontButtons);
@@ -764,19 +785,20 @@ public class DashboardScreen extends JPanel {
         table.setBackground(Color.DARK_GRAY);
 
         if (thread) {
-            Runnable r = new TableThread(classes, this);
+            final Runnable r = new TableThread(classes, this);
             new Thread(r).start();
         } else {
             JPanel panel;
-            GridBagConstraints c = new GridBagConstraints();
-            GridBagConstraints last = new GridBagConstraints();
+            final GridBagConstraints c = new GridBagConstraints();
+            final GridBagConstraints last = new GridBagConstraints();
             for (int m = 0; m < classes.length; m++) {
-                ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[m]);
+                final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[m]);
 
                 templatesNum += polylines.size();
 
-                if (polylines.size() > 0)
+                if (polylines.size() > 0) {
                     notEmptyClasses++;
+                }
 
                 panel = new JPanel();
 
@@ -797,7 +819,7 @@ public class DashboardScreen extends JPanel {
                 panel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
                 panel.setOpaque(false);
 
-                Box[] templateBoxes = new Box[polylines.size()];
+                final Box[] templateBoxes = new Box[polylines.size()];
 
                 for (int p = 0; p < polylines.size(); p++) {
 
@@ -832,29 +854,31 @@ public class DashboardScreen extends JPanel {
                     addGestureButtons[m].setCursor(new Cursor(Cursor.HAND_CURSOR));
 
                     addGestureButtons[m].addMouseListener(new java.awt.event.MouseAdapter() {
+                        @Override
                         public void mouseEntered(java.awt.event.MouseEvent evt) {
                             try {
                                 ((JButton) evt.getSource()).setIcon(
                                         new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-green-32.png"))));
 
-                            } catch (IOException e) {
+                            } catch (final IOException e) {
 
                                 e.printStackTrace();
                             }
                         }
 
+                        @Override
                         public void mouseExited(java.awt.event.MouseEvent evt) {
                             try {
                                 ((JButton) evt.getSource()).setIcon(
                                         new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
-                            } catch (IOException e) {
+                            } catch (final IOException e) {
 
                                 e.printStackTrace();
                             }
                         }
                     });
                     addGestureButtons[m].addActionListener(dashboardListener);
-                } catch (IOException e) {
+                } catch (final IOException e) {
 
                     e.printStackTrace();
                 }
@@ -868,8 +892,8 @@ public class DashboardScreen extends JPanel {
             }
         }
 
-        scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane = new JScrollPane(table, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         repaint();
         return scrollPane;
     }

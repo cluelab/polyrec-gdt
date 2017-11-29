@@ -13,7 +13,6 @@ import javax.bluetooth.UUID;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
-import javax.swing.JOptionPane;
 
 import it.unisa.di.cluelab.polyrec.TPoint;
 import it.unisa.di.cluelab.polyrec.gdt.TemplateScreen;
@@ -60,14 +59,14 @@ public class WaitThread implements Runnable {
 
         if (notifier == null && state == "0" && local != null) {
 
-            UUID uuid = new UUID(80087355); // "04c6093b-0000-1000-8000-00805f9b34fb"
-            String url = "btspp://localhost:" + uuid.toString() + ";name=polyrecGDT";
+            final UUID uuid = new UUID(80087355); // "04c6093b-0000-1000-8000-00805f9b34fb"
+            final String url = "btspp://localhost:" + uuid.toString() + ";name=polyrecGDT";
             try {
                 notifier = (StreamConnectionNotifier) Connector.open(url);
 
                 gui.display.set("BT Server Started - Connect your device using 'Blueotooth Gestures' App", 0);
                 state = "1_0";
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 state = "0";
                 e.printStackTrace();
                 return;
@@ -81,12 +80,13 @@ public class WaitThread implements Runnable {
                     connection = notifier.acceptAndOpen();
 
                     (new Thread() {
+                        @Override
                         public void run() {
                             try {
                                 dev = RemoteDevice.getRemoteDevice(connection);
                                 gui.display.set("Device Connected: " + dev.getFriendlyName(false) + "("
                                         + dev.getBluetoothAddress() + ")", 0);
-                            } catch (IOException e) {
+                            } catch (final IOException e) {
 
                                 e.printStackTrace();
                             }
@@ -97,7 +97,7 @@ public class WaitThread implements Runnable {
                     // Thread connectionThread = new Thread(processConnectionThread);
                     // connectionThread.start();
 
-                    InputStream inputStream = connection.openInputStream();
+                    final InputStream inputStream = connection.openInputStream();
                     gui.display.set("Device Connected", 0);
 
                     draw = true;
@@ -109,7 +109,7 @@ public class WaitThread implements Runnable {
 
                         ois = new ObjectInputStream(inputStream);
 
-                        TPoint tpoint = (TPoint) ois.readObject();
+                        final TPoint tpoint = (TPoint) ois.readObject();
                         if (draw) {
 
                             if (tpoint.getX() == -1) {
@@ -145,20 +145,20 @@ public class WaitThread implements Runnable {
 
                         }
                     }
-                } catch (EOFException e) {
+                } catch (final EOFException e) {
                     e.printStackTrace();
                     gui.display.set("Device Connection Lost", 1);
                     e.printStackTrace();
                     this.state = "0";
                     dev = null;
 
-                } catch (ClassNotFoundException e) {
+                } catch (final ClassNotFoundException e) {
 
                     e.printStackTrace();
 
                     this.state = "0";
                     dev = null;
-                } catch (IOException e) {
+                } catch (final IOException e) {
 
                     e.printStackTrace();
 

@@ -20,7 +20,7 @@ public class TableToCsv {
         this.table = table;
     }
 
-    private JTable table;
+    private final JTable table;
 
     /**
      * Convert and save table to csv file
@@ -29,32 +29,34 @@ public class TableToCsv {
      */
     public void convert() throws IOException {
 
-        JFileChooser chooser = new JFileChooser();
+        final JFileChooser chooser = new JFileChooser();
         chooser.setSelectedFile(new File("features-table.csv"));
-        FileNameExtensionFilter filter1 = new FileNameExtensionFilter("Comma-Separated Values (.csv)", "csv");
+        final FileNameExtensionFilter filter1 = new FileNameExtensionFilter("Comma-Separated Values (.csv)", "csv");
         chooser.setFileFilter(filter1);
-        int state = chooser.showSaveDialog(null);
-        File file = chooser.getSelectedFile();
+        final int state = chooser.showSaveDialog(null);
+        final File file = chooser.getSelectedFile();
 
         if (file != null && state == JFileChooser.APPROVE_OPTION) {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+            final BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 
-            FeaturesTableModel model = (FeaturesTableModel) table.getModel();
+            final FeaturesTableModel model = (FeaturesTableModel) table.getModel();
             for (int h = 0; h < model.getColumnCount(); h++) {
                 bw.write(model.getColumnName(h).toString());
-                if (h + 1 != model.getColumnCount())
+                if (h + 1 != model.getColumnCount()) {
                     bw.write(";");
+                }
             }
             bw.newLine();
 
             for (int clmCnt = model.getColumnCount(), rowCnt = model.getRowCount(), i = 0; i < rowCnt; i++) {
                 for (int j = 0; j < clmCnt; j++) {
                     if (model.getValueAt(i, j) != null) {
-                        String value = model.getValueAt(i, j).toString();
+                        final String value = model.getValueAt(i, j).toString();
                         bw.write(value);
                     }
-                    if (j + 1 != clmCnt)
+                    if (j + 1 != clmCnt) {
                         bw.write(";");
+                    }
                 }
                 bw.newLine();
             }

@@ -323,11 +323,12 @@ public class TemplateScreen extends JPanel
     private Gesture adapt(Polyline polyline, int mode) {
         ArrayList<TPoint> points = null;
 
-        if (mode == POLYLINE || mode == VERTEX)
+        if (mode == POLYLINE || mode == VERTEX) {
             points = (ArrayList<TPoint>) polyline.getPoints();
 
-        else// gesture
+        }else{// gesture
             points = polyline.getGesture().getPoints();
+        }
 
         Double r = polyline.getGesture().getBoundingBox();
 

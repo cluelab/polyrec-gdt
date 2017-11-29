@@ -6,12 +6,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.microedition.io.Connector;
-import javax.obex.*;
+import javax.obex.ClientSession;
+import javax.obex.HeaderSet;
+import javax.obex.Operation;
+import javax.obex.ResponseCodes;
 
 public class ObexPutClient {
 
-    private String serverURL;
-    private String apkfile = "BluetoothGestures.apk";
+    private final String serverURL;
+    private final String apkfile = "BluetoothGestures.apk";
 
     /**
      * send apk to mobile device
@@ -47,18 +50,18 @@ public class ObexPutClient {
             bFile = baos.toByteArray();
         }
 
-        HeaderSet hsOperation = clientSession.createHeaderSet();
+        final HeaderSet hsOperation = clientSession.createHeaderSet();
         hsOperation.setHeader(HeaderSet.NAME, apkfile);
         hsOperation.setHeader(HeaderSet.TYPE, "application/vnd.android.package-archive");
 
-        long lenght = bFile.length;
+        final long lenght = bFile.length;
 
         hsOperation.setHeader(HeaderSet.LENGTH, lenght);
 
         // Create PUT Operation
-        Operation putOperation = clientSession.put(hsOperation);
+        final Operation putOperation = clientSession.put(hsOperation);
 
-        OutputStream os = putOperation.openOutputStream();
+        final OutputStream os = putOperation.openOutputStream();
         os.write(bFile);
         os.close();
 

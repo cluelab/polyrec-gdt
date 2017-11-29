@@ -5,7 +5,6 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Properties;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -15,6 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 public class EditFrame extends JFrame {
 
@@ -23,23 +24,23 @@ public class EditFrame extends JFrame {
 
         setResizable(false);
         setSize(500, 500);
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(dim.width / 2 - getSize().width / 2, dim.height / 2 - getSize().height / 2);
         setVisible(true);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        Box boxLayout = Box.createVerticalBox();
+        final Box boxLayout = Box.createVerticalBox();
 
         // String[] labels = {"Score Limit: "};
         // int numPairs = labels.length;
-        int numPairs = 1;
+        final int numPairs = 1;
         // Create and populate the panel.
-        JPanel p = new JPanel(new SpringLayout());
+        final JPanel p = new JPanel(new SpringLayout());
         // for (int i = 0; i < numPairs; i++) {
-        JLabel label = new JLabel("New Class Name", JLabel.TRAILING);
+        final JLabel label = new JLabel("New Class Name", SwingConstants.TRAILING);
 
         p.add(label);
-        JTextField text = new JTextField(10);
+        final JTextField text = new JTextField(10);
 
         text.setText(className);
         text.setName("className");
@@ -52,8 +53,8 @@ public class EditFrame extends JFrame {
                 10, 10, // initX, initY
                 10, 30); // xPad, yPad
         boxLayout.add(p);
-        JPanel okPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton ok = new JButton("OK");
+        final JPanel okPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JButton ok = new JButton("OK");
         ok.addActionListener(new ActionListener() {
 
             @Override
@@ -67,7 +68,7 @@ public class EditFrame extends JFrame {
                 } else {
                     mainClass.getRecognizer().editClassName(className, text.getText());
                     if (!className.equals(text.getText())) {
-                        DashboardScreen screen = new DashboardScreen(mainClass, false);
+                        final DashboardScreen screen = new DashboardScreen(mainClass, false);
                         screen.display.setText("Class " + className + " successfully modified");
                         mainClass.setScreen(screen);
                     }

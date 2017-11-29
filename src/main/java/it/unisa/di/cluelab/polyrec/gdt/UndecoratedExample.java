@@ -1,20 +1,29 @@
 package it.unisa.di.cluelab.polyrec.gdt;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
-
-import java.awt.GraphicsDevice.WindowTranslucency.*;
 
 import it.unisa.di.cluelab.polyrec.Gesture;
 
 public class UndecoratedExample {
 
-    private JFrame frame = new JFrame();
+    private final JFrame frame = new JFrame();
 
     class BorderPanel extends JPanel {
 
@@ -24,7 +33,7 @@ public class UndecoratedExample {
         public BorderPanel() {
             try {
                 label = new JButton(new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-white-16.png"))));
-            } catch (IOException e1) {
+            } catch (final IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
@@ -38,11 +47,13 @@ public class UndecoratedExample {
             add(label);
 
             label.addMouseListener(new MouseAdapter() {
+                @Override
                 public void mouseReleased(MouseEvent e) {
                     frame.dispose();
                 }
             });
             addMouseListener(new MouseAdapter() {
+                @Override
                 public void mousePressed(MouseEvent me) {
                     // Get x,y and store them
                     pX = me.getX();
@@ -50,6 +61,7 @@ public class UndecoratedExample {
 
                 }
 
+                @Override
                 public void mouseDragged(MouseEvent me) {
 
                     frame.setLocation(frame.getLocation().x + me.getX() - pX, frame.getLocation().y + me.getY() - pY);
@@ -57,6 +69,7 @@ public class UndecoratedExample {
             });
 
             addMouseMotionListener(new MouseMotionAdapter() {
+                @Override
                 public void mouseDragged(MouseEvent me) {
 
                     frame.setLocation(frame.getLocation().x + me.getX() - pX, frame.getLocation().y + me.getY() - pY);
@@ -76,7 +89,7 @@ public class UndecoratedExample {
     }
 
     void createAnsShowGui(Gesture gesture) {
-        ComponentResizer cr = new ComponentResizer();
+        final ComponentResizer cr = new ComponentResizer();
         cr.setMinimumSize(new Dimension(150, 150));
         cr.setMaximumSize(new Dimension(800, 800));
         cr.registerComponent(frame);
@@ -84,7 +97,7 @@ public class UndecoratedExample {
         // frame.setUndecorated(true);
 
         // frame.add(new OutsidePanel(gesture));
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         frame.pack();
         frame.setSize(200, 200);
         frame.setLocationRelativeTo(null);

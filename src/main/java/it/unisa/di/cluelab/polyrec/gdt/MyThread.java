@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Cursor;
 
 import javax.swing.Box;
-import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import it.unisa.di.cluelab.polyrec.Gesture;
@@ -12,10 +11,10 @@ import it.unisa.di.cluelab.polyrec.Gesture;
 public class MyThread implements Runnable {
 
     Gesture g;
-    private Box templatePanel;
-    private String className;
-    private DashboardScreen dashboardScreen;
-    private int templateIndex;
+    private final Box templatePanel;
+    private final String className;
+    private final DashboardScreen dashboardScreen;
+    private final int templateIndex;
 
     public MyThread(Gesture g, Box tpanel, String className, DashboardScreen dashboardScreen, int templateIndex) {
         this.g = g;
@@ -25,24 +24,29 @@ public class MyThread implements Runnable {
         this.templateIndex = templateIndex;
     }
 
+    @Override
     public void run() {
 
-        Thumbnail tempThumbnail = new Thumbnail(this.g);
+        final Thumbnail tempThumbnail = new Thumbnail(this.g);
         tempThumbnail.addMouseListener(dashboardScreen.dashboardListener);
         tempThumbnail.setName("thumbnail_" + className + "_" + templateIndex);
         tempThumbnail.setToolTipText("Show Template Detail");
         tempThumbnail.setCursor(new Cursor(Cursor.HAND_CURSOR));
         tempThumbnail.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
 
-                if (!MainFrame.isModalDialogShowing())
+                if (!MainFrame.isModalDialogShowing()) {
                     templatePanel.setBorder(new LineBorder(Color.lightGray, 2));
+                }
 
             }
 
+            @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                if (!MainFrame.isModalDialogShowing())
+                if (!MainFrame.isModalDialogShowing()) {
                     templatePanel.setBorder(new LineBorder(new Color(0, 0, 0, 0), 2));
+                }
 
             }
         });

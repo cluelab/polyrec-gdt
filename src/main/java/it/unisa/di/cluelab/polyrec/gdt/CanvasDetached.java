@@ -16,10 +16,10 @@ public class CanvasDetached extends JFrame {
 
         setPreferredSize(new Dimension(600, 600));
         setSize(new Dimension(600, 600));
-        ComponentResizer cr = new ComponentResizer();
+        final ComponentResizer cr = new ComponentResizer();
         cr.registerComponent(this);
         cr.setSnapSize(new Dimension(10, 10));
-        Thumbnail thumb = new Thumbnail(gesture);
+        final Thumbnail thumb = new Thumbnail(gesture);
         thumb.setOpaque(false);
         add(thumb);
 

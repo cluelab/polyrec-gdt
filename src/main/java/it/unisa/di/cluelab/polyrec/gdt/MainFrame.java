@@ -2,6 +2,7 @@ package it.unisa.di.cluelab.polyrec.gdt;
 
 import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -9,14 +10,13 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 
 /**
  * @author roberto
@@ -40,7 +40,7 @@ public class MainFrame extends JFrame implements WindowListener {
     private ExtendedPolyRecognizerGSS recognizer;
 
     private JPanel container;
-    private Menu menu;
+    private final Menu menu;
 
     /**
      * @param args
@@ -67,13 +67,13 @@ public class MainFrame extends JFrame implements WindowListener {
 
         recognizer = new ExtendedPolyRecognizerGSS();
 
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setTitle("PolyRec GDT");
 
         // setResizable(false);
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(this);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setExtendedState(Frame.MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(1024, 980));
         setLocation(dim.width / 2 - getSize().width / 2, dim.height / 2 - getSize().height / 2);
 
@@ -102,6 +102,7 @@ public class MainFrame extends JFrame implements WindowListener {
 
     }
 
+    @Override
     public void paint(Graphics g) {
 
         paintComponents(g);
@@ -115,7 +116,7 @@ public class MainFrame extends JFrame implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent e) {
-        File file = new File("gestures.pgs");
+        final File file = new File("gestures.pgs");
         file.deleteOnExit();
         int result = JOptionPane.CLOSED_OPTION;
 
@@ -124,10 +125,11 @@ public class MainFrame extends JFrame implements WindowListener {
                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
             if (result == JOptionPane.YES_OPTION) {
-                if (menu.save.isEnabled())
+                if (menu.save.isEnabled()) {
                     menu.save.doClick();
-                else if (menu.saveas.isEnabled())
+                } else if (menu.saveas.isEnabled()) {
                     menu.saveas.doClick();
+                }
 
                 dispose();
                 System.exit(0);
@@ -199,11 +201,12 @@ public class MainFrame extends JFrame implements WindowListener {
     }
 
     public static boolean isModalDialogShowing() {
-        Window[] windows = Window.getWindows();
+        final Window[] windows = Window.getWindows();
         if (windows != null) {
-            for (Window w : windows) {
-                if (w.isShowing() && w instanceof Dialog)
+            for (final Window w : windows) {
+                if (w.isShowing() && w instanceof Dialog) {
                     return true;
+                }
             }
         }
         return false;

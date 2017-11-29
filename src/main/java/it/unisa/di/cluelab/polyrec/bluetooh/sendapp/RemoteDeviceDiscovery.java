@@ -2,15 +2,23 @@ package it.unisa.di.cluelab.polyrec.bluetooh.sendapp;
 
 import java.io.IOException;
 import java.util.Vector;
-import javax.bluetooth.*;
-import javax.swing.JOptionPane;
+
+import javax.bluetooth.BluetoothStateException;
+import javax.bluetooth.DataElement;
+import javax.bluetooth.DeviceClass;
+import javax.bluetooth.DiscoveryAgent;
+import javax.bluetooth.DiscoveryListener;
+import javax.bluetooth.LocalDevice;
+import javax.bluetooth.RemoteDevice;
+import javax.bluetooth.ServiceRecord;
+import javax.bluetooth.UUID;
 
 /**
  * Device Discovery .
  */
 public class RemoteDeviceDiscovery {
 
-    private Vector<AvailableDevice> devicesDiscovered = new Vector<AvailableDevice>();
+    private final Vector<AvailableDevice> devicesDiscovered = new Vector<AvailableDevice>();
 
     private static final UUID OBEX_OBJECT_PUSH = new UUID(0x1105);
 
@@ -23,19 +31,20 @@ public class RemoteDeviceDiscovery {
 
         devicesDiscovered.clear();
 
-        UUID serviceUUID = OBEX_OBJECT_PUSH;
+        final UUID serviceUUID = OBEX_OBJECT_PUSH;
 
-        UUID[] searchUuidSet = new UUID[] {serviceUUID};
-        int[] attrIDs = new int[] {0x0100 // Service name
+        final UUID[] searchUuidSet = new UUID[] {serviceUUID};
+        final int[] attrIDs = new int[] {0x0100 // Service name
         };
 
-        DiscoveryListener listener = new DiscoveryListener() {
+        final DiscoveryListener listener = new DiscoveryListener() {
 
+            @Override
             public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
                 System.out.println("Device " + btDevice.getBluetoothAddress() + " found");
                 try {
                     System.out.println("     name " + btDevice.getFriendlyName(false));
-                } catch (IOException cantGetDeviceName) {
+                } catch (final IOException cantGetDeviceName) {
                 }
                 try {
                     synchronized (serviceSearchCompletedEvent) {
@@ -47,13 +56,14 @@ public class RemoteDeviceDiscovery {
 
                         serviceSearchCompletedEvent.wait();
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
 
                     e.printStackTrace();
                 }
 
             }
 
+            @Override
             public void inquiryCompleted(int discType) {
                 System.out.println("Device Inquiry completed!");
                 synchronized (inquiryCompletedEvent) {
@@ -61,16 +71,17 @@ public class RemoteDeviceDiscovery {
                 }
             }
 
+            @Override
             public void servicesDiscovered(int transID, ServiceRecord[] servRecord) {
                 System.out.println("servizio trovato");
                 for (int i = 0; i < servRecord.length; i++) {
-                    String url = servRecord[i].getConnectionURL(ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
+                    final String url = servRecord[i].getConnectionURL(ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
                     if (url == null) {
                         continue;
                     }
                     // serviceFound.add(url);
                     devicesDiscovered.addElement(new AvailableDevice(servRecord[i].getHostDevice(), url));
-                    DataElement serviceName = servRecord[i].getAttributeValue(0x0100);
+                    final DataElement serviceName = servRecord[i].getAttributeValue(0x0100);
                     if (serviceName != null) {
                         System.out.println("service " + serviceName.getValue() + " found " + url);
                     } else {
@@ -79,6 +90,7 @@ public class RemoteDeviceDiscovery {
                 }
             }
 
+            @Override
             public void serviceSearchCompleted(int transID, int respCode) {
                 System.out.println("service search completed!");
                 synchronized (serviceSearchCompletedEvent) {
@@ -90,7 +102,7 @@ public class RemoteDeviceDiscovery {
         synchronized (inquiryCompletedEvent) {
             boolean started = false;
 
-            DiscoveryAgent discoveryAgent = LocalDevice.getLocalDevice().getDiscoveryAgent();
+            final DiscoveryAgent discoveryAgent = LocalDevice.getLocalDevice().getDiscoveryAgent();
 
             started = discoveryAgent.startInquiry(DiscoveryAgent.GIAC, listener);
             System.out.println(started);

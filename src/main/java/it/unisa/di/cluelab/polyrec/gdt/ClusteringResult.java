@@ -18,8 +18,9 @@ public class ClusteringResult {
 
         this.matrix = matrix;
         this.medoids = new int[matrix.size()];
-        for (int i = 0; i < matrix.size(); i++)
+        for (int i = 0; i < matrix.size(); i++) {
             this.medoids[i] = matrix.get(i).get(0);
+        }
         Arrays.sort(medoids);
     }
 
@@ -51,6 +52,7 @@ public class ClusteringResult {
         this.medoids = medoids;
     }
 
+    @Override
     public String toString() {
         return "";
     }

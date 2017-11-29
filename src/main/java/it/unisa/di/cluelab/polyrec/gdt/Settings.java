@@ -17,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 public class Settings extends JFrame {
 
@@ -27,23 +29,23 @@ public class Settings extends JFrame {
 
         setResizable(false);
         setSize(500, 500);
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(dim.width / 2 - getSize().width / 2, dim.height / 2 - getSize().height / 2);
         setVisible(true);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        Box boxLayout = Box.createVerticalBox();
+        final Box boxLayout = Box.createVerticalBox();
 
         // String[] labels = {"Score Limit: "};
         // int numPairs = labels.length;
-        int numPairs = 1;
+        final int numPairs = 1;
         // Create and populate the panel.
-        JPanel p = new JPanel(new SpringLayout());
+        final JPanel p = new JPanel(new SpringLayout());
         // for (int i = 0; i < numPairs; i++) {
-        JLabel scoreLimitLabel = new JLabel("Score Limit", JLabel.TRAILING);
+        final JLabel scoreLimitLabel = new JLabel("Score Limit", SwingConstants.TRAILING);
 
         p.add(scoreLimitLabel);
-        JTextField scoreLimitText = new JTextField(5);
+        final JTextField scoreLimitText = new JTextField(5);
 
         scoreLimitText.setText(applicationProps.getProperty("scorelimit"));
         scoreLimitText.setName("scorelimit");
@@ -56,8 +58,8 @@ public class Settings extends JFrame {
                 10, 10, // initX, initY
                 10, 30); // xPad, yPad
         boxLayout.add(p);
-        JPanel okPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton ok = new JButton("OK");
+        final JPanel okPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JButton ok = new JButton("OK");
         ok.addActionListener(new ActionListener() {
 
             @Override
@@ -78,10 +80,10 @@ public class Settings extends JFrame {
     public static void loadSettings() {
 
         try {
-            FileInputStream in = new FileInputStream("config.properties");
+            final FileInputStream in = new FileInputStream("config.properties");
 
             applicationProps.load(in);
-        } catch (IOException e) {
+        } catch (final IOException e) {
 
             e.printStackTrace();
         }
@@ -90,11 +92,11 @@ public class Settings extends JFrame {
 
     public static void saveSettings() {
         try {
-            FileOutputStream out = new FileOutputStream("config.properties");
+            final FileOutputStream out = new FileOutputStream("config.properties");
 
             applicationProps.store(out, "---No Comment---");
             out.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
 
             e.printStackTrace();
         }

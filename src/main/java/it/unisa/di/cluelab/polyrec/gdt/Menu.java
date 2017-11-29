@@ -30,9 +30,9 @@ public class Menu {
 
     public Menu(MainFrame mainFrame) throws IOException {
         this.mainFrame = mainFrame;
-        JMenuBar menuBar = new JMenuBar();
-        MenuListener listener = new MenuListener(this.mainFrame);
-        JMenu menu = new JMenu("MENU");
+        final JMenuBar menuBar = new JMenuBar();
+        final MenuListener listener = new MenuListener(this.mainFrame);
+        final JMenu menu = new JMenu("MENU");
 
         menu.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/menu.png"))));
 
@@ -48,7 +48,7 @@ public class Menu {
         send.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/bluetooth.png"))));
         send.addActionListener(listener);
 
-        JMenu addSamplesMenu = new JMenu("Import Template Samples");
+        final JMenu addSamplesMenu = new JMenu("Import Template Samples");
 
         addSamplesMenu.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/incoming.png"))));
 
@@ -62,7 +62,7 @@ public class Menu {
         addClassesSamples.addActionListener(listener);
         addSamplesMenu.add(addClassesSamples);
 
-        JMenu importMenu = new JMenu("Open Gesture Set");
+        final JMenu importMenu = new JMenu("Open Gesture Set");
         importMenu.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/folder.png"))));
 
         replaceClasses = new JMenuItem("Replace");
@@ -121,8 +121,9 @@ public class Menu {
         } else {
             saveas.setEnabled(true);
             if (mainFrame.getOpenedFile() != null && mainFrame.getExtOpenedFile() != null
-                    && !mainFrame.getOpenedFile().equals("") && !mainFrame.getExtOpenedFile().equals(""))
+                    && !mainFrame.getOpenedFile().equals("") && !mainFrame.getExtOpenedFile().equals("")) {
                 save.setEnabled(true);
+            }
 
         }
 

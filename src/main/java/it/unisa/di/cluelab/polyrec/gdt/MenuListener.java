@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.bluetooth.BluetoothStateException;
@@ -19,13 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.XMLConstants;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -33,14 +26,13 @@ import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
-import it.unisa.di.cluelab.polyrec.Gesture;
 import it.unisa.di.cluelab.polyrec.bluetooh.sendapp.AvailableDevice;
 import it.unisa.di.cluelab.polyrec.bluetooh.sendapp.ObexPutClient;
 import it.unisa.di.cluelab.polyrec.bluetooh.sendapp.RemoteDeviceDiscovery;
 
 public class MenuListener implements ActionListener {
 
-    private MainFrame mainFrame;
+    private final MainFrame mainFrame;
 
     public MenuListener(MainFrame mainFrame) {
 
@@ -77,7 +69,7 @@ public class MenuListener implements ActionListener {
         // open from file
         if (e.getSource() == mainFrame.getMenu().replaceClasses) {
 
-            DashboardScreen dashboardScreen = new DashboardScreen(mainFrame, true);
+            final DashboardScreen dashboardScreen = new DashboardScreen(mainFrame, true);
 
             CursorToolkit.startWaitCursor(mainFrame.getRootPane());
             // if (importsKB(ExtendedPolyRecognizerGSS.REPLACE)) {
@@ -85,11 +77,13 @@ public class MenuListener implements ActionListener {
                 dashboardScreen.display.set("Class and Templates imported from selected file", 0);
 
                 mainFrame.setScreen(new DashboardScreen(mainFrame, true));
-                if (mainFrame.getOpenedFile() != null)
+                if (mainFrame.getOpenedFile() != null) {
                     mainFrame.setTitle("PolyRec GDT (" + mainFrame.getOpenedFile() + ")");
+                }
 
-            } else
+            } else {
                 dashboardScreen.display.set("Error importing gesture set from selected file", 1);
+            }
             CursorToolkit.stopWaitCursor(mainFrame.getRootPane());
             mainFrame.getMenu().updateMenu();
 
@@ -97,7 +91,7 @@ public class MenuListener implements ActionListener {
         }
         if (e.getSource() == mainFrame.getMenu().addTemplates) {
 
-            DashboardScreen dashboardScreen = new DashboardScreen(mainFrame, true);
+            final DashboardScreen dashboardScreen = new DashboardScreen(mainFrame, true);
             CursorToolkit.startWaitCursor(mainFrame.getRootPane());
             try {
                 if (imports(ExtendedPolyRecognizerGSS.ADD_TEMPLATES)) {
@@ -106,9 +100,10 @@ public class MenuListener implements ActionListener {
                     mainFrame.setScreen(new DashboardScreen(mainFrame, true));
                     mainFrame.setTitle("PolyRec GDT (" + mainFrame.getOpenedFile() + ")");
 
-                } else
+                } else {
                     dashboardScreen.display.set("Error importing gesture set from selected file", 1);
-            } catch (Exception e1) {
+                }
+            } catch (final Exception e1) {
 
                 e1.printStackTrace();
                 CursorToolkit.stopWaitCursor(mainFrame.getRootPane());
@@ -120,33 +115,34 @@ public class MenuListener implements ActionListener {
         // export recognizer
         if (e.getSource() == mainFrame.getMenu().exportRecognizer) {
 
-            JFileChooser saveFile = new JFileChooser();
+            final JFileChooser saveFile = new JFileChooser();
             saveFile.setSelectedFile(new File("polyrec-recognizer2.jar"));
-            FileNameExtensionFilter filter1 = new FileNameExtensionFilter(MainFrame.EXTENSION_JAR, "jar");
+            final FileNameExtensionFilter filter1 = new FileNameExtensionFilter(MainFrame.EXTENSION_JAR, "jar");
             saveFile.setFileFilter(filter1);
-            int retrival = saveFile.showSaveDialog(null);
+            final int retrival = saveFile.showSaveDialog(null);
 
             if (retrival == JFileChooser.APPROVE_OPTION) {
 
-                File f1 = new File("polyrec-recognizer2.jar");
+                final File f1 = new File("polyrec-recognizer2.jar");
                 File f2;
-                if (saveFile.getSelectedFile().toString().endsWith(".jar"))
+                if (saveFile.getSelectedFile().toString().endsWith(".jar")) {
                     f2 = new File(saveFile.getSelectedFile().toString());
-                else
+                } else {
                     f2 = new File(saveFile.getSelectedFile().toString() + ".jar");
+                }
 
                 try {
                     copyFile(f1, f2);
-                } catch (IOException e1) {
+                } catch (final IOException e1) {
 
                     JOptionPane.showMessageDialog(mainFrame, "Error exporting recognizer\n(" + e1.getMessage() + ")",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 if (mainFrame.getScreen() instanceof DashboardScreen) {
-                    DashboardScreen screen = (DashboardScreen) mainFrame.getScreen();
+                    final DashboardScreen screen = (DashboardScreen) mainFrame.getScreen();
                     screen.display.set("Reconignizer exported", 0);
                 } else if (mainFrame.getScreen() instanceof TemplateScreen) {
-                    TemplateScreen screen = (TemplateScreen) mainFrame.getScreen();
+                    final TemplateScreen screen = (TemplateScreen) mainFrame.getScreen();
                     screen.display.set("Reconignizer exported", 0);
                 }
             }
@@ -160,16 +156,17 @@ public class MenuListener implements ActionListener {
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
                 if (result == JOptionPane.YES_OPTION) {
-                    if (mainFrame.getMenu().save.isEnabled())
+                    if (mainFrame.getMenu().save.isEnabled()) {
                         mainFrame.getMenu().save.doClick();
-                    else if (mainFrame.getMenu().saveas.isEnabled())
+                    } else if (mainFrame.getMenu().saveas.isEnabled()) {
                         mainFrame.getMenu().saveas.doClick();
+                    }
 
                 }
             }
             mainFrame.getRecognizer().removeClasses();
             mainFrame.setOpenedFile("");
-            DashboardScreen dashboardScreen = new DashboardScreen(mainFrame, false);
+            final DashboardScreen dashboardScreen = new DashboardScreen(mainFrame, false);
             mainFrame.setScreen(dashboardScreen);
             mainFrame.setTitle("PolyRec GDT");
 
@@ -182,13 +179,13 @@ public class MenuListener implements ActionListener {
                 mainFrame.setTitle("PolyRec GDT (" + mainFrame.getOpenedFile() + ")");
 
                 if (mainFrame.getScreen() instanceof DashboardScreen) {
-                    DashboardScreen screen = (DashboardScreen) mainFrame.getScreen();
+                    final DashboardScreen screen = (DashboardScreen) mainFrame.getScreen();
                     screen.display.set("File Saved", 0);
                 } else if (mainFrame.getScreen() instanceof TemplateScreen) {
-                    TemplateScreen screen = (TemplateScreen) mainFrame.getScreen();
+                    final TemplateScreen screen = (TemplateScreen) mainFrame.getScreen();
                     screen.display.set("File Saved", 0);
                 }
-            } catch (Exception e1) {
+            } catch (final Exception e1) {
                 JOptionPane.showMessageDialog(mainFrame, "Error saving gesture set\n(" + e1.getMessage() + ")", "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
@@ -200,13 +197,13 @@ public class MenuListener implements ActionListener {
             try {
                 System.out.println(exports(false));
                 if (mainFrame.getScreen() instanceof DashboardScreen) {
-                    DashboardScreen screen = (DashboardScreen) mainFrame.getScreen();
+                    final DashboardScreen screen = (DashboardScreen) mainFrame.getScreen();
                     screen.display.set("File Saved", 0);
                 } else if (mainFrame.getScreen() instanceof TemplateScreen) {
-                    TemplateScreen screen = (TemplateScreen) mainFrame.getScreen();
+                    final TemplateScreen screen = (TemplateScreen) mainFrame.getScreen();
                     screen.display.set("File Saved", 0);
                 }
-            } catch (Exception e1) {
+            } catch (final Exception e1) {
                 JOptionPane.showMessageDialog(mainFrame, "Error saving gesture set\n(" + e1.getMessage() + ")", "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
@@ -214,7 +211,7 @@ public class MenuListener implements ActionListener {
         // send app to mobile device to draw gestures
         if (e.getSource() == mainFrame.getMenu().send) {
 
-            JOptionPane messagePane = new JOptionPane("Searching for Devices...Please Wait...",
+            final JOptionPane messagePane = new JOptionPane("Searching for Devices...Please Wait...",
                     JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[] {}, null);
 
             final JDialog dialog = messagePane.createDialog(mainFrame, "Send App");
@@ -229,13 +226,13 @@ public class MenuListener implements ActionListener {
                     Vector<AvailableDevice> discoveredDevices = null;
                     try {
 
-                        RemoteDeviceDiscovery deviceDiscovery = new RemoteDeviceDiscovery();
+                        final RemoteDeviceDiscovery deviceDiscovery = new RemoteDeviceDiscovery();
                         discoveredDevices = deviceDiscovery.getDevicesDiscovered();
                         CursorToolkit.stopWaitCursor(messagePane);
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
 
                         e.printStackTrace();
-                    } catch (BluetoothStateException e) {
+                    } catch (final BluetoothStateException e) {
                         dialog.dispose();
                         JOptionPane.showMessageDialog(null, "Attiva il Bluetooth del PC", "Bluetooth",
                                 JOptionPane.WARNING_MESSAGE);
@@ -243,27 +240,27 @@ public class MenuListener implements ActionListener {
                     }
                     dialog.dispose();
                     if (discoveredDevices.size() > 0) {
-                        String[] possibilities = new String[discoveredDevices.size()];
+                        final String[] possibilities = new String[discoveredDevices.size()];
 
                         for (int i = 0; i < discoveredDevices.size(); i++) {
-                            AvailableDevice availableDevice = discoveredDevices.elementAt(i);
+                            final AvailableDevice availableDevice = discoveredDevices.elementAt(i);
                             try {
                                 possibilities[i] = i + "." + availableDevice.getDevice().getFriendlyName(false) + " ("
                                         + availableDevice.getDevice().getBluetoothAddress() + ")";
-                            } catch (IOException e) {
+                            } catch (final IOException e) {
 
                                 e.printStackTrace();
                             }
                         }
 
-                        String selected = (String) JOptionPane.showInputDialog(mainFrame, "Send App to:",
+                        final String selected = (String) JOptionPane.showInputDialog(mainFrame, "Send App to:",
                                 "Devices Found", JOptionPane.WARNING_MESSAGE, null, possibilities, null);
-                        String element = selected.substring(0, selected.indexOf("."));
-                        ObexPutClient obexClient = new ObexPutClient(
+                        final String element = selected.substring(0, selected.indexOf("."));
+                        final ObexPutClient obexClient = new ObexPutClient(
                                 discoveredDevices.elementAt(Integer.parseInt(element)).getObexServiceURL());
                         try {
                             obexClient.send();
-                        } catch (IOException e) {
+                        } catch (final IOException e) {
                             JOptionPane.showMessageDialog(mainFrame, "Error Sending apk");
                         }
                     } else {
@@ -275,6 +272,7 @@ public class MenuListener implements ActionListener {
 
                 // this is called when background thread above has
                 // completed.
+                @Override
                 protected void done() {
                     // dialog.dispose();
                 };
@@ -298,20 +296,21 @@ public class MenuListener implements ActionListener {
         String choosedFile = "";
         String fileExt = "";
         if (saveas) {
-            JFileChooser saveFile = new JFileChooser();
+            final JFileChooser saveFile = new JFileChooser();
 
-            FileNameExtensionFilter filter1 = new FileNameExtensionFilter(MainFrame.EXTENSION_XML, "xml");
-            FileNameExtensionFilter filter2 = new FileNameExtensionFilter(MainFrame.EXTENSION_PGS, "pgs");
+            final FileNameExtensionFilter filter1 = new FileNameExtensionFilter(MainFrame.EXTENSION_XML, "xml");
+            final FileNameExtensionFilter filter2 = new FileNameExtensionFilter(MainFrame.EXTENSION_PGS, "pgs");
             saveFile.setFileFilter(filter1);
             saveFile.setFileFilter(filter2);
-            int retrival = saveFile.showSaveDialog(null);
+            final int retrival = saveFile.showSaveDialog(null);
 
             if (retrival == JFileChooser.APPROVE_OPTION) {
                 choosedFile = saveFile.getSelectedFile().toString();
                 System.out.println("file selezionato" + saveFile.getSelectedFile().toString());
                 fileExt = saveFile.getFileFilter().getDescription();
-            } else
+            } else {
                 return false;
+            }
         } else {
             choosedFile = mainFrame.getOpenedFile();
             fileExt = mainFrame.getExtOpenedFile();
@@ -319,18 +318,20 @@ public class MenuListener implements ActionListener {
 
         if (fileExt != null && fileExt.equals(MainFrame.EXTENSION_XML)) {
 
-            if (!choosedFile.endsWith(".xml"))
+            if (!choosedFile.endsWith(".xml")) {
                 choosedFile = choosedFile + ".xml";
+            }
             mainFrame.getRecognizer().saveTemplatesXML(new File(choosedFile));
 
         } else if (fileExt != null && fileExt.equals(MainFrame.EXTENSION_PGS)) {
 
-            File f1 = new File("gestures.pgs");
+            final File f1 = new File("gestures.pgs");
             mainFrame.getRecognizer().saveTemplatesPGS(f1);
 
-            if (!choosedFile.endsWith(".pgs"))
+            if (!choosedFile.endsWith(".pgs")) {
                 choosedFile = choosedFile + ".pgs";
-            File f2 = new File(choosedFile);
+            }
+            final File f2 = new File(choosedFile);
 
             copyFile(f1, f2);
 
@@ -372,33 +373,34 @@ public class MenuListener implements ActionListener {
 
     boolean imports(int method) {
 
-        JFileChooser openFile = new JFileChooser();
+        final JFileChooser openFile = new JFileChooser();
 
-        FileNameExtensionFilter filter1 = new FileNameExtensionFilter(MainFrame.EXTENSION_XML, "xml");
-        FileNameExtensionFilter filter2 = new FileNameExtensionFilter(MainFrame.EXTENSION_PGS, "pgs");
+        final FileNameExtensionFilter filter1 = new FileNameExtensionFilter(MainFrame.EXTENSION_XML, "xml");
+        final FileNameExtensionFilter filter2 = new FileNameExtensionFilter(MainFrame.EXTENSION_PGS, "pgs");
 
         openFile.setFileFilter(filter1);
         openFile.setFileFilter(filter2);
 
-        int retrival = openFile.showOpenDialog(null);
+        final int retrival = openFile.showOpenDialog(null);
         try {
             if (retrival == JFileChooser.APPROVE_OPTION) {
 
-                String selectedFile = openFile.getSelectedFile().toString();
-                String fileExt = openFile.getFileFilter().getDescription();
+                final String selectedFile = openFile.getSelectedFile().toString();
+                final String fileExt = openFile.getFileFilter().getDescription();
 
                 CursorToolkit.startWaitCursor(mainFrame.getRootPane());
                 if (fileExt.equals(MainFrame.EXTENSION_XML)) {
 
-                    StreamSource schemaFile = new StreamSource(getClass().getResourceAsStream("/schema-validator.xsd"));
-                    Source xmlFile = new StreamSource(new File(selectedFile));
-                    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-                    Schema schema = schemaFactory.newSchema(schemaFile);
-                    Validator validator = schema.newValidator();
+                    final StreamSource schemaFile = new StreamSource(
+                            getClass().getResourceAsStream("/schema-validator.xsd"));
+                    final Source xmlFile = new StreamSource(new File(selectedFile));
+                    final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                    final Schema schema = schemaFactory.newSchema(schemaFile);
+                    final Validator validator = schema.newValidator();
                     try {
                         validator.validate(xmlFile);
                         System.out.println(xmlFile.getSystemId() + " is valid");
-                    } catch (SAXException e) {
+                    } catch (final SAXException e) {
                         JOptionPane.showMessageDialog(mainFrame,
                                 xmlFile.getSystemId() + " is NOT valid reason:" + e.getLocalizedMessage());
                         return false;
@@ -410,15 +412,15 @@ public class MenuListener implements ActionListener {
 
                 } else if (fileExt.equals(MainFrame.EXTENSION_PGS)) {
 
-                    File f1 = new File(selectedFile);
+                    final File f1 = new File(selectedFile);
 
-                    File f2 = new File("gestures.pgs");
+                    final File f2 = new File("gestures.pgs");
 
-                    InputStream in = new FileInputStream(f1);
+                    final InputStream in = new FileInputStream(f1);
 
-                    OutputStream out = new FileOutputStream(f2);
+                    final OutputStream out = new FileOutputStream(f2);
 
-                    byte[] buf = new byte[1024];
+                    final byte[] buf = new byte[1024];
                     int len;
                     while ((len = in.read(buf)) > 0) {
                         out.write(buf, 0, len);
@@ -433,7 +435,7 @@ public class MenuListener implements ActionListener {
                 mainFrame.setOpenedFile(selectedFile);
 
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             CursorToolkit.stopWaitCursor(mainFrame.getRootPane());
             System.out.println("errore");
             JOptionPane.showMessageDialog(mainFrame, "Errore nell'importazione del File (" + e.getMessage() + ")");
@@ -445,11 +447,11 @@ public class MenuListener implements ActionListener {
 
     private void copyFile(File f1, File f2) throws IOException {
 
-        InputStream in = new FileInputStream(f1);
+        final InputStream in = new FileInputStream(f1);
 
-        OutputStream out = new FileOutputStream(f2);
+        final OutputStream out = new FileOutputStream(f2);
 
-        byte[] buf = new byte[1024];
+        final byte[] buf = new byte[1024];
         int len;
         while ((len = in.read(buf)) > 0) {
             out.write(buf, 0, len);

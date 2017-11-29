@@ -3,16 +3,13 @@ package it.unisa.di.cluelab.polyrec.gdt;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Paint;
 import java.awt.RenderingHints;
 
 import javax.swing.JLayeredPane;
 
 import it.unisa.di.cluelab.polyrec.Gesture;
-import it.unisa.di.cluelab.polyrec.Polyline;
 import it.unisa.di.cluelab.polyrec.TPoint;
 import it.unisa.di.cluelab.polyrec.geom.Rectangle2D.Double;
 
@@ -22,7 +19,7 @@ import it.unisa.di.cluelab.polyrec.geom.Rectangle2D.Double;
  */
 public class Thumbnail extends JLayeredPane {
 
-    private Gesture gesture;
+    private final Gesture gesture;
     // private Polyline polyline;
 
     /**
@@ -48,6 +45,7 @@ public class Thumbnail extends JLayeredPane {
     //
     // }
 
+    @Override
     protected void paintComponent(Graphics g) {
 
         super.paintComponent(g);
@@ -58,17 +56,17 @@ public class Thumbnail extends JLayeredPane {
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        Gesture normalizedGesture = ExtendedPolyRecognizerGSS.normalizeGesture(gesture, this.getWidth(),
+        final Gesture normalizedGesture = ExtendedPolyRecognizerGSS.normalizeGesture(gesture, this.getWidth(),
                 this.getHeight(), 20);
 
         if (normalizedGesture.getPoints().size() < 2) {
             return;
         }
 
-        Double r = normalizedGesture.getBoundingBox();
+        final Double r = normalizedGesture.getBoundingBox();
         // per centrare il template
-        double fattorex = getWidth() / 2 - ((r.getX()) + ((r.getWidth()) / 2));
-        double fattorey = getHeight() / 2 - ((r.getY()) + ((r.getHeight()) / 2));
+        final double fattorex = getWidth() / 2 - ((r.getX()) + ((r.getWidth()) / 2));
+        final double fattorey = getHeight() / 2 - ((r.getY()) + ((r.getHeight()) / 2));
 
         // primo punto
         g2.setStroke(new BasicStroke(5));
@@ -80,24 +78,25 @@ public class Thumbnail extends JLayeredPane {
         g2.setStroke(new BasicStroke(1));
         for (int i = 0; i < normalizedGesture.getPoints().size() - 1; i++) {
 
-            TPoint p1 = normalizedGesture.getPoints().get(i);
-            TPoint p2 = normalizedGesture.getPoints().get(i + 1);
+            final TPoint p1 = normalizedGesture.getPoints().get(i);
+            final TPoint p2 = normalizedGesture.getPoints().get(i + 1);
             g2.drawLine((int) (p1.getX() + fattorex), (int) (p1.getY() + fattorey), (int) (p2.getX() + fattorex),
                     (int) (p2.getY() + fattorey));
 
             for (int pointer = 2; pointer <= normalizedGesture.getPointers(); pointer++) {
-                int strokesdistance = 10;
+                final int strokesdistance = 10;
 
-                if (pointer % 2 == 1)
-                    g2.drawLine((int) p1.getX() + (int) fattorex + strokesdistance * ((int) pointer / 2),
-                            (int) p1.getY() + (int) fattorey + strokesdistance * ((int) pointer / 2),
-                            (int) p2.getX() + (int) fattorex + strokesdistance * ((int) pointer / 2),
-                            (int) p2.getY() + (int) fattorey + strokesdistance * ((int) pointer / 2));
-                else
-                    g2.drawLine((int) p1.getX() + (int) fattorex - strokesdistance * ((int) pointer / 2),
-                            (int) p1.getY() + (int) fattorey - strokesdistance * ((int) pointer / 2),
-                            (int) p2.getX() + (int) fattorex - strokesdistance * ((int) pointer / 2),
-                            (int) p2.getY() + (int) fattorey + -strokesdistance * ((int) pointer / 2));
+                if (pointer % 2 == 1) {
+                    g2.drawLine((int) p1.getX() + (int) fattorex + strokesdistance * (pointer / 2),
+                            (int) p1.getY() + (int) fattorey + strokesdistance * (pointer / 2),
+                            (int) p2.getX() + (int) fattorex + strokesdistance * (pointer / 2),
+                            (int) p2.getY() + (int) fattorey + strokesdistance * (pointer / 2));
+                } else {
+                    g2.drawLine((int) p1.getX() + (int) fattorex - strokesdistance * (pointer / 2),
+                            (int) p1.getY() + (int) fattorey - strokesdistance * (pointer / 2),
+                            (int) p2.getX() + (int) fattorex - strokesdistance * (pointer / 2),
+                            (int) p2.getY() + (int) fattorey + -strokesdistance * (pointer / 2));
+                }
             }
 
         }

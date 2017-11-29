@@ -10,18 +10,21 @@ public class FeaturesTableModel extends DefaultTableModel {
 
     @Override
     public Class getColumnClass(int col) {
-        if (col == 2) // second column accepts only Integer
-                      // values
+        if (col == 2) { // second column accepts only Integer
+                        // values
             return Integer.class;
-        if (col > 2 && col < 16) // second column accepts only
-                                 // Integer
+        }
+        if (col > 2 && col < 16) { // second column accepts only
+                                   // Integer
             // values
             return Double.class;
-        else
+        } else {
             return String.class; // other columns accept String
                                  // values
+        }
     }
 
+    @Override
     public boolean isCellEditable(int row, int column) {
         return false; // So I make every cell non-editable
     }

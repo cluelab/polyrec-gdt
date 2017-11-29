@@ -158,11 +158,12 @@ public class DashboardListener implements ActionListener, MouseListener {
                                         found = true;
 
                                 }
-                                if (!found)// medoide
+                                if (!found) {// medoide
                                     dashboardScreen.panelsMap.get(classname)[i].setBorder(new LineBorder(Color.red, 2));
-                                else// non medoide
+                                }else{// non medoide
                                     dashboardScreen.panelsMap.get(classname)[i]
                                             .setBorder(new LineBorder(new Color(145, 220, 90), 2));
+                                }
                             }
                         }
                     });
@@ -259,11 +260,12 @@ public class DashboardListener implements ActionListener, MouseListener {
                             found = true;
 
                     }
-                    if (!found)// medoide
+                    if (!found) {// medoide
                         dashboardScreen.panelsMap.get(classname)[i].setBorder(new LineBorder(Color.red, 2));
-                    else// non medoide
+                    }else{// non medoide
                         dashboardScreen.panelsMap.get(classname)[i]
                                 .setBorder(new LineBorder(new Color(145, 220, 90), 2));
+                    }
                 }
 
                 return;

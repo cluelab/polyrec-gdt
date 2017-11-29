@@ -15,15 +15,13 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
 
-import it.unisa.di.cluelab.polyrec.Gesture;
 import it.unisa.di.cluelab.polyrec.Polyline;
 
 public class TableThread implements Runnable {
 
-    private DashboardScreen dashboardScreen;
-    private String[] classes;
+    private final DashboardScreen dashboardScreen;
+    private final String[] classes;
 
     public TableThread(String[] classes, DashboardScreen dashboardScreen) {
 
@@ -33,16 +31,18 @@ public class TableThread implements Runnable {
 
     }
 
+    @Override
     public void run() {
-        GridBagConstraints c = new GridBagConstraints();
-        GridBagConstraints last = new GridBagConstraints();
+        final GridBagConstraints c = new GridBagConstraints();
+        final GridBagConstraints last = new GridBagConstraints();
         for (int m = 0; m < classes.length; m++) {
-            ArrayList<Polyline> polylines = dashboardScreen.mainClass.getRecognizer().getTemplate(classes[m]);
+            final ArrayList<Polyline> polylines = dashboardScreen.mainClass.getRecognizer().getTemplate(classes[m]);
 
             dashboardScreen.templatesNum += polylines.size();
 
-            if (polylines.size() > 0)
+            if (polylines.size() > 0) {
                 dashboardScreen.notEmptyClasses++;
+            }
 
             // pannello nome classe (prima colonna)
             JPanel panel = new JPanel();
@@ -66,7 +66,7 @@ public class TableThread implements Runnable {
             panel.setOpaque(false);
 
             // per ogni template nella classe
-            Box[] templateBoxes = new Box[polylines.size()];
+            final Box[] templateBoxes = new Box[polylines.size()];
 
             for (int p = 0; p < polylines.size(); p++) {
 
@@ -116,29 +116,31 @@ public class TableThread implements Runnable {
                 dashboardScreen.addGestureButtons[m].setCursor(new Cursor(Cursor.HAND_CURSOR));
 
                 dashboardScreen.addGestureButtons[m].addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
                     public void mouseEntered(java.awt.event.MouseEvent evt) {
                         try {
                             ((JButton) evt.getSource()).setIcon(
                                     new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-green-32.png"))));
 
-                        } catch (IOException e) {
+                        } catch (final IOException e) {
 
                             e.printStackTrace();
                         }
                     }
 
+                    @Override
                     public void mouseExited(java.awt.event.MouseEvent evt) {
                         try {
                             ((JButton) evt.getSource()).setIcon(
                                     new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
-                        } catch (IOException e) {
+                        } catch (final IOException e) {
 
                             e.printStackTrace();
                         }
                     }
                 });
                 dashboardScreen.addGestureButtons[m].addActionListener(dashboardScreen.dashboardListener);
-            } catch (IOException e) {
+            } catch (final IOException e) {
 
                 e.printStackTrace();
             }

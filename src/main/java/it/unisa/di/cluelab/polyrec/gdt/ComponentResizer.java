@@ -1,8 +1,18 @@
 package it.unisa.di.cluelab.polyrec.gdt;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Window;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
@@ -162,7 +172,7 @@ public class ComponentResizer extends MouseAdapter {
      *            the component the listeners are removed from
      */
     public void deregisterComponent(Component... components) {
-        for (Component component : components) {
+        for (final Component component : components) {
             component.removeMouseListener(this);
             component.removeMouseMotionListener(this);
         }
@@ -175,7 +185,7 @@ public class ComponentResizer extends MouseAdapter {
      *            the component the listeners are added to
      */
     public void registerComponent(Component... components) {
-        for (Component component : components) {
+        for (final Component component : components) {
             component.addMouseListener(this);
             component.addMouseMotionListener(this);
         }
@@ -206,11 +216,11 @@ public class ComponentResizer extends MouseAdapter {
      * resized so we need to prevent this from happening.
      */
     private void validateMinimumAndInsets(Dimension minimum, Insets drag) {
-        int minimumWidth = drag.left + drag.right;
-        int minimumHeight = drag.top + drag.bottom;
+        final int minimumWidth = drag.left + drag.right;
+        final int minimumHeight = drag.top + drag.bottom;
 
         if (minimum.width < minimumWidth || minimum.height < minimumHeight) {
-            String message = "Minimum size cannot be less than drag insets";
+            final String message = "Minimum size cannot be less than drag insets";
             throw new IllegalArgumentException(message);
         }
     }
@@ -219,21 +229,25 @@ public class ComponentResizer extends MouseAdapter {
      */
     @Override
     public void mouseMoved(MouseEvent e) {
-        Component source = e.getComponent();
-        Point location = e.getPoint();
+        final Component source = e.getComponent();
+        final Point location = e.getPoint();
         direction = 0;
 
-        if (location.x < dragInsets.left)
+        if (location.x < dragInsets.left) {
             direction += WEST;
+        }
 
-        if (location.x > source.getWidth() - dragInsets.right - 1)
+        if (location.x > source.getWidth() - dragInsets.right - 1) {
             direction += EAST;
+        }
 
-        if (location.y < dragInsets.top)
+        if (location.y < dragInsets.top) {
             direction += NORTH;
+        }
 
-        if (location.y > source.getHeight() - dragInsets.bottom - 1)
+        if (location.y > source.getHeight() - dragInsets.bottom - 1) {
             direction += SOUTH;
+        }
 
         // Mouse is no longer over a resizable border
 
@@ -241,8 +255,8 @@ public class ComponentResizer extends MouseAdapter {
             source.setCursor(sourceCursor);
         } else // use the appropriate resizable cursor
         {
-            int cursorType = cursors.get(direction);
-            Cursor cursor = Cursor.getPredefinedCursor(cursorType);
+            final int cursorType = cursors.get(direction);
+            final Cursor cursor = Cursor.getPredefinedCursor(cursorType);
             source.setCursor(cursor);
         }
     }
@@ -250,7 +264,7 @@ public class ComponentResizer extends MouseAdapter {
     @Override
     public void mouseEntered(MouseEvent e) {
         if (!resizing) {
-            Component source = e.getComponent();
+            final Component source = e.getComponent();
             sourceCursor = source.getCursor();
         }
     }
@@ -258,7 +272,7 @@ public class ComponentResizer extends MouseAdapter {
     @Override
     public void mouseExited(MouseEvent e) {
         if (!resizing) {
-            Component source = e.getComponent();
+            final Component source = e.getComponent();
             source.setCursor(sourceCursor);
         }
     }
@@ -267,15 +281,16 @@ public class ComponentResizer extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
         // The mouseMoved event continually updates this variable
 
-        if (direction == 0)
+        if (direction == 0) {
             return;
+        }
 
         // Setup for resizing. All future dragging calculations are done based
         // on the original bounds of the component and mouse pressed location.
 
         resizing = true;
 
-        Component source = e.getComponent();
+        final Component source = e.getComponent();
         pressed = e.getPoint();
         SwingUtilities.convertPointToScreen(pressed, source);
         bounds = source.getBounds();
@@ -284,7 +299,7 @@ public class ComponentResizer extends MouseAdapter {
         // of components
 
         if (source instanceof JComponent) {
-            JComponent jc = (JComponent) source;
+            final JComponent jc = (JComponent) source;
             autoscrolls = jc.getAutoscrolls();
             jc.setAutoscrolls(false);
         }
@@ -297,7 +312,7 @@ public class ComponentResizer extends MouseAdapter {
     public void mouseReleased(MouseEvent e) {
         resizing = false;
 
-        Component source = e.getComponent();
+        final Component source = e.getComponent();
         source.setCursor(sourceCursor);
 
         if (source instanceof JComponent) {
@@ -313,11 +328,12 @@ public class ComponentResizer extends MouseAdapter {
      */
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (resizing == false)
+        if (resizing == false) {
             return;
+        }
 
-        Component source = e.getComponent();
-        Point dragged = e.getPoint();
+        final Component source = e.getComponent();
+        final Point dragged = e.getPoint();
         SwingUtilities.convertPointToScreen(dragged, source);
 
         changeBounds(source, direction, bounds, pressed, dragged);
@@ -335,7 +351,7 @@ public class ComponentResizer extends MouseAdapter {
 
         if (WEST == (direction & WEST)) {
             int drag = getDragDistance(pressed.x, current.x, snapSize.width);
-            int maximum = Math.min(width + x, maximumSize.width);
+            final int maximum = Math.min(width + x, maximumSize.width);
             drag = getDragBounded(drag, snapSize.width, width, minimumSize.width, maximum);
 
             x -= drag;
@@ -344,7 +360,7 @@ public class ComponentResizer extends MouseAdapter {
 
         if (NORTH == (direction & NORTH)) {
             int drag = getDragDistance(pressed.y, current.y, snapSize.height);
-            int maximum = Math.min(height + y, maximumSize.height);
+            final int maximum = Math.min(height + y, maximumSize.height);
             drag = getDragBounded(drag, snapSize.height, height, minimumSize.height, maximum);
 
             y -= drag;
@@ -355,16 +371,16 @@ public class ComponentResizer extends MouseAdapter {
 
         if (EAST == (direction & EAST)) {
             int drag = getDragDistance(current.x, pressed.x, snapSize.width);
-            Dimension boundingSize = getBoundingSize(source);
-            int maximum = Math.min(boundingSize.width - x, maximumSize.width);
+            final Dimension boundingSize = getBoundingSize(source);
+            final int maximum = Math.min(boundingSize.width - x, maximumSize.width);
             drag = getDragBounded(drag, snapSize.width, width, minimumSize.width, maximum);
             width += drag;
         }
 
         if (SOUTH == (direction & SOUTH)) {
             int drag = getDragDistance(current.y, pressed.y, snapSize.height);
-            Dimension boundingSize = getBoundingSize(source);
-            int maximum = Math.min(boundingSize.height - y, maximumSize.height);
+            final Dimension boundingSize = getBoundingSize(source);
+            final int maximum = Math.min(boundingSize.height - y, maximumSize.height);
             drag = getDragBounded(drag, snapSize.height, height, minimumSize.height, maximum);
             height += drag;
         }
@@ -377,7 +393,7 @@ public class ComponentResizer extends MouseAdapter {
      * Determine how far the mouse has moved from where dragging started
      */
     private int getDragDistance(int larger, int smaller, int snapSize) {
-        int halfway = snapSize / 2;
+        final int halfway = snapSize / 2;
         int drag = larger - smaller;
         drag += (drag < 0) ? -halfway : halfway;
         drag = (drag / snapSize) * snapSize;
@@ -389,11 +405,13 @@ public class ComponentResizer extends MouseAdapter {
      * Adjust the drag value to be within the minimum and maximum range.
      */
     private int getDragBounded(int drag, int snapSize, int dimension, int minimum, int maximum) {
-        while (dimension + drag < minimum)
+        while (dimension + drag < minimum) {
             drag += snapSize;
+        }
 
-        while (dimension + drag > maximum)
+        while (dimension + drag > maximum) {
             drag -= snapSize;
+        }
 
         return drag;
     }
@@ -403,8 +421,8 @@ public class ComponentResizer extends MouseAdapter {
      */
     private Dimension getBoundingSize(Component source) {
         if (source instanceof Window) {
-            GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            Rectangle bounds = env.getMaximumWindowBounds();
+            final GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            final Rectangle bounds = env.getMaximumWindowBounds();
             return new Dimension(bounds.width, bounds.height);
         } else {
             return source.getParent().getSize();
