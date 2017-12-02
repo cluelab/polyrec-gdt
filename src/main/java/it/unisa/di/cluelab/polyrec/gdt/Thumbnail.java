@@ -18,13 +18,11 @@ import it.unisa.di.cluelab.polyrec.geom.Rectangle2D.Double;
  *
  */
 public class Thumbnail extends JLayeredPane {
+    private static final long serialVersionUID = 2137829159083501332L;
 
     private final Gesture gesture;
     // private Polyline polyline;
 
-    /**
-     * @param gesture
-     */
     public Thumbnail(Gesture gesture) {
         this.gesture = gesture;
         this.setBackground(Color.lightGray);

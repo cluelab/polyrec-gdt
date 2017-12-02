@@ -5,57 +5,51 @@ import java.awt.event.MouseEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
+/**
+ * Features table header.
+ */
 public class FeaturesTableHeader extends JTableHeader {
+    private static final long serialVersionUID = -948843630374291064L;
 
     public FeaturesTableHeader(TableColumnModel tcm) {
         super(tcm);
     }
 
     @Override
+    @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "checkstyle:returncount"})
     public String getToolTipText(MouseEvent e) {
-        String text = "";
         final java.awt.Point p = e.getPoint();
         final int colIndex = columnAtPoint(p);
         final int realColumnIndex = getTable().convertColumnIndexToModel(colIndex);
-        if (realColumnIndex == 3) {
-            text = "Polyline lines";
+        switch (realColumnIndex) {
+            case 3:
+                return "Polyline lines";
+            case 4:
+                return "Sum of absolute angle (..f10..)";
+            case 5:
+                return "Length of path of the gesture (f8)";
+            case 6:
+                return "Distance between first and last point (f5)";
+            case 7:
+                return "Area of bounding box";
+            case 8:
+                return "Length of diagonal of the bounding box (f3)";
+            case 9:
+                return "Angle of Bounding Box (f4)";
+            case 10:
+                return "Cosine of starting angle (...f1...)";
+            case 11:
+                return "Sin of starting angle (...f2...)";
+            case 12:
+                return "Cosine of end angle";
+            case 13:
+                return "Angle of line from starting point to end point of gesture";
+            case 14:
+                return "Cos of Angle of line from starting point to end point of gesture (f6)";
+            case 15:
+                return "Sin of Angle of line from starting point to end point of gesture (f7)";
+            default:
+                return "";
         }
-        if (realColumnIndex == 4) {
-            text = "Sum of absolute angle (..f10..)";
-        }
-        if (realColumnIndex == 5) {
-            text = "Length of path of the gesture (f8)";
-        }
-        if (realColumnIndex == 6) {
-            text = "Distance between first and last point (f5)";
-        }
-        if (realColumnIndex == 7) {
-            text = "Area of bounding box";
-        }
-        if (realColumnIndex == 8) {
-            text = "Length of diagonal of the bounding box (f3)";
-        }
-        if (realColumnIndex == 9) {
-            text = "Angle of Bounding Box (f4)";
-        }
-        if (realColumnIndex == 10) {
-            text = "Cosine of starting angle (...f1...)";
-        }
-        if (realColumnIndex == 11) {
-            text = "Sin of starting angle (...f2...)";
-        }
-        if (realColumnIndex == 12) {
-            text = "Cosine of end angle";
-        }
-        if (realColumnIndex == 13) {
-            text = "Angle of line from starting point to end point of gesture";
-        }
-        if (realColumnIndex == 14) {
-            text = "Cos of Angle of line from starting point to end point of gesture (f6)";
-        }
-        if (realColumnIndex == 15) {
-            text = "Sin of Angle of line from starting point to end point of gesture (f7)";
-        }
-        return text;
     }
 }

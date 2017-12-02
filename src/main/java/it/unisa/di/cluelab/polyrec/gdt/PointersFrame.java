@@ -19,7 +19,12 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+/**
+ * Number of pointers.
+ */
+@SuppressWarnings({"checkstyle:classdataabstractioncoupling", "checkstyle:multiplestringliterals"})
 public class PointersFrame extends JFrame {
+    private static final long serialVersionUID = -5197676772145110655L;
 
     public PointersFrame(String className, int templateNumber, MainFrame mainClass) {
         setTitle("Number of Pointers");
@@ -42,23 +47,21 @@ public class PointersFrame extends JFrame {
         p.add(label);
         final int prevValue = mainClass.getRecognizer().getTemplate(className).get(templateNumber).getGesture()
                 .getPointers();
-        final SpinnerModel model = new SpinnerNumberModel(prevValue, // initial
-                0, // min
-                5, // max
-                1); // step
+        // initial, min, max,step
+        final SpinnerModel model = new SpinnerNumberModel(prevValue, 0, 5, 1);
         final JSpinner pointersNum = new JSpinner(model);
         pointersNum.setToolTipText("Set number of pointers");
 
         p.add(pointersNum);
 
         // Lay out the panel.
-        SpringUtilities.makeCompactGrid(p, numPairs, 2, // rows, cols
-                10, 10, // initX, initY
-                10, 30); // xPad, yPad
+        // rows, cols, initX, initY, xPad, yPad
+        SpringUtilities.makeCompactGrid(p, numPairs, 2, 10, 10, 10, 30);
         boxLayout.add(p);
         final JPanel okPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         final JButton ok = new JButton("OK");
-        ok.addActionListener(new ActionListener() {
+        @SuppressWarnings("checkstyle:anoninnerlength")
+        final ActionListener aListener = new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -91,7 +94,8 @@ public class PointersFrame extends JFrame {
                 }
 
             }
-        });
+        };
+        ok.addActionListener(aListener);
         okPanel.add(ok);
         boxLayout.add(okPanel);
         add(boxLayout);

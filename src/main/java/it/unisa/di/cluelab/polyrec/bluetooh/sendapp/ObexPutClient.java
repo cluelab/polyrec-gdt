@@ -11,26 +11,35 @@ import javax.obex.HeaderSet;
 import javax.obex.Operation;
 import javax.obex.ResponseCodes;
 
+/**
+ * Obex put client.
+ */
 public class ObexPutClient {
 
+    private static final String APK_FILE = "BluetoothGestures.apk";
     private final String serverURL;
-    private final String apkfile = "BluetoothGestures.apk";
+
+    public ObexPutClient(String obexServiceURL) {
+        this.serverURL = obexServiceURL;
+    }
 
     /**
-     * send apk to mobile device
+     * send apk to mobile device.
      * 
      * @throws IOException
+     *             if a connection error occurs
      */
+    @SuppressWarnings("checkstyle:innerassignment")
     public void send() throws IOException {
 
         System.out.println("Connecting to " + serverURL);
 
-        ClientSession clientSession;
+        final ClientSession clientSession;
 
         clientSession = (ClientSession) Connector.open(serverURL);
         System.out.println(clientSession);
 
-        HeaderSet hsConnectReply;
+        final HeaderSet hsConnectReply;
 
         hsConnectReply = clientSession.connect(null);
 
@@ -41,7 +50,7 @@ public class ObexPutClient {
 
         // convert file into array of bytes
         final byte[] bFile;
-        try (InputStream bInputStream = getClass().getResourceAsStream("/BluetoothGestures.apk")) {
+        try (InputStream bInputStream = getClass().getResourceAsStream("/" + APK_FILE)) {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final byte[] buffer = new byte[4096];
             for (int read; (read = bInputStream.read(buffer, 0, buffer.length)) != -1;) {
@@ -51,7 +60,7 @@ public class ObexPutClient {
         }
 
         final HeaderSet hsOperation = clientSession.createHeaderSet();
-        hsOperation.setHeader(HeaderSet.NAME, apkfile);
+        hsOperation.setHeader(HeaderSet.NAME, APK_FILE);
         hsOperation.setHeader(HeaderSet.TYPE, "application/vnd.android.package-archive");
 
         final long lenght = bFile.length;
@@ -71,9 +80,5 @@ public class ObexPutClient {
 
         clientSession.close();
 
-    }
-
-    public ObexPutClient(String obexServiceURL) {
-        this.serverURL = obexServiceURL;
     }
 }

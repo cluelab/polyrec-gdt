@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'ru.vyarus.quality' version '2.4.0'
 }
 
 sourceCompatibility = 1.8
@@ -29,3 +30,7 @@ applicationDistribution.from('.') {
     include 'README.md'
 }
 
+quality {
+    findbugs = false
+    pmd = false
+}

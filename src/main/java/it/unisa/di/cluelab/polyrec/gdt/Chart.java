@@ -34,7 +34,16 @@ import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+/**
+ * Chart.
+ */
+@SuppressWarnings({"checkstyle:classfanoutcomplexity", "checkstyle:classdataabstractioncoupling",
+    "checkstyle:multiplestringliterals"})
 public class Chart extends JFrame implements ItemListener {
+    static final int LINE = 1;
+    static final int BAR = 0;
+
+    private static final long serialVersionUID = 2385062477167235982L;
 
     private final JTable rankingTable;
     private final String title;
@@ -50,9 +59,6 @@ public class Chart extends JFrame implements ItemListener {
     private final int columnLabels;
     private final Choice secondaryFeatureChoice = new Choice();
 
-    static final int LINE = 1;
-    static final int BAR = 0;
-
     public Chart(JTable rankingTable, String title, int columnIndex, int secondaryColumnIndex, int columnLabels,
             int type, SortOrder sortOrder) {
         System.out.println("column labels" + columnLabels);
@@ -67,14 +73,16 @@ public class Chart extends JFrame implements ItemListener {
 
     }
 
+    @SuppressWarnings("checkstyle:executablestatementcount")
     private void initUI() {
 
         setLayout(new BorderLayout());
         final CategoryDataset dataset = createDataset(this.columnIndex, true);
 
-        JFreeChart chart;
+        final JFreeChart chart;
 
-        if (secondaryFeatureChoice.getSelectedItem() != null && secondaryFeatureChoice.getSelectedItem() != " - ") {
+        if (secondaryFeatureChoice.getSelectedItem() != null
+                && !" - ".equals(secondaryFeatureChoice.getSelectedItem())) {
             final CategoryDataset dataset2 = createDataset(this.secondaryColumnIndex, false);
 
             System.out.println("righe del dataset" + dataset2.getRowCount());
@@ -151,8 +159,8 @@ public class Chart extends JFrame implements ItemListener {
         if (setOrder) {
             System.out.println("ordina dati");
             rankingTable.setAutoCreateRowSorter(true);
-            final DefaultRowSorter sorter = ((DefaultRowSorter) rankingTable.getRowSorter());
-            final ArrayList list = new ArrayList();
+            final DefaultRowSorter<?, ?> sorter = (DefaultRowSorter<?, ?>) rankingTable.getRowSorter();
+            final ArrayList<RowSorter.SortKey> list = new ArrayList<RowSorter.SortKey>();
 
             list.add(new RowSorter.SortKey(columnIndex, this.sortOrder));
             sorter.setSortKeys(list);
@@ -183,7 +191,7 @@ public class Chart extends JFrame implements ItemListener {
 
     private JFreeChart createChart(final CategoryDataset dataset1, final CategoryDataset dataset2) {
         System.out.println("dataset 2=" + dataset2);
-        JFreeChart chart;
+        final JFreeChart chart;
         if (this.type == LINE) {
             chart = ChartFactory.createLineChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
                     dataset1, PlotOrientation.VERTICAL, true, true, false);
@@ -237,8 +245,9 @@ public class Chart extends JFrame implements ItemListener {
     }
 
     // con singolo dataset (non usato)
+    @SuppressWarnings("unused")
     private JFreeChart createChart(final CategoryDataset dataset) {
-        JFreeChart chart;
+        final JFreeChart chart;
         if (this.type == LINE) {
             chart = ChartFactory.createLineChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
                     dataset, PlotOrientation.VERTICAL, true, true, false);
@@ -305,9 +314,9 @@ public class Chart extends JFrame implements ItemListener {
         remove(chartPanel);
         final CategoryDataset dataset = createDataset(this.columnIndex, true);
 
-        JFreeChart chart;
+        final JFreeChart chart;
         System.out.println("secondary index" + this.secondaryColumnIndex);
-        if (secondaryFeatureChoice.getSelectedItem() != " - ") {
+        if (!" - ".equals(secondaryFeatureChoice.getSelectedItem())) {
             final CategoryDataset dataset2 = createDataset(this.secondaryColumnIndex, false);
 
             System.out.println("righe del dataset" + dataset2.getRowCount());

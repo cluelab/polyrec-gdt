@@ -18,6 +18,10 @@ import javax.swing.JPanel;
 
 import it.unisa.di.cluelab.polyrec.Polyline;
 
+/**
+ * Thread that handle table creation.
+ */
+@SuppressWarnings({"checkstyle:classdataabstractioncoupling", "checkstyle:multiplestringliterals"})
 public class TableThread implements Runnable {
 
     private final DashboardScreen dashboardScreen;
@@ -32,6 +36,7 @@ public class TableThread implements Runnable {
     }
 
     @Override
+    @SuppressWarnings({"checkstyle:executablestatementcount", "checkstyle:javancss"})
     public void run() {
         final GridBagConstraints c = new GridBagConstraints();
         final GridBagConstraints last = new GridBagConstraints();
@@ -115,7 +120,8 @@ public class TableThread implements Runnable {
                 dashboardScreen.addGestureButtons[m].setToolTipText("Add Template to " + classes[m] + " Class");
                 dashboardScreen.addGestureButtons[m].setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-                dashboardScreen.addGestureButtons[m].addMouseListener(new java.awt.event.MouseAdapter() {
+                @SuppressWarnings("checkstyle:anoninnerlength")
+                final java.awt.event.MouseAdapter mListener = new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseEntered(java.awt.event.MouseEvent evt) {
                         try {
@@ -138,7 +144,8 @@ public class TableThread implements Runnable {
                             e.printStackTrace();
                         }
                     }
-                });
+                };
+                dashboardScreen.addGestureButtons[m].addMouseListener(mListener);
                 dashboardScreen.addGestureButtons[m].addActionListener(dashboardScreen.dashboardListener);
             } catch (final IOException e) {
 

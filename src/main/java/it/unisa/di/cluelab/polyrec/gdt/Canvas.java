@@ -15,15 +15,17 @@ import javax.swing.JPanel;
 import it.unisa.di.cluelab.polyrec.Gesture;
 import it.unisa.di.cluelab.polyrec.TPoint;
 
+/**
+ * Gesture canvas.
+ */
 public class Canvas extends JPanel {
-    private final TemplateScreen screen;
-
     static final int WIDTH = 800;
     static final int HEIGHT = 800;
 
-    /**
-     * @param screen
-     */
+    private static final long serialVersionUID = -8911000506413208631L;
+
+    private final TemplateScreen screen;
+
     public Canvas(TemplateScreen screen) {
         this.setBackground(Color.lightGray);
 
@@ -52,7 +54,8 @@ public class Canvas extends JPanel {
             if (pointCount < 2) {
                 return;
             }
-            // g2.drawRect((int)this.screen.getCurrentGesture().getBoundingBox().x,(int)this.screen.getCurrentGesture().getBoundingBox().y,
+            // g2.drawRect((int)this.screen.getCurrentGesture().getBoundingBox().x,
+            // (int)this.screen.getCurrentGesture().getBoundingBox().y,
             // (int)this.screen.getCurrentGesture().getBoundingBox().width,
             // (int)this.screen.getCurrentGesture().getBoundingBox().height);
             for (int i = 0; i < pointCount - 1; i++) {
@@ -67,9 +70,10 @@ public class Canvas extends JPanel {
         g2.dispose();
     }
 
+    @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "checkstyle:executablestatementcount"})
     void paintGestures(Graphics g) {
 
-        Graphics2D g2;
+        final Graphics2D g2;
         if (g != null) {
             g2 = (Graphics2D) g;
         } else {
@@ -189,10 +193,12 @@ public class Canvas extends JPanel {
     }
 
     /**
-     * Draw a line
+     * Draw a line.
      * 
      * @param p1
+     *            first point
      * @param p2
+     *            second point
      */
     public void paintLine(TPoint p1, TPoint p2) {
         final Graphics2D g2 = (Graphics2D) this.getGraphics();
@@ -202,9 +208,6 @@ public class Canvas extends JPanel {
         g2.drawLine((int) p1.getX(), (int) p1.getY(), (int) p2.getX(), (int) p2.getY());
     }
 
-    /**
-     * 
-     */
     public void paintTimedGesture() {
 
         final Graphics2D g2 = (Graphics2D) this.getGraphics().create();

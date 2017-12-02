@@ -11,7 +11,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -46,11 +45,16 @@ import it.unisa.di.cluelab.polyrec.Polyline;
 import it.unisa.di.cluelab.polyrec.Result;
 import it.unisa.di.cluelab.polyrec.TPoint;
 
+/**
+ * Dashboard event listener.
+ */
+@SuppressWarnings({"checkstyle:classfanoutcomplexity", "checkstyle:classdataabstractioncoupling",
+    "checkstyle:multiplestringliterals"})
 public class DashboardListener implements ActionListener, MouseListener {
 
-    private DashboardScreen dashboardScreen;
-    private MainFrame mainClass;
-    ClusteringResult bestResult = null;
+    private final DashboardScreen dashboardScreen;
+    private final MainFrame mainClass;
+    private ClusteringResult bestResult;
 
     public DashboardListener(DashboardScreen dashboardScreen, MainFrame mainClass) {
         this.dashboardScreen = dashboardScreen;
@@ -59,30 +63,30 @@ public class DashboardListener implements ActionListener, MouseListener {
     }
 
     @Override
+    @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "checkstyle:executablestatementcount", "checkstyle:javancss",
+        "checkstyle:methodlength", "checkstyle:nestedifdepth", "checkstyle:npathcomplexity", "checkstyle:returncount"})
     public void actionPerformed(ActionEvent e) {
         if (mainClass.getScreen() instanceof DashboardScreen) {
-
-            DashboardScreen.verticalScrollValue = ((DashboardScreen) mainClass.getScreen()).scrollPane
-                    .getVerticalScrollBar().getValue();
-            DashboardScreen.horizontalScrollValue = ((DashboardScreen) mainClass.getScreen()).scrollPane
-                    .getHorizontalScrollBar().getValue();
+            DashboardScreen.setScrollValue(
+                    ((DashboardScreen) mainClass.getScreen()).scrollPane.getVerticalScrollBar().getValue(),
+                    ((DashboardScreen) mainClass.getScreen()).scrollPane.getHorizontalScrollBar().getValue());
         }
         if (e.getSource() instanceof JButton) {
 
-            String buttonName = ((JButton) e.getSource()).getName();
-            String buttonText = ((JButton) e.getSource()).getText();
+            final String buttonName = ((JButton) e.getSource()).getName();
+            // String buttonText = ((JButton) e.getSource()).getText();
 
             if (buttonName != null && buttonName.startsWith("addgesture")) {
-                String[] nameparts = buttonName.split("_");
+                final String[] nameparts = buttonName.split("_");
                 try {
-                    TemplateScreen templateScreen = new TemplateScreen(mainClass);
+                    final TemplateScreen templateScreen = new TemplateScreen(mainClass);
                     mainClass.setScreen(templateScreen);
                     templateScreen.clearCanvas();
                     templateScreen.className = nameparts[1];
                     templateScreen.testing = false;
 
-                    templateScreen.drawTemplate(TemplateScreen.CURRENT, TemplateScreen.drawMode, true);
-                } catch (IOException e1) {
+                    templateScreen.drawTemplate(TemplateScreen.CURRENT, TemplateScreen.getDrawMode(), true);
+                } catch (final IOException e1) {
 
                     e1.printStackTrace();
                 }
@@ -92,11 +96,11 @@ public class DashboardListener implements ActionListener, MouseListener {
             if (buttonName != null && buttonName.startsWith("editing")) {
                 CursorToolkit.startWaitCursor(mainClass.getRootPane());
 
-                String[] nameparts = buttonName.split("_");
+                final String[] nameparts = buttonName.split("_");
 
-                String classname = nameparts[1];
+                final String classname = nameparts[1];
 
-                Clustering clustering = new Clustering(mainClass.getRecognizer());
+                final Clustering clustering = new Clustering(mainClass.getRecognizer());
                 // determina k per il quale si ottiene il miglior clustering
                 // utilizzando silhouette
                 int k = clustering.silhouette(classname);
@@ -105,14 +109,15 @@ public class DashboardListener implements ActionListener, MouseListener {
                 // finestra scelta k
                 do {
                     try {
-                        String input = JOptionPane.showInputDialog("Number of templates? (<"
+                        final String input = JOptionPane.showInputDialog("Number of templates? (<"
                                 + (mainClass.getRecognizer().getTemplate(classname).size()) + ")", k);
-                        if (input == null)
+                        if (input == null) {
                             return;
+                        }
 
                         k = Integer.parseInt(input);
 
-                    } catch (NumberFormatException ex) {
+                    } catch (final NumberFormatException ex) {
                         ex.printStackTrace();
                         k = 0;
 
@@ -122,9 +127,9 @@ public class DashboardListener implements ActionListener, MouseListener {
 
                 double minCost = Double.MAX_VALUE;
                 // esegui più volte per evitare minimo locale
-                for (int i = 0; i < (int) mainClass.getRecognizer().getTemplate(classname).size() / 2 || i < 5; i++) {
+                for (int i = 0; i < mainClass.getRecognizer().getTemplate(classname).size() / 2 || i < 5; i++) {
 
-                    ClusteringResult result = clustering.kmedoids(classname, k, 0);
+                    final ClusteringResult result = clustering.kmedoids(classname, k, 0);
 
                     if (result.getCost() < minCost) {
                         minCost = result.getCost();
@@ -132,56 +137,57 @@ public class DashboardListener implements ActionListener, MouseListener {
                     }
 
                 }
-                int[] medoids = bestResult.getMedoids();
-                ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classname);
-                int size = polylines.size();
+                final int[] medoids = bestResult.getMedoids();
+                final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classname);
+                final int size = polylines.size();
 
-                JSpinner[] inputField = new JSpinner[medoids.length];
+                final JSpinner[] inputField = new JSpinner[medoids.length];
                 for (int i = 0; i < medoids.length; i++) {
-                    SpinnerModel model = new SpinnerNumberModel(medoids[i], // initial
-                                                                            // value
-                            0, // min
-                            size - 1, // max
-                            1); // step
-                    JSpinner spinner = new JSpinner(model);
+                    // initial value, min, max, step
+                    final SpinnerModel model = new SpinnerNumberModel(medoids[i], 0, size - 1, 1);
+                    final JSpinner spinner = new JSpinner(model);
                     // cambia i medoidi selezionati
-                    spinner.addChangeListener(new ChangeListener() {
-
+                    @SuppressWarnings("checkstyle:anoninnerlength")
+                    final ChangeListener cListener = new ChangeListener() {
                         @Override
                         public void stateChanged(ChangeEvent e) {
                             // colora bordo templates medoidi
                             for (int i = 0; i < size; i++) {
-
                                 boolean found = false;
                                 for (int j = 0; j < inputField.length; j++) {
-                                    if ((int) inputField[j].getValue() == i)
+                                    if ((int) inputField[j].getValue() == i) {
                                         found = true;
-
+                                        break;
+                                    }
                                 }
-                                if (!found) {// medoide
+                                if (!found) {
+                                    // medoide
                                     dashboardScreen.panelsMap.get(classname)[i].setBorder(new LineBorder(Color.red, 2));
-                                }else{// non medoide
+                                } else {
+                                    // non medoide
                                     dashboardScreen.panelsMap.get(classname)[i]
                                             .setBorder(new LineBorder(new Color(145, 220, 90), 2));
                                 }
                             }
                         }
-                    });
-
+                    };
+                    spinner.addChangeListener(cListener);
                     inputField[i] = spinner;
                 }
 
-                String[] buttons = {"Delete Other Templates", "Split Clusters", "Cancel"};
-                JOptionPane optionPane = new JOptionPane(inputField, JOptionPane.QUESTION_MESSAGE,
+                final String[] buttons = {"Delete Other Templates", "Split Clusters", "Cancel"};
+                final JOptionPane optionPane = new JOptionPane(inputField, JOptionPane.QUESTION_MESSAGE,
                         JOptionPane.OK_CANCEL_OPTION);
                 optionPane.setOptions(buttons);
 
-                JDialog dialog = optionPane.createDialog(mainClass, "Selected Templates");
+                final JDialog dialog = optionPane.createDialog(mainClass, "Selected Templates");
 
                 dialog.setModal(false);
                 dialog.setVisible(true);
                 CursorToolkit.stopWaitCursor(mainClass.getRootPane());
-                dialog.addComponentListener(new ComponentListener() {
+                @SuppressWarnings("checkstyle:anoninnerlength")
+                final ComponentListener cListener = new ComponentListener() {
+
                     @Override
                     public void componentResized(ComponentEvent e) {
                     }
@@ -198,7 +204,7 @@ public class DashboardListener implements ActionListener, MouseListener {
                     public void componentHidden(ComponentEvent e) {
 
                         // delete medoids
-                        if (optionPane.getValue() == "Delete Other Templates") {
+                        if ("Delete Other Templates".equals(optionPane.getValue())) {
 
                             for (int i = 0; i < inputField.length; i++) {
                                 for (int j = 0; j < inputField.length; j++) {
@@ -213,25 +219,27 @@ public class DashboardListener implements ActionListener, MouseListener {
 
                                 boolean found = false;
                                 for (int j = 0; j < inputField.length; j++) {
-                                    if ((int) inputField[j].getValue() == i)
+                                    if ((int) inputField[j].getValue() == i) {
                                         found = true;
-
+                                    }
                                 }
-                                if (!found)
+                                if (!found) {
                                     mainClass.getRecognizer().removePolyline(classname, i);
+                                }
                             }
 
-                            DashboardScreen screen = new DashboardScreen(mainClass, false);
+                            final DashboardScreen screen = new DashboardScreen(mainClass, false);
                             screen.display.set("Non medoids deleted from " + classname, 0);
                             mainClass.setScreen(screen);
 
-                        } else if (optionPane.getValue() == "Cancel") {
+                        } else if ("Cancel".equals(optionPane.getValue())) {
                             // do CANCEL stuff...
-                        } else if (optionPane.getValue() == "Split Clusters") {
+                            assert true;
+                        } else if ("Split Clusters".equals(optionPane.getValue())) {
                             // System.out.println(bestResult.getMatrix());
                             for (int i = 0; i < bestResult.getMatrix().size(); i++) {
                                 mainClass.getRecognizer().addClass(classname + "-" + i);
-                                ArrayList<Integer> cluster = bestResult.getMatrix().get(i);
+                                final ArrayList<Integer> cluster = bestResult.getMatrix().get(i);
                                 for (int j = 0; j < cluster.size(); j++) {
                                     mainClass.getRecognizer().addTemplate(classname + "-" + i,
                                             polylines.get(cluster.get(j)));
@@ -240,7 +248,7 @@ public class DashboardListener implements ActionListener, MouseListener {
                             }
                             mainClass.getRecognizer().removeClass(classname);
 
-                            DashboardScreen screen = new DashboardScreen(mainClass, false);
+                            final DashboardScreen screen = new DashboardScreen(mainClass, false);
 
                             screen.display.set("Class " + classname + " has been splitted in "
                                     + bestResult.getMatrix().size() + " new classes", 0);
@@ -249,20 +257,23 @@ public class DashboardListener implements ActionListener, MouseListener {
                             throw new IllegalStateException("Unexpected Option");
                         }
                     }
-                });
+                };
+                dialog.addComponentListener(cListener);
 
                 // colora bordo templates medoidi
                 for (int i = 0; i < size; i++) {
 
                     boolean found = false;
                     for (int j = 0; j < medoids.length; j++) {
-                        if (medoids[j] == i)
+                        if (medoids[j] == i) {
                             found = true;
-
+                        }
                     }
-                    if (!found) {// medoide
+                    if (!found) {
+                        // medoide
                         dashboardScreen.panelsMap.get(classname)[i].setBorder(new LineBorder(Color.red, 2));
-                    }else{// non medoide
+                    } else {
+                        // non medoide
                         dashboardScreen.panelsMap.get(classname)[i]
                                 .setBorder(new LineBorder(new Color(145, 220, 90), 2));
                     }
@@ -273,58 +284,53 @@ public class DashboardListener implements ActionListener, MouseListener {
 
             if (e.getSource() == dashboardScreen.checkTemplates) {
                 CursorToolkit.startWaitCursor(mainClass.getRootPane());
-                Properties applicationProps = Settings.applicationProps;
+                final Properties applicationProps = Settings.applicationProps;
 
-                Display dialogDisplay = new Display();
-                JPanel displayPanel = new JPanel(new FlowLayout());
+                final Display dialogDisplay = new Display();
+                final JPanel displayPanel = new JPanel(new FlowLayout());
                 displayPanel.add(dialogDisplay);
                 dialogDisplay.set("Calculating similarity score of the gesture set...", 1);
+                final int scorelimit = Integer.parseInt(applicationProps.getProperty("scorelimit"));
 
                 // thread gesture set score
                 (new Thread() {
-                    String setScoreString = "";
-
+                    @Override
                     public void run() {
                         for (int i = 100; i >= 0; i--) {
-                            String resultString = verifySimilarity(i, null);
-
-                            if (resultString != "") {
-                                if (i + 1 > Integer.parseInt(applicationProps.getProperty("scorelimit"))) {
-                                    setScoreString = "Similarity Set Score: " + (i + 1) + "% (higher than set limit)";
-                                    dashboardScreen.display.set(setScoreString, 1);
+                            final String resultString = verifySimilarity(i, null);
+                            if (!"".equals(resultString)) {
+                                final String setScoreString = "Similarity Set Score: " + (i + 1);
+                                if (i + 1 > scorelimit) {
+                                    dashboardScreen.display.set(setScoreString + "% (higher than set limit)", 1);
                                     dialogDisplay.set(setScoreString, 1);
                                 } else {
-                                    setScoreString = "Similarity Set Score: " + (i + 1) + "% (lower than set limit)";
-                                    dashboardScreen.display.set(setScoreString, 0);
+                                    dashboardScreen.display.set(setScoreString + "% (lower than set limit)", 0);
                                     dialogDisplay.set(setScoreString, 0);
                                 }
                                 break;
                             }
-
                         }
                     }
                 }).start();
 
                 // similarity window
-                JPanel container = new JPanel(new BorderLayout());
-                JEditorPane textArea = new JEditorPane();
+                final JPanel container = new JPanel(new BorderLayout());
+                final JEditorPane textArea = new JEditorPane();
                 textArea.setContentType("text/html");
 
-                SpinnerModel model = new SpinnerNumberModel(
-                        Integer.parseInt(applicationProps.getProperty("scorelimit")), // initial
-                        0, // min
-                        100, // max
-                        1); // step
-                JSpinner spinner = new JSpinner(model);
+                final SpinnerModel model = new SpinnerNumberModel(
+                        // initial, min, max, sep
+                        scorelimit, 0, 100, 1);
+                final JSpinner spinner = new JSpinner(model);
                 spinner.setToolTipText("Set score threshold to detect similarity problems");
 
-                JPanel westPanel = new JPanel(new FlowLayout());
+                final JPanel westPanel = new JPanel(new FlowLayout());
                 westPanel.add(spinner);
 
                 container.add(displayPanel, BorderLayout.NORTH);
                 container.add(westPanel, BorderLayout.WEST);
 
-                JScrollPane scrollPane = new JScrollPane(textArea);
+                final JScrollPane scrollPane = new JScrollPane(textArea);
 
                 container.add(scrollPane, BorderLayout.CENTER);
                 scrollPane.setPreferredSize(new Dimension(500, 300));
@@ -332,47 +338,43 @@ public class DashboardListener implements ActionListener, MouseListener {
 
                 textArea.setOpaque(false);
 
-                JOptionPane optionpanel = new JOptionPane(container, JOptionPane.INFORMATION_MESSAGE,
+                final JOptionPane optionpanel = new JOptionPane(container, JOptionPane.INFORMATION_MESSAGE,
                         JOptionPane.DEFAULT_OPTION);
 
-                JDialog dialog = optionpanel.createDialog(mainClass, "Verify Similarity");
+                final JDialog dialog = optionpanel.createDialog(mainClass, "Verify Similarity");
                 spinner.addChangeListener(new ChangeListener() {
 
                     @Override
                     public void stateChanged(ChangeEvent e) {
                         (new Thread() {
-
+                            @Override
                             public void run() {
                                 CursorToolkit.startWaitCursor(dialog.getRootPane());
-                                String resultString = verifySimilarity((Integer) spinner.getValue(), textArea);
-
-                                if (resultString != "") {
+                                final String resultString = verifySimilarity((Integer) spinner.getValue(), textArea);
+                                if (!"".equals(resultString)) {
                                     textArea.setText("<span style='font-family:Arial;'>" + resultString + "</span>");
-
                                 } else {
-                                    textArea.setText(
-                                            "<span style='font-family:Arial;'><strong>No Problem Found</strong></span>");
-
+                                    textArea.setText("<span style='font-family:Arial;'>"
+                                            + "<strong>No Problem Found</strong></span>");
                                 }
                                 CursorToolkit.stopWaitCursor(dialog.getRootPane());
-
                             }
-
                         }).start();
-
                     }
                 });
 
-                dialog.setModal(false); // Makes the dialog not modal
+                // Makes the dialog not modal
+                dialog.setModal(false);
                 dialog.setVisible(true);
                 dialog.setResizable(true);
 
                 (new Thread() {
 
+                    @Override
                     public void run() {
-                        String resultString = verifySimilarity(
+                        final String resultString = verifySimilarity(
                                 Integer.parseInt(applicationProps.getProperty("scorelimit")), textArea);
-                        if (resultString != "") {
+                        if (!"".equals(resultString)) {
                             textArea.setText("<span style='font-family:Arial;'>" + resultString + "</span>");
 
                         } else {
@@ -389,7 +391,7 @@ public class DashboardListener implements ActionListener, MouseListener {
             }
 
             if (buttonName != null && buttonName.startsWith("features")) {
-                String[] nameparts = buttonName.split("_");
+                final String[] nameparts = buttonName.split("_");
                 showFeaturesTable(nameparts[1]);
                 return;
             }
@@ -399,9 +401,12 @@ public class DashboardListener implements ActionListener, MouseListener {
                 return;
             }
             if (e.getSource() == dashboardScreen.mergeClasses) {
-                JList classesList = new JList(mainClass.getRecognizer().getClassNames().toArray(new String[0]));
+                final JList<String> classesList = new JList<String>(
+                        mainClass.getRecognizer().getClassNames().toArray(new String[0]));
 
                 classesList.setSelectionModel(new DefaultListSelectionModel() {
+                    private static final long serialVersionUID = 5382159576282787031L;
+
                     @Override
                     public void setSelectionInterval(int index0, int index1) {
                         if (super.isSelectedIndex(index0)) {
@@ -412,21 +417,23 @@ public class DashboardListener implements ActionListener, MouseListener {
                     }
                 });
 
-                JScrollPane scrollPane = new JScrollPane(classesList);
+                final JScrollPane scrollPane = new JScrollPane(classesList);
                 scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
                 classesList.setOpaque(false);
                 scrollPane.setPreferredSize(new Dimension(500, 300));
 
-                String[] buttons = {"Merge Selected Classes", "Cancel"};
-                JOptionPane optionpanel = new JOptionPane(classesList, JOptionPane.QUESTION_MESSAGE,
+                final String[] buttons = {"Merge Selected Classes", "Cancel"};
+                final JOptionPane optionpanel = new JOptionPane(classesList, JOptionPane.QUESTION_MESSAGE,
                         JOptionPane.OK_CANCEL_OPTION);
                 optionpanel.setOptions(buttons);
 
-                JDialog dialog = optionpanel.createDialog("Merge Classes");
-                dialog.setModal(false); // Makes the dialog not modal
+                final JDialog dialog = optionpanel.createDialog("Merge Classes");
+                // Makes the dialog not modal
+                dialog.setModal(false);
                 dialog.setVisible(true);
-                dialog.addComponentListener(new ComponentListener() {
+                @SuppressWarnings("checkstyle:anoninnerlength")
+                final ComponentListener cListener = new ComponentListener() {
                     @Override
                     public void componentResized(ComponentEvent e) {
                     }
@@ -443,18 +450,19 @@ public class DashboardListener implements ActionListener, MouseListener {
                     public void componentHidden(ComponentEvent e) {
 
                         // merge selected classes
-                        if (optionpanel.getValue() == "Merge Selected Classes") {
-                            int[] classesIndexes = classesList.getSelectedIndices();
-                            String firstClass = (String) classesList.getModel().getElementAt(classesIndexes[0]);
+                        if ("Merge Selected Classes".equals(optionpanel.getValue())) {
+                            final int[] classesIndexes = classesList.getSelectedIndices();
+                            final String firstClass = classesList.getModel().getElementAt(classesIndexes[0]);
                             for (int i = 1; i < classesIndexes.length; i++) {
 
-                                String className = (String) classesList.getModel().getElementAt(classesIndexes[i]);
+                                final String className = classesList.getModel()
+                                        .getElementAt(classesIndexes[i]);
                                 mainClass.getRecognizer().addTemplates(firstClass,
                                         mainClass.getRecognizer().getTemplate(className));
                                 mainClass.getRecognizer().removeClass(className);
                             }
 
-                            DashboardScreen screen = new DashboardScreen(mainClass, true);
+                            final DashboardScreen screen = new DashboardScreen(mainClass, true);
                             mainClass.setScreen(screen);
                             screen.display
                                     .set("Selected classes are merged into " + firstClass.toUpperCase() + " class", 0);
@@ -463,28 +471,30 @@ public class DashboardListener implements ActionListener, MouseListener {
 
                     }
 
-                });
+                };
+                dialog.addComponentListener(cListener);
                 return;
 
             }
 
             if (e.getSource() == dashboardScreen.addClass) {
-                String name = dashboardScreen.className.getText();
-                if (name.equals(DashboardScreen.DEFAULT_USER_DEFINED_STRING) || name.equals("")) {
+                final String name = dashboardScreen.className.getText();
+                if (name.equals(DashboardScreen.DEFAULT_USER_DEFINED_STRING) || "".equals(name)) {
 
                     JOptionPane.showMessageDialog(mainClass, "You must enter a name for the class");
                 } else {
                     if (!mainClass.getRecognizer().getClassNames().contains(name.toLowerCase())) {
                         mainClass.getRecognizer().addClass(name);
 
-                        DashboardScreen screen = new DashboardScreen(mainClass, false);
+                        final DashboardScreen screen = new DashboardScreen(mainClass, false);
 
                         mainClass.setScreen(screen);
 
                         screen.display.set("Class " + name.toUpperCase() + " successfully added", 0);
 
-                    } else
+                    } else {
                         JOptionPane.showMessageDialog(mainClass, "The class " + name + " already exists ");
+                    }
 
                 }
                 mainClass.getMenu().updateMenu();
@@ -492,13 +502,13 @@ public class DashboardListener implements ActionListener, MouseListener {
 
             }
             if (e.getSource() == dashboardScreen.deleteAllClasses) {
-                int selectedOption = JOptionPane.showConfirmDialog(null, "Are you sure?", "Delete Class",
+                final int selectedOption = JOptionPane.showConfirmDialog(null, "Are you sure?", "Delete Class",
                         JOptionPane.YES_NO_OPTION);
                 if (selectedOption == JOptionPane.YES_OPTION) {
 
                     mainClass.getRecognizer().removeClasses();
 
-                    DashboardScreen screen = new DashboardScreen(mainClass, false);
+                    final DashboardScreen screen = new DashboardScreen(mainClass, false);
                     mainClass.setScreen(screen);
                     screen.display.set("Classes successfully deleted", 0);
                     mainClass.getMenu().updateMenu();
@@ -510,12 +520,12 @@ public class DashboardListener implements ActionListener, MouseListener {
             if (e.getSource() == dashboardScreen.testRecognizer) {
 
                 try {
-                    TemplateScreen templateScreen = new TemplateScreen(mainClass);
+                    final TemplateScreen templateScreen = new TemplateScreen(mainClass);
                     mainClass.setScreen(templateScreen);
                     templateScreen.clearCanvas();
                     templateScreen.testing = true;
                     templateScreen.drawTemplate(TemplateScreen.CURRENT, TemplateScreen.MOUSE, true);
-                } catch (IOException e1) {
+                } catch (final IOException e1) {
 
                     e1.printStackTrace();
                 }
@@ -524,15 +534,15 @@ public class DashboardListener implements ActionListener, MouseListener {
 
             if (buttonName != null && buttonName.startsWith("deleteclass")) {
 
-                int selectedOption = JOptionPane.showConfirmDialog(null, "Are you sure?", "Delete Class",
+                final int selectedOption = JOptionPane.showConfirmDialog(null, "Are you sure?", "Delete Class",
                         JOptionPane.YES_NO_OPTION);
                 if (selectedOption == JOptionPane.YES_OPTION) {
                     // CursorToolkit.startWaitCursor(mainClass.getRootPane());
-                    String[] nameparts = buttonName.split("_");
+                    final String[] nameparts = buttonName.split("_");
 
                     mainClass.getRecognizer().removeClass(nameparts[1]);
 
-                    DashboardScreen screen = new DashboardScreen(mainClass, false);
+                    final DashboardScreen screen = new DashboardScreen(mainClass, false);
 
                     mainClass.setScreen(screen);
 
@@ -546,21 +556,22 @@ public class DashboardListener implements ActionListener, MouseListener {
 
             if (buttonName != null && buttonName.startsWith("rotinv")) {
 
-                int selectedOption = JOptionPane.showConfirmDialog(null, "Are you sure?", "Rotation Invariant",
+                final int selectedOption = JOptionPane.showConfirmDialog(null, "Are you sure?", "Rotation Invariant",
                         JOptionPane.YES_NO_OPTION);
                 if (selectedOption == JOptionPane.YES_OPTION) {
                     // CursorToolkit.startWaitCursor(mainScreen);
-                    String[] nameparts = buttonName.split("_");
+                    final String[] nameparts = buttonName.split("_");
                     String displayMessage;
-                    if (nameparts.length > 2)
+                    if (nameparts.length > 2) {
                         displayMessage = "Template " + nameparts[2] + " of class " + nameparts[1].toUpperCase()
                                 + " is now";
-                    else
+                    } else {
                         displayMessage = "Templates of class " + nameparts[1].toUpperCase()
                                 + " are now Rotation Invariant";
-                    ArrayList<Polyline> templates = mainClass.getRecognizer().getTemplate(nameparts[1]);
+                    }
+                    final ArrayList<Polyline> templates = mainClass.getRecognizer().getTemplate(nameparts[1]);
                     for (int i = 0; i < templates.size(); i++) {
-                        if ((nameparts.length > 2 && Integer.parseInt(nameparts[2]) == i)) {
+                        if (nameparts.length > 2 && Integer.parseInt(nameparts[2]) == i) {
                             if (!templates.get(i).getGesture().isRotInv()) {
 
                                 templates.get(i).getGesture().setRotInv(true);
@@ -570,15 +581,16 @@ public class DashboardListener implements ActionListener, MouseListener {
                                 displayMessage += " Not Rotation Invariant";
                             }
                         }
-                        if (nameparts.length <= 2)
+                        if (nameparts.length <= 2) {
                             templates.get(i).getGesture().setRotInv(true);
+                        }
 
                     }
 
                     // int verticalScrollValue = ((MainScreen) mainClass.getScreen()).scrollPane.getVerticalScrollBar()
                     // .getValue();
 
-                    DashboardScreen screen = new DashboardScreen(mainClass, false);
+                    final DashboardScreen screen = new DashboardScreen(mainClass, false);
 
                     // screen.verticalScrollValue = verticalScrollValue;
                     mainClass.setScreen(screen);
@@ -589,20 +601,21 @@ public class DashboardListener implements ActionListener, MouseListener {
             }
             if (buttonName != null && buttonName.startsWith("notrotinv")) {
 
-                int selectedOption = JOptionPane.showConfirmDialog(null, "Are you sure?", "Not Rotation Invariant",
-                        JOptionPane.YES_NO_OPTION);
+                final int selectedOption = JOptionPane.showConfirmDialog(null, "Are you sure?",
+                        "Not Rotation Invariant", JOptionPane.YES_NO_OPTION);
                 if (selectedOption == JOptionPane.YES_OPTION) {
                     // CursorToolkit.startWaitCursor(mainClass.getRootPane());
-                    String[] nameparts = buttonName.split("_");
+                    final String[] nameparts = buttonName.split("_");
 
-                    ArrayList<Polyline> templates = mainClass.getRecognizer().getTemplate(nameparts[1]);
-                    for (Polyline polyline : templates)
+                    final ArrayList<Polyline> templates = mainClass.getRecognizer().getTemplate(nameparts[1]);
+                    for (final Polyline polyline : templates) {
                         polyline.getGesture().setRotInv(false);
+                    }
 
                     // int verticalScrollValue = ((MainScreen) mainClass.getScreen()).scrollPane.getVerticalScrollBar()
                     // .getValue();
 
-                    DashboardScreen screen = new DashboardScreen(mainClass, false);
+                    final DashboardScreen screen = new DashboardScreen(mainClass, false);
                     // screen.verticalScrollValue = verticalScrollValue;
                     mainClass.setScreen(screen);
                     screen.display.set(
@@ -612,7 +625,7 @@ public class DashboardListener implements ActionListener, MouseListener {
                 return;
             }
             if (buttonName != null && buttonName.startsWith("editclass")) {
-                String[] nameparts = buttonName.split("_");
+                final String[] nameparts = buttonName.split("_");
 
                 new EditFrame(nameparts[1], mainClass);
 
@@ -620,7 +633,7 @@ public class DashboardListener implements ActionListener, MouseListener {
             }
 
             if (buttonName != null && buttonName.startsWith("deletetemplate")) {
-                int selectedOption = JOptionPane.showConfirmDialog(null, "Are you sure?", "Delete Template",
+                final int selectedOption = JOptionPane.showConfirmDialog(null, "Are you sure?", "Delete Template",
                         JOptionPane.YES_NO_OPTION);
                 if (selectedOption == JOptionPane.YES_OPTION) {
 
@@ -628,11 +641,11 @@ public class DashboardListener implements ActionListener, MouseListener {
 
                     // mainScreen.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                    String[] nameparts = buttonName.split("_");
+                    final String[] nameparts = buttonName.split("_");
 
                     mainClass.getRecognizer().removePolyline(nameparts[1], Integer.parseInt(nameparts[2]));
 
-                    DashboardScreen screen = new DashboardScreen(mainClass, false);
+                    final DashboardScreen screen = new DashboardScreen(mainClass, false);
 
                     mainClass.setScreen(screen);
 
@@ -648,12 +661,14 @@ public class DashboardListener implements ActionListener, MouseListener {
             }
             if (buttonName != null && buttonName.startsWith("detach")) {
 
-                String[] nameparts = buttonName.split("_");
+                final String[] nameparts = buttonName.split("_");
                 // Point point =
                 // mainScreen.deleteAllClasses.getLocationOnScreen();
                 // new
-                // CanvasDetached(mainClass.getRecognizer().getTemplate(nameparts[1]).get(Integer.parseInt(nameparts[2])).getGesture(),point);
+                // CanvasDetached(mainClass.getRecognizer().getTemplate(nameparts[1])
+                // .get(Integer.parseInt(nameparts[2])).getGesture(), point);
                 SwingUtilities.invokeLater(new Runnable() {
+                    @Override
                     public void run() {
                         new UndecoratedExample().createAnsShowGui(mainClass.getRecognizer().getTemplate(nameparts[1])
                                 .get(Integer.parseInt(nameparts[2])).getGesture());
@@ -663,10 +678,10 @@ public class DashboardListener implements ActionListener, MouseListener {
             }
 
             if (buttonName != null && buttonName.startsWith("movetemplate")) {
-                String[] nameparts = buttonName.split("_");
-                String[] s = mainClass.getRecognizer().getClassNames().toArray(new String[0]);
+                final String[] nameparts = buttonName.split("_");
+                final String[] s = mainClass.getRecognizer().getClassNames().toArray(new String[0]);
 
-                String newClass = (String) JOptionPane.showInputDialog(null, "Select new class",
+                final String newClass = (String) JOptionPane.showInputDialog(null, "Select new class",
                         "Move template to another class", JOptionPane.QUESTION_MESSAGE, null, s, s[0]);
 
                 if (newClass != null) {
@@ -678,7 +693,7 @@ public class DashboardListener implements ActionListener, MouseListener {
                     // int verticalScrollValue = ((MainScreen) mainClass.getScreen()).scrollPane.getVerticalScrollBar()
                     // .getValue();
 
-                    DashboardScreen screen = new DashboardScreen(mainClass, false);
+                    final DashboardScreen screen = new DashboardScreen(mainClass, false);
 
                     mainClass.setScreen(screen);
                     screen.display.set("Template successfully moved from " + nameparts[1] + " to " + newClass, 0);
@@ -686,7 +701,7 @@ public class DashboardListener implements ActionListener, MouseListener {
                 return;
             }
             if (buttonName != null && buttonName.startsWith("pointers")) {
-                String[] nameparts = buttonName.split("_");
+                final String[] nameparts = buttonName.split("_");
 
                 new PointersFrame(nameparts[1], Integer.parseInt(nameparts[2]), mainClass);
 
@@ -699,11 +714,11 @@ public class DashboardListener implements ActionListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent arg0) {
-        JLayeredPane thumbnail = (JLayeredPane) arg0.getSource();
+        final JLayeredPane thumbnail = (JLayeredPane) arg0.getSource();
         if (thumbnail.getName().startsWith("thumbnail")) {
-            String[] nameparts = thumbnail.getName().split("_");
+            final String[] nameparts = thumbnail.getName().split("_");
             try {
-                TemplateScreen templateScreen = new TemplateScreen(mainClass);
+                final TemplateScreen templateScreen = new TemplateScreen(mainClass);
                 mainClass.setScreen(templateScreen);
 
                 templateScreen.className = nameparts[1];
@@ -717,7 +732,7 @@ public class DashboardListener implements ActionListener, MouseListener {
 
                 templateScreen.showTemplate();
 
-            } catch (IOException e1) {
+            } catch (final IOException e1) {
 
                 e1.printStackTrace();
             }
@@ -750,30 +765,30 @@ public class DashboardListener implements ActionListener, MouseListener {
     private String verifySimilarity(int scoreLimit, JEditorPane textArea) {
 
         String resultString = "";
-        String[] classes = mainClass.getRecognizer().getClassNames().toArray(new String[0]);
+        final String[] classes = mainClass.getRecognizer().getClassNames().toArray(new String[0]);
         // per ogni classe
         String classString = "";
         for (int i = 0; i < classes.length; i++) {
 
-            ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[i]);
-            classString = ("<span style='font-family:Arial;'><br/>Checking Class " + classes[i].toUpperCase()
-                    + "...</span>");
+            final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[i]);
+            classString = "<span style='font-family:Arial;'><br/>Checking Class " + classes[i].toUpperCase()
+                    + "...</span>";
             if (textArea != null) {
-                textArea.setText("<span style='font-family:Arial;'>" + (100 / classes.length) * (i) + " % </span>"
-                        + classString);
+                textArea.setText(
+                        "<span style='font-family:Arial;'>" + (100 / classes.length) * i + " % </span>" + classString);
 
             }
             // per ogni template nella classe
             for (int p = 0; p < polylines.size(); p++) {
 
                 // controlla template con p della classe i
-                ArrayList<ExtendedResult> r = mainClass.getRecognizer().verifyTemplate(polylines.get(p), classes[i],
-                        scoreLimit);
+                final ArrayList<ExtendedResult> r = mainClass.getRecognizer().verifyTemplate(polylines.get(p),
+                        classes[i], scoreLimit);
 
                 if (r.size() > 0) {
                     resultString += "<b>Template " + p + " of Class " + classes[i].toUpperCase()
                             + " is too similar to:</b><br/>";
-                    for (Result result : r) {
+                    for (final Result result : r) {
 
                         resultString += result.toString() + "<br/>";
 
@@ -793,23 +808,25 @@ public class DashboardListener implements ActionListener, MouseListener {
     //
     // }
 
-    private double round(double n, double d) // round 'n' to 'd' decimals
-    {
-        d = Math.pow(10, d);
-        return Math.round(n * d) / d;
+    // round 'n' to 'd' decimals
+    private static double round(double n, double d) {
+        final double de = Math.pow(10, d);
+        return Math.round(n * de) / de;
     }
 
     public JTable resizeColumnWidth(JTable table) {
         final TableColumnModel columnModel = table.getColumnModel();
         for (int column = 0; column < table.getColumnCount(); column++) {
-            int width = 15; // Min width
+            // Min width
+            int width = 15;
             for (int row = 0; row < table.getRowCount(); row++) {
-                TableCellRenderer renderer = table.getCellRenderer(row, column);
-                Component comp = table.prepareRenderer(renderer, row, column);
+                final TableCellRenderer renderer = table.getCellRenderer(row, column);
+                final Component comp = table.prepareRenderer(renderer, row, column);
                 width = Math.max(comp.getPreferredSize().width + 1, width);
             }
-            if (width > 300)
+            if (width > 300) {
                 width = 300;
+            }
             columnModel.getColumn(column).setPreferredWidth(width);
         }
         return table;
@@ -817,29 +834,32 @@ public class DashboardListener implements ActionListener, MouseListener {
 
     // Se è il parametro className è impostato visualizza feature dei template
     // della classe, altrimenti tabella globale di tutti i tamplate del set
+    @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "checkstyle:executablestatementcount", "checkstyle:javancss",
+        "checkstyle:methodlength"})
     private void showFeaturesTable(String className) {
         System.out.println("Show features per classe" + className);
 
-        String[] classes = mainClass.getRecognizer().getClassNames().toArray(new String[0]);
-        Object[] columnHeaders = {"Class", "Template", "Polyline lines", /* "MYIsokoski", */ "Curviness", "Length",
-                "Dist First->Last", "BBox Area", "BBox Diagonal", "BBox Angle", "Cos(StartAngle)", "Sin(StartAngle)",
-                "Cos(EndAngle)", "GlobalOrientation(Angle First->Last)", "Cos(Angle First->Last)",
-                "Sin(Angle First->Last)" };
+        final String[] classes = mainClass.getRecognizer().getClassNames().toArray(new String[0]);
+        final Object[] columnHeaders = {"Class", "Template", "Polyline lines", /* "MYIsokoski", */ "Curviness",
+            "Length", "Dist First->Last", "BBox Area", "BBox Diagonal", "BBox Angle", "Cos(StartAngle)",
+            "Sin(StartAngle)", "Cos(EndAngle)", "GlobalOrientation(Angle First->Last)", "Cos(Angle First->Last)",
+            "Sin(Angle First->Last)"};
         int rowNumbers = mainClass.getRecognizer().getTamplatesNumber();
-        if (className != null)
+        if (className != null) {
             rowNumbers = mainClass.getRecognizer().getTemplate(className).size();
-        Object[][] rowData = new Object[rowNumbers][columnHeaders.length];
+        }
+        final Object[][] rowData = new Object[rowNumbers][columnHeaders.length];
         int rowcount = 0;
         for (int m = 0; m < classes.length; m++) {
 
             if (className == null || (className != null && classes[m].equals(className))) {
                 // System.out.println("OOOK");
-                ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[m]);
+                final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[m]);
 
                 for (int p = 0; p < polylines.size(); p++) {
-                    Polyline polyline = polylines.get(p);
-                    Gesture normalizedGesture = ExtendedPolyRecognizerGSS.normalizeGesture(polyline.getGesture(), 150,
-                            150, 0);
+                    final Polyline polyline = polylines.get(p);
+                    final Gesture normalizedGesture = ExtendedPolyRecognizerGSS.normalizeGesture(polyline.getGesture(),
+                            150, 150, 0);
 
                     double sumangle = 0;
 
@@ -849,7 +869,7 @@ public class DashboardListener implements ActionListener, MouseListener {
                     }
 
                     // Distance between first and last point (f5);
-                    double f5 = Math.sqrt(Math
+                    final double f5 = Math.sqrt(Math
                             .pow(normalizedGesture.getPoints().get(normalizedGesture.getPoints().size() - 1).getX()
                                     - normalizedGesture.getPoints().get(0).getX(), 2)
                             + Math.pow(
@@ -857,7 +877,7 @@ public class DashboardListener implements ActionListener, MouseListener {
                                             - normalizedGesture.getPoints().get(0).getY(),
                                     2));
                     // angle between first and last point
-                    double globalOrientation = Polyline.getLineAngle(
+                    final double globalOrientation = Polyline.getLineAngle(
                             new TPoint((int) normalizedGesture.getBoundingBox().x,
                                     (int) normalizedGesture.getBoundingBox().y
                                             + (int) normalizedGesture.getBoundingBox().height,
@@ -866,38 +886,30 @@ public class DashboardListener implements ActionListener, MouseListener {
                                     (int) normalizedGesture.getBoundingBox().x
                                             + (int) normalizedGesture.getBoundingBox().width,
                                     (int) normalizedGesture.getBoundingBox().y, 0));
-                    Object[] row = {classes[m], String.valueOf(p),
-
-                            polyline.getNumLines(), round(sumangle, 2), round(normalizedGesture.getLength(), 2),
-                            round(f5, 2),
-                            round(normalizedGesture.getBoundingBox().height
-                                    * normalizedGesture.getBoundingBox().width, 2),
-                            round(normalizedGesture.getDiagonal(), 2),
-                            round(Math.atan(normalizedGesture.getBoundingBox().height
-                                    / normalizedGesture.getBoundingBox().width), 2),
-                            round(Math.cos(polyline.getLineSlope(0)), 2), // verificare
-                                                                          // problema
-                                                                          // linea
-                                                                          // punti
-                            round(Math.sin(polyline.getLineSlope(0)), 2), // verificare
-                                                                          // problema
-                                                                          // linea
-                                                                          // punti
-                            round(Math.cos(polyline.getLineSlope(polyline.getNumLines() - 1)), 2), // verificare
-                                                                                                   // problema
-                                                                                                   // linea
-                                                                                                   // punti
-                            round(globalOrientation, 2), round(Math.cos(globalOrientation), 2),
-                            round(Math.sin(globalOrientation), 2), };
+                    final Object[] row = {classes[m], String.valueOf(p), polyline.getNumLines(), round(sumangle, 2),
+                        round(normalizedGesture.getLength(), 2), round(f5, 2),
+                        round(normalizedGesture.getBoundingBox().height * normalizedGesture.getBoundingBox().width, 2),
+                        round(normalizedGesture.getDiagonal(), 2),
+                        round(Math.atan(
+                                normalizedGesture.getBoundingBox().height / normalizedGesture.getBoundingBox().width),
+                                2),
+                        // verificare problema linea punti
+                        round(Math.cos(polyline.getLineSlope(0)), 2),
+                        // verificare problema linea punti
+                        round(Math.sin(polyline.getLineSlope(0)), 2),
+                        // verificare problema linea punti
+                        round(Math.cos(polyline.getLineSlope(polyline.getNumLines() - 1)), 2),
+                        round(globalOrientation, 2), round(Math.cos(globalOrientation), 2),
+                        round(Math.sin(globalOrientation), 2), };
                     rowData[rowcount++] = row;
 
                 }
             }
         }
 
-        FeaturesTableModel mod = new FeaturesTableModel(rowData, columnHeaders);
+        final FeaturesTableModel mod = new FeaturesTableModel(rowData, columnHeaders);
 
-        JTable table = new JTable(mod);
+        final JTable table = new JTable(mod);
 
         table.setRowSelectionAllowed(true);
         table.setAutoCreateRowSorter(true);
@@ -905,36 +917,36 @@ public class DashboardListener implements ActionListener, MouseListener {
         table.setSelectionBackground(Color.lightGray);
 
         table.setDefaultRenderer(String.class, new TableRenderer());
-        TableColumnModel tcm = table.getColumnModel();
-        FeaturesTableHeader header = new FeaturesTableHeader(tcm);
+        final TableColumnModel tcm = table.getColumnModel();
+        final FeaturesTableHeader header = new FeaturesTableHeader(tcm);
         table.setTableHeader(header);
 
-        DefaultRowSorter sorter = ((DefaultRowSorter) table.getRowSorter());
-        ArrayList<SortKey> list = new ArrayList<SortKey>();
+        final DefaultRowSorter<?, ?> sorter = (DefaultRowSorter<?, ?>) table.getRowSorter();
+        final ArrayList<SortKey> list = new ArrayList<SortKey>();
         list.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
         sorter.setSortKeys(list);
         sorter.sort();
 
-        JPanel dialogPanel = new JPanel(new BorderLayout());
+        final JPanel dialogPanel = new JPanel(new BorderLayout());
 
-        JScrollPane scrollPane = new JScrollPane(resizeColumnWidth(table));
+        final JScrollPane scrollPane = new JScrollPane(resizeColumnWidth(table));
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         scrollPane.setPreferredSize(new Dimension(800, Math.min(50 + rowcount * 16, 300)));
 
         dialogPanel.add(scrollPane, BorderLayout.CENTER);
-        JPanel southPanel = new JPanel(new FlowLayout());
-        JButton exportCSV = new JButton("Export to CSV");
+        final JPanel southPanel = new JPanel(new FlowLayout());
+        final JButton exportCSV = new JButton("Export to CSV");
         southPanel.add(exportCSV);
         exportCSV.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                TableToCsv converter = new TableToCsv(table);
+                final TableToCsv converter = new TableToCsv(table);
                 try {
                     converter.convert();
                     dashboardScreen.display.set("File Saved", 0);
-                } catch (IOException e1) {
+                } catch (final IOException e1) {
                     // custom title, error icon
                     JOptionPane.showMessageDialog(mainClass, "Error saving file. \n(" + e1.getMessage() + ")",
                             "Export to CSV", JOptionPane.ERROR_MESSAGE);
@@ -944,13 +956,13 @@ public class DashboardListener implements ActionListener, MouseListener {
         });
 
         if (className != null || (className == null && dashboardScreen.templatesNum < 30)) {
-            JButton chart = new JButton("Show Chart");
+            final JButton chart = new JButton("Show Chart");
             chart.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     SwingUtilities.invokeLater(() -> {
-                        Chart ex = new Chart(table, "Feature Chart", 2, table.getModel().getColumnCount(), 2,
+                        final Chart ex = new Chart(table, "Feature Chart", 2, table.getModel().getColumnCount(), 2,
                                 Chart.LINE, SortOrder.DESCENDING);
                         ex.setVisible(true);
                     });
@@ -961,14 +973,16 @@ public class DashboardListener implements ActionListener, MouseListener {
         }
         dialogPanel.add(southPanel, BorderLayout.SOUTH);
 
-        JOptionPane optionPane = new JOptionPane(dialogPanel);
+        final JOptionPane optionPane = new JOptionPane(dialogPanel);
 
         String dialogTitle = "Features Table";
-        if (className != null)
+        if (className != null) {
             dialogTitle = dialogTitle + " - Class" + className;
-        JDialog dialog = optionPane.createDialog(dialogTitle);
+        }
+        final JDialog dialog = optionPane.createDialog(dialogTitle);
 
-        dialog.setModal(false); // Makes the dialog not modal
+        // Makes the dialog not modal
+        dialog.setModal(false);
         dialog.setVisible(true);
         dialog.setResizable(true);
 

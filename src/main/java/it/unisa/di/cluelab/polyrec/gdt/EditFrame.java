@@ -17,7 +17,12 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+/**
+ * Edit class frame.
+ */
+@SuppressWarnings("checkstyle:classdataabstractioncoupling")
 public class EditFrame extends JFrame {
+    private static final long serialVersionUID = 6010850818289505846L;
 
     public EditFrame(String className, MainFrame mainClass) {
         setTitle("Edit Class " + className);
@@ -49,9 +54,8 @@ public class EditFrame extends JFrame {
         // }
 
         // Lay out the panel.
-        SpringUtilities.makeCompactGrid(p, numPairs, 2, // rows, cols
-                10, 10, // initX, initY
-                10, 30); // xPad, yPad
+        // rows, cols, initX, initY, xPad, yPad
+        SpringUtilities.makeCompactGrid(p, numPairs, 2, 10, 10, 10, 30);
         boxLayout.add(p);
         final JPanel okPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         final JButton ok = new JButton("OK");
@@ -62,7 +66,6 @@ public class EditFrame extends JFrame {
                 // System.out.println("contains
                 // -"+text.getText()+"-:?"+mainClass.recognizer.getClassNames().contains(text.getText()));
                 if (mainClass.getRecognizer().getClassNames().contains(text.getText().toLowerCase())) {
-
                     JOptionPane.showMessageDialog(mainClass, "The class name " + text.getText() + " already exists ",
                             "Warning", JOptionPane.WARNING_MESSAGE);
                 } else {
@@ -74,7 +77,6 @@ public class EditFrame extends JFrame {
                     }
                     dispose();
                 }
-
             }
         });
         okPanel.add(ok);

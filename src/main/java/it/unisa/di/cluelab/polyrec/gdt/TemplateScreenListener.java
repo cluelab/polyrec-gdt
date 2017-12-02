@@ -30,10 +30,15 @@ import it.unisa.di.cluelab.polyrec.GestureInfo;
 import it.unisa.di.cluelab.polyrec.Polyline;
 import it.unisa.di.cluelab.polyrec.TPoint;
 
+/**
+ * Event listener for TemplateScreen.
+ */
+@SuppressWarnings({"checkstyle:classfanoutcomplexity", "checkstyle:classdataabstractioncoupling",
+    "checkstyle:multiplestringliterals"})
 public class TemplateScreenListener implements ActionListener, ItemListener {
 
-    MainFrame mainClass;
-    TemplateScreen templateScreen;
+    private final MainFrame mainClass;
+    private TemplateScreen templateScreen;
 
     public TemplateScreenListener(TemplateScreen templateScreen, MainFrame mainClass) {
 
@@ -42,6 +47,8 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
     }
 
     @Override
+    @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "checkstyle:executablestatementcount", "checkstyle:javancss",
+        "checkstyle:methodlength", "checkstyle:npathcomplexity", "checkstyle:returncount"})
     public void actionPerformed(ActionEvent e) {
 
         templateScreen.canvas.removeMouseListener(templateScreen);
@@ -76,7 +83,7 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
 
             templateScreen.display.setText("Template added as additional version of " + templateScreen.className);
 
-            TemplateScreen templateScreen;
+            final TemplateScreen templateScreen;
             try {
                 templateScreen = new TemplateScreen(mainClass);
 
@@ -91,8 +98,8 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
                 templateScreen.display.setText("Template saved in class " + templateScreen.className);
 
                 templateScreen.showTemplate();
-                if (TemplateScreen.waitThread != null) {
-                    TemplateScreen.waitThread.setDraw(false);
+                if (TemplateScreen.getWaitThread() != null) {
+                    TemplateScreen.getWaitThread().setDraw(false);
                 }
             } catch (final IOException e1) {
 
@@ -104,7 +111,7 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
         }
         if (e.getSource() instanceof JButton) {
             final JButton button = (JButton) e.getSource();
-            int buttonNumber;
+            final int buttonNumber;
 
             // mostra gesture template selezionato
             if (button.getName() != null && button.getName().startsWith("gesture")) {
@@ -160,7 +167,8 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
             final JOptionPane optionpanel = new JOptionPane(scrollPane);
 
             final JDialog k = optionpanel.createDialog("Gesture Features");
-            k.setModal(false); // Makes the dialog not modal
+            // Makes the dialog not modal
+            k.setModal(false);
             k.setVisible(true);
 
             return;
@@ -234,7 +242,7 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
                 final List<TPoint> points = entry.getValue().getPoints();
                 final Gesture gesture = new Gesture();
                 for (final TPoint point : points) {
-                    gesture.addPoint(new TPoint((point.x), point.y - 10, point.time));
+                    gesture.addPoint(new TPoint(point.x, point.y - 10, point.time));
                 }
 
                 templateScreen.canvasGestures.put(entry.getKey(), gesture);
@@ -250,7 +258,7 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
                 final List<TPoint> points = entry.getValue().getPoints();
                 final Gesture gesture = new Gesture();
                 for (final TPoint point : points) {
-                    gesture.addPoint(new TPoint((point.x), point.y + 10, point.time));
+                    gesture.addPoint(new TPoint(point.x, point.y + 10, point.time));
                 }
                 templateScreen.canvasGestures.put(entry.getKey(), gesture);
             }
@@ -365,6 +373,7 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:returncount")
     public void itemStateChanged(ItemEvent e) {
 
         final int cb = e.getStateChange();
@@ -428,11 +437,11 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
     }
 
     /**
-     * Get features of a template
+     * Get features of a template.
      * 
      * @param polyline
      *            Polyline
-     * @return
+     * @return JTable with the features
      */
     public JTable getFeatures(Polyline polyline) {
         final Gesture normalizedGesture = ExtendedPolyRecognizerGSS.normalizeGesture(polyline.getGesture(), 150, 150,
@@ -446,9 +455,9 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
         }
 
         final Object[] columnHeaders = {"Class", "Template", "Polyline lines"/* "MYIsokoski" */, "Curviness", "Length",
-                "Dist First->Last", "BBox Area", "BBox Diagonal", "BBox Angle", "Cos(StartAngle)", "Sin(StartAngle)",
-                "Cos(EndAngle)", "GlobalOrientation(Angle First->Last)", "Cos(Angle First->Last)",
-                "Sin(Angle First->Last)"};
+            "Dist First->Last", "BBox Area", "BBox Diagonal", "BBox Angle", "Cos(StartAngle)", "Sin(StartAngle)",
+            "Cos(EndAngle)", "GlobalOrientation(Angle First->Last)", "Cos(Angle First->Last)",
+            "Sin(Angle First->Last)"};
         final Object[][] rowData = new Object[1][columnHeaders.length];
 
         final double f5 = Math.sqrt(Math
@@ -462,17 +471,17 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
                 new TPoint((int) normalizedGesture.getBoundingBox().x + (int) normalizedGesture.getBoundingBox().width,
                         (int) normalizedGesture.getBoundingBox().y, 0));
         final Object[] row = {templateScreen.className, String.valueOf(templateScreen.item), polyline.getNumLines(),
-                round(sumangle, 2), round(normalizedGesture.getLength(), 2), round(f5, 2),
-                round(normalizedGesture.getBoundingBox().height * normalizedGesture.getBoundingBox().width, 2),
-                round(normalizedGesture.getDiagonal(), 2),
-                round(Math.atan(normalizedGesture.getBoundingBox().height / normalizedGesture.getBoundingBox().width),
-                        2),
-                round(Math.cos(polyline.getLineSlope(0)), 2), // verificare problema linea punti
-                round(Math.sin(polyline.getLineSlope(0)), 2), // verificare problema linea punti
-                round(Math.cos(polyline.getLineSlope(polyline.getNumLines() - 1)), 2), // verificare problema linea
-                                                                                       // punti
-                round(globalOrientation, 2), round(Math.cos(globalOrientation), 2),
-                round(Math.sin(globalOrientation), 2), };
+            round(sumangle, 2), round(normalizedGesture.getLength(), 2), round(f5, 2),
+            round(normalizedGesture.getBoundingBox().height * normalizedGesture.getBoundingBox().width, 2),
+            round(normalizedGesture.getDiagonal(), 2),
+            round(Math.atan(normalizedGesture.getBoundingBox().height / normalizedGesture.getBoundingBox().width), 2),
+            // verificare problema linea punti
+            round(Math.cos(polyline.getLineSlope(0)), 2),
+            // verificare problema linea punti
+            round(Math.sin(polyline.getLineSlope(0)), 2),
+            // verificare problema linea punti
+            round(Math.cos(polyline.getLineSlope(polyline.getNumLines() - 1)), 2), round(globalOrientation, 2),
+            round(Math.cos(globalOrientation), 2), round(Math.sin(globalOrientation), 2), };
         rowData[0] = row;
 
         final FeaturesTableModel mod = new FeaturesTableModel(rowData, columnHeaders);
@@ -487,7 +496,7 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
         final FeaturesTableHeader header = new FeaturesTableHeader(tcm);
         table.setTableHeader(header);
 
-        final DefaultRowSorter sorter = ((DefaultRowSorter) table.getRowSorter());
+        final DefaultRowSorter<?, ?> sorter = (DefaultRowSorter<?, ?>) table.getRowSorter();
         final ArrayList<SortKey> list = new ArrayList<SortKey>();
         list.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
         sorter.setSortKeys(list);
@@ -497,10 +506,10 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
 
     }
 
-    private double round(double n, double d) // round 'n' to 'd' decimals
-    {
-        d = Math.pow(10, d);
-        return Math.round(n * d) / d;
+    // round 'n' to 'd' decimals
+    private static double round(double n, double d) {
+        final double de = Math.pow(10, d);
+        return Math.round(n * de) / de;
     }
 
 }

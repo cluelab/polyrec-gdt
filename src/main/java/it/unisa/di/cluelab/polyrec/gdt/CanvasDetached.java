@@ -7,7 +7,11 @@ import javax.swing.JFrame;
 
 import it.unisa.di.cluelab.polyrec.Gesture;
 
+/**
+ * Canvas detached.
+ */
 public class CanvasDetached extends JFrame {
+    private static final long serialVersionUID = 7667281062030001348L;
 
     public CanvasDetached(Gesture gesture) {
 

@@ -41,7 +41,10 @@ import javax.swing.SpringLayout;
  * A 1.4 file that provides utility methods for creating form- or grid-style layouts with SpringLayout. These utilities
  * are used by several programs, such as SpringBox and SpringCompactGrid.
  */
-public class SpringUtilities {
+public final class SpringUtilities {
+    private SpringUtilities() {
+    }
+
     /**
      * A debugging utility that prints to stdout the component's minimum, preferred, and maximum sizes.
      */
@@ -69,8 +72,9 @@ public class SpringUtilities {
      * @param yPad
      *            y padding between cells
      */
+    @SuppressWarnings("checkstyle:executablestatementcount")
     public static void makeGrid(Container parent, int rows, int cols, int initialX, int initialY, int xPad, int yPad) {
-        SpringLayout layout;
+        final SpringLayout layout;
         try {
             layout = (SpringLayout) parent.getLayout();
         } catch (final ClassCastException exc) {
@@ -110,16 +114,20 @@ public class SpringUtilities {
         SpringLayout.Constraints lastRowCons = null;
         for (int i = 0; i < max; i++) {
             final SpringLayout.Constraints cons = layout.getConstraints(parent.getComponent(i));
-            if (i % cols == 0) { // start of new row
+            if (i % cols == 0) {
+                // start of new row
                 lastRowCons = lastCons;
                 cons.setX(initialXSpring);
-            } else { // x position depends on previous component
+            } else {
+                // x position depends on previous component
                 cons.setX(Spring.sum(lastCons.getConstraint(SpringLayout.EAST), xPadSpring));
             }
 
-            if (i / cols == 0) { // first row
+            if (i / cols == 0) {
+                // first row
                 cons.setY(initialYSpring);
-            } else { // y position depends on previous row
+            } else {
+                // y position depends on previous row
                 cons.setY(Spring.sum(lastRowCons.getConstraint(SpringLayout.SOUTH), yPadSpring));
             }
             lastCons = cons;
@@ -160,7 +168,7 @@ public class SpringUtilities {
      */
     public static void makeCompactGrid(Container parent, int rows, int cols, int initialX, int initialY, int xPad,
             int yPad) {
-        SpringLayout layout;
+        final SpringLayout layout;
         try {
             layout = (SpringLayout) parent.getLayout();
         } catch (final ClassCastException exc) {

@@ -18,11 +18,11 @@ import javax.bluetooth.UUID;
  */
 public class RemoteDeviceDiscovery {
 
-    private final Vector<AvailableDevice> devicesDiscovered = new Vector<AvailableDevice>();
-
     private static final UUID OBEX_OBJECT_PUSH = new UUID(0x1105);
 
-    public static final Vector/* <String> */ serviceFound = new Vector();
+    private static final Vector<String> SERVICE_FOUND = new Vector<String>();
+
+    private final Vector<AvailableDevice> devicesDiscovered = new Vector<AvailableDevice>();
 
     public RemoteDeviceDiscovery() throws InterruptedException, BluetoothStateException {
 
@@ -34,9 +34,10 @@ public class RemoteDeviceDiscovery {
         final UUID serviceUUID = OBEX_OBJECT_PUSH;
 
         final UUID[] searchUuidSet = new UUID[] {serviceUUID};
-        final int[] attrIDs = new int[] {0x0100 // Service name
-        };
+        // Service name
+        final int[] attrIDs = new int[] {0x0100};
 
+        @SuppressWarnings("checkstyle:anoninnerlength")
         final DiscoveryListener listener = new DiscoveryListener() {
 
             @Override
@@ -45,10 +46,11 @@ public class RemoteDeviceDiscovery {
                 try {
                     System.out.println("     name " + btDevice.getFriendlyName(false));
                 } catch (final IOException cantGetDeviceName) {
+                    //
                 }
                 try {
                     synchronized (serviceSearchCompletedEvent) {
-                        serviceFound.clear();
+                        SERVICE_FOUND.clear();
                         System.out.println("search services on " + btDevice.getBluetoothAddress() + " "
                                 + btDevice.getFriendlyName(false));
                         LocalDevice.getLocalDevice().getDiscoveryAgent().searchServices(attrIDs, searchUuidSet,

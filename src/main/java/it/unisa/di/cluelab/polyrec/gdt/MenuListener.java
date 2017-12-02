@@ -30,6 +30,11 @@ import it.unisa.di.cluelab.polyrec.bluetooh.sendapp.AvailableDevice;
 import it.unisa.di.cluelab.polyrec.bluetooh.sendapp.ObexPutClient;
 import it.unisa.di.cluelab.polyrec.bluetooh.sendapp.RemoteDeviceDiscovery;
 
+/**
+ * Menu listener.
+ */
+@SuppressWarnings({"checkstyle:classfanoutcomplexity", "checkstyle:classdataabstractioncoupling",
+    "checkstyle:multiplestringliterals"})
 public class MenuListener implements ActionListener {
 
     private final MainFrame mainFrame;
@@ -41,6 +46,8 @@ public class MenuListener implements ActionListener {
     }
 
     @Override
+    @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "checkstyle:executablestatementcount", "checkstyle:javancss",
+        "checkstyle:methodlength", "checkstyle:npathcomplexity", "checkstyle:returncount"})
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == mainFrame.getMenu().exit) {
@@ -124,7 +131,7 @@ public class MenuListener implements ActionListener {
             if (retrival == JFileChooser.APPROVE_OPTION) {
 
                 final File f1 = new File("polyrec-recognizer2.jar");
-                File f2;
+                final File f2;
                 if (saveFile.getSelectedFile().toString().endsWith(".jar")) {
                     f2 = new File(saveFile.getSelectedFile().toString());
                 } else {
@@ -218,7 +225,8 @@ public class MenuListener implements ActionListener {
 
             CursorToolkit.startWaitCursor(messagePane);
 
-            new SwingWorker<Void, Void>() {
+            @SuppressWarnings("checkstyle:anoninnerlength")
+            final SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
 
                 @Override
                 protected Void doInBackground() {
@@ -276,7 +284,8 @@ public class MenuListener implements ActionListener {
                 protected void done() {
                     // dialog.dispose();
                 };
-            }.execute();
+            };
+            sw.execute();
 
             dialog.setVisible(true);
 
@@ -286,11 +295,7 @@ public class MenuListener implements ActionListener {
 
     /**
      * 
-     * Save gesture set
-     * 
-     * @param saveas
-     * @return
-     * @throws Exception
+     * Save gesture set.
      */
     boolean exports(boolean saveas) throws Exception {
         String choosedFile = "";
@@ -371,6 +376,7 @@ public class MenuListener implements ActionListener {
     // return true;
     // }
 
+    @SuppressWarnings({"checkstyle:executablestatementcount", "checkstyle:returncount"})
     boolean imports(int method) {
 
         final JFileChooser openFile = new JFileChooser();

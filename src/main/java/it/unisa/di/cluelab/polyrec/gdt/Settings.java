@@ -20,9 +20,15 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+/**
+ * Setting frame.
+ */
+@SuppressWarnings({"checkstyle:classdataabstractioncoupling", "checkstyle:multiplestringliterals"})
 public class Settings extends JFrame {
 
-    public static Properties applicationProps = new Properties();
+    protected static Properties applicationProps = new Properties();
+
+    private static final long serialVersionUID = 8009954606425204167L;
 
     public Settings() {
         setTitle("Settings");
@@ -54,9 +60,8 @@ public class Settings extends JFrame {
         // }
 
         // Lay out the panel.
-        SpringUtilities.makeCompactGrid(p, numPairs, 2, // rows, cols
-                10, 10, // initX, initY
-                10, 30); // xPad, yPad
+        // rows, cols, initX, initY, xPad, yPad
+        SpringUtilities.makeCompactGrid(p, numPairs, 2, 10, 10, 10, 30);
         boxLayout.add(p);
         final JPanel okPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         final JButton ok = new JButton("OK");

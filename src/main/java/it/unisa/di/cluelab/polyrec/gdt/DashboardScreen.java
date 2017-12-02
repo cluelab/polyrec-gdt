@@ -37,63 +37,68 @@ import javax.swing.border.LineBorder;
 
 import it.unisa.di.cluelab.polyrec.Polyline;
 
-@SuppressWarnings("serial")
+/**
+ * Dashboard panel.
+ */
+@SuppressWarnings({"checkstyle:classfanoutcomplexity", "checkstyle:classdataabstractioncoupling",
+    "checkstyle:multiplestringliterals"})
 public class DashboardScreen extends JPanel {
 
     static final String DEFAULT_USER_DEFINED_STRING = "new class name...";
+
+    private static int verticalScrollValue;
+    private static int horizontalScrollValue;
+
+    private static final long serialVersionUID = -8454775515221613866L;
+
     // main screen
 
-    MainFrame mainClass;
-    DashboardListener dashboardListener;
+    protected MainFrame mainClass;
+    protected DashboardListener dashboardListener;
+    protected JButton addClass = new JButton();
+    protected JTextField className = new JTextField();
+    protected JPanel[] addGesturePanel;
+    protected JButton[] addGestureButtons;
+    protected Display display;
+    protected JButton checkTemplates;
+    protected JScrollPane scrollPane;
+    protected JButton deleteAllClasses;
+    protected HashMap<String, Box[]> panelsMap = new HashMap<String, Box[]>();
+    protected JButton testRecognizer;
+    protected JButton featuresButton;
+    protected JButton mergeClasses;
+    protected JPanel table;
 
-    JButton addClass = new JButton();
+    protected int templatesNum;
+    protected int notEmptyClasses;
 
-    JPanel addClassPanel = new JPanel();
-    JTextField className = new JTextField();
-
-    JPanel[] addGesturePanel;
-    JButton[] addGestureButtons;
-    Display display;
-    JButton checkTemplates;
-    JScrollPane scrollPane;
-    JButton deleteAllClasses;
-    JButton editing;
-    HashMap<String, Box[]> panelsMap = new HashMap<String, Box[]>();;
-    static int verticalScrollValue = 0;
-    static int horizontalScrollValue = 0;
-    JButton testRecognizer;
-
-    private JPanel secondRow;
-
-    JButton featuresButton;
-
-    JButton mergeClasses;
-    JButton classFeatures;
-
-    Font fontButtons = new Font("Arial", Font.PLAIN, 16);
-    JPanel main;
-    int templatesNum;
-
-    int notEmptyClasses;
-    JPanel table;
-    private JPanel commands;
     private int classesNum;
+
+    private JPanel addClassPanel = new JPanel();
+    private JButton editing;
+    private JPanel secondRow;
+    private JButton classFeatures;
+    private final Font fontButtons = new Font("Arial", Font.PLAIN, 16);
+    private JPanel main;
+    private JPanel commands;
     private JPanel statusBar;
 
-    /**
-     * @param mainClass
-     */
     public DashboardScreen(MainFrame mainClass, boolean thread) {
 
         this.mainClass = mainClass;
         dashboardListener = new DashboardListener(this, mainClass);
 
         setLayout(new BorderLayout());
-        mainClass.screen_mode = MainFrame.MAINSCREEN;
+        mainClass.screenMode = MainFrame.MAINSCREEN;
         setBackground(Color.darkGray);
 
         initComponents(thread);
 
+    }
+
+    static void setScrollValue(int vertical, int horizontal) {
+        verticalScrollValue = vertical;
+        horizontalScrollValue = horizontal;
     }
 
     public void initComponents(boolean thread) {
@@ -213,7 +218,7 @@ public class DashboardScreen extends JPanel {
 
             @Override
             public void focusLost(FocusEvent arg0) {
-                if (className.getText() == "") {
+                if ("".equals(className.getText())) {
                     className.setText(DEFAULT_USER_DEFINED_STRING);
                 }
             }
@@ -228,8 +233,8 @@ public class DashboardScreen extends JPanel {
         });
         addClassPanel.add(className);
         try {
-
-            addClass = new JButton(new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
+            final String iPlsW = "/img/plus-white-32.png";
+            addClass = new JButton(new ImageIcon(ImageIO.read(getClass().getResource(iPlsW))));
             addClass.setContentAreaFilled(false);
 
             addClass.setToolTipText("Add Class with specified name");
@@ -242,22 +247,17 @@ public class DashboardScreen extends JPanel {
                         ((JButton) evt.getSource())
                                 .setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-green-32.png"))));
                     } catch (final IOException e) {
-
                         e.printStackTrace();
                     }
                 }
 
                 @Override
                 public void mouseExited(java.awt.event.MouseEvent evt) {
-
                     try {
-                        ((JButton) evt.getSource())
-                                .setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
+                        ((JButton) evt.getSource()).setIcon(new ImageIcon(ImageIO.read(getClass().getResource(iPlsW))));
                     } catch (final IOException e) {
-
                         e.printStackTrace();
                     }
-
                 }
             });
         } catch (final IOException e) {
@@ -355,6 +355,7 @@ public class DashboardScreen extends JPanel {
         }
     }
 
+    @SuppressWarnings("checkstyle:executablestatementcount")
     void commandsButtons() {
         final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -443,6 +444,7 @@ public class DashboardScreen extends JPanel {
 
     }
 
+    @SuppressWarnings({"checkstyle:executablestatementcount", "checkstyle:javancss", "checkstyle:methodlength"})
     Box classPanel(String className, int templatesNum) {
         final Box classPanel = Box.createVerticalBox();
         classPanel.setMinimumSize(new Dimension(210, 10));
@@ -462,8 +464,8 @@ public class DashboardScreen extends JPanel {
             editClass.setCursor(new Cursor(Cursor.HAND_CURSOR));
             editClass.addActionListener(dashboardListener);
 
-            final JButton deleteClass = new JButton(
-                    new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-white-16.png"))));
+            final String iMulW = "/img/multiply-white-16.png";
+            final JButton deleteClass = new JButton(new ImageIcon(ImageIO.read(getClass().getResource(iMulW))));
             deleteClass.setBorder(BorderFactory.createEmptyBorder());
             deleteClass.setContentAreaFilled(false);
             deleteClass.setName("deleteclass_" + className);
@@ -478,7 +480,6 @@ public class DashboardScreen extends JPanel {
                         ((JButton) evt.getSource()).setIcon(
                                 new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-red-16.png"))));
                     } catch (final IOException e) {
-
                         e.printStackTrace();
                     }
                 }
@@ -486,10 +487,8 @@ public class DashboardScreen extends JPanel {
                 @Override
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     try {
-                        ((JButton) evt.getSource()).setIcon(
-                                new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-white-16.png"))));
+                        ((JButton) evt.getSource()).setIcon(new ImageIcon(ImageIO.read(getClass().getResource(iMulW))));
                     } catch (final IOException e) {
-
                         e.printStackTrace();
                     }
                 }
@@ -546,9 +545,8 @@ public class DashboardScreen extends JPanel {
 
             // footerPanel = new JPanel();
             // footerPanel.setOpaque(false);
-            final JButton classNotRotInv = new JButton(/*
-                                                        * "<html><font color='white'>Rotation Invariance</font></html>"
-                                                        */);
+            final JButton classNotRotInv = new JButton();
+            /* new JButton(LABEL_START + "Rotation Invariance" + LABEL_END) */
             classNotRotInv.setFont(fontButtons);
             classNotRotInv.setName("notrotinv_" + className);
             classNotRotInv.setToolTipText("unset rotation invariant attribute for this class");
@@ -610,6 +608,7 @@ public class DashboardScreen extends JPanel {
         return classPanel;
     }
 
+    @SuppressWarnings({"checkstyle:executablestatementcount", "checkstyle:javancss", "checkstyle:methodlength"})
     Box templatePanel(String className, Polyline template, int templateIndex) {
 
         final Box templatePanel = Box.createVerticalBox();
@@ -658,7 +657,6 @@ public class DashboardScreen extends JPanel {
                     try {
                         delete.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-red-16.png"))));
                     } catch (final IOException e) {
-
                         e.printStackTrace();
                     }
                 }
@@ -669,7 +667,6 @@ public class DashboardScreen extends JPanel {
                         delete.setIcon(
                                 new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-white-16.png"))));
                     } catch (final IOException e) {
-
                         e.printStackTrace();
                     }
                 }
@@ -678,7 +675,7 @@ public class DashboardScreen extends JPanel {
             buttonsPanel.add(move);
             buttonsPanel.add(delete);
 
-            final JLabel number = new JLabel("<html><font color='white'>&nbsp;" + (templateIndex) + "</font></html>");
+            final JLabel number = new JLabel("<html><font color='white'>&nbsp;" + templateIndex + "</font></html>");
             if (template.getGesture().getInfo() != null) {
                 number.setToolTipText(template.getGesture().getInfo().toString());
                 number.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -776,6 +773,7 @@ public class DashboardScreen extends JPanel {
         return templatePanel;
     }
 
+    @SuppressWarnings({"checkstyle:executablestatementcount", "checkstyle:javancss"})
     private JScrollPane table(String[] classes, boolean thread) {
 
         addGesturePanel = new JPanel[classes.length];
@@ -853,15 +851,14 @@ public class DashboardScreen extends JPanel {
                     addGestureButtons[m].setToolTipText("Add Template to " + classes[m] + " Class");
                     addGestureButtons[m].setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-                    addGestureButtons[m].addMouseListener(new java.awt.event.MouseAdapter() {
+                    @SuppressWarnings("checkstyle:anoninnerlength")
+                    final java.awt.event.MouseAdapter mListener = new java.awt.event.MouseAdapter() {
                         @Override
                         public void mouseEntered(java.awt.event.MouseEvent evt) {
                             try {
                                 ((JButton) evt.getSource()).setIcon(
                                         new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-green-32.png"))));
-
                             } catch (final IOException e) {
-
                                 e.printStackTrace();
                             }
                         }
@@ -872,11 +869,11 @@ public class DashboardScreen extends JPanel {
                                 ((JButton) evt.getSource()).setIcon(
                                         new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
                             } catch (final IOException e) {
-
                                 e.printStackTrace();
                             }
                         }
-                    });
+                    };
+                    addGestureButtons[m].addMouseListener(mListener);
                     addGestureButtons[m].addActionListener(dashboardListener);
                 } catch (final IOException e) {
 

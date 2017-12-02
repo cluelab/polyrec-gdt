@@ -17,17 +17,20 @@ import javax.microedition.io.StreamConnectionNotifier;
 import it.unisa.di.cluelab.polyrec.TPoint;
 import it.unisa.di.cluelab.polyrec.gdt.TemplateScreen;
 
+/**
+ * Wait thread.
+ */
 public class WaitThread implements Runnable {
 
-    /** Constructor */
-    // TestApplet3Swing gui;
-    TemplateScreen gui;
+    public static final String STATE_ZERO = "0";
     private static StreamConnectionNotifier notifier;
-    private static StreamConnection connection = null;
-    public String state = "0";
+    private static StreamConnection connection;
+    // TestApplet3Swing gui;
+    private String state = STATE_ZERO;
+    private TemplateScreen gui;
     private boolean draw = true;
-    LocalDevice local;
-    RemoteDevice dev;
+    private final LocalDevice local;
+    private RemoteDevice dev;
 
     public WaitThread(TemplateScreen gui) throws BluetoothStateException {
 
@@ -50,24 +53,32 @@ public class WaitThread implements Runnable {
 
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     /**
-     * Waiting for connection from devices
-     * 
-     * @throws BluetoothStateException
+     * Waiting for connection from devices.
      */
+    @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "checkstyle:executablestatementcount", "checkstyle:javancss"})
     private void waitForConnection() {
 
-        if (notifier == null && state == "0" && local != null) {
+        if (notifier == null && STATE_ZERO.equals(state) && local != null) {
 
-            final UUID uuid = new UUID(80087355); // "04c6093b-0000-1000-8000-00805f9b34fb"
+            // "04c6093b-0000-1000-8000-00805f9b34fb"
+            final UUID uuid = new UUID(80087355);
             final String url = "btspp://localhost:" + uuid.toString() + ";name=polyrecGDT";
             try {
                 notifier = (StreamConnectionNotifier) Connector.open(url);
 
-                gui.display.set("BT Server Started - Connect your device using 'Blueotooth Gestures' App", 0);
+                gui.getDisplay().set("BT Server Started - Connect your device using 'Blueotooth Gestures' App", 0);
                 state = "1_0";
             } catch (final Exception e) {
-                state = "0";
+                state = STATE_ZERO;
                 e.printStackTrace();
                 return;
             }
@@ -84,7 +95,7 @@ public class WaitThread implements Runnable {
                         public void run() {
                             try {
                                 dev = RemoteDevice.getRemoteDevice(connection);
-                                gui.display.set("Device Connected: " + dev.getFriendlyName(false) + "("
+                                gui.getDisplay().set("Device Connected: " + dev.getFriendlyName(false) + "("
                                         + dev.getBluetoothAddress() + ")", 0);
                             } catch (final IOException e) {
 
@@ -98,7 +109,7 @@ public class WaitThread implements Runnable {
                     // connectionThread.start();
 
                     final InputStream inputStream = connection.openInputStream();
-                    gui.display.set("Device Connected", 0);
+                    gui.getDisplay().set("Device Connected", 0);
 
                     draw = true;
 
@@ -138,7 +149,7 @@ public class WaitThread implements Runnable {
                                 gui.setState(TemplateScreen.STROKE_IN_PROGRESS);
                                 gui.setMode(TemplateScreen.CURRENT);
                                 gui.repaint();
-                                gui.canvas.repaint();
+                                gui.repaintCanvas();
 
                                 first = false;
                             }
@@ -147,22 +158,22 @@ public class WaitThread implements Runnable {
                     }
                 } catch (final EOFException e) {
                     e.printStackTrace();
-                    gui.display.set("Device Connection Lost", 1);
+                    gui.getDisplay().set("Device Connection Lost", 1);
                     e.printStackTrace();
-                    this.state = "0";
+                    this.state = STATE_ZERO;
                     dev = null;
 
                 } catch (final ClassNotFoundException e) {
 
                     e.printStackTrace();
 
-                    this.state = "0";
+                    this.state = STATE_ZERO;
                     dev = null;
                 } catch (final IOException e) {
 
                     e.printStackTrace();
 
-                    this.state = "0";
+                    this.state = STATE_ZERO;
                     dev = null;
                 }
 

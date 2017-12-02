@@ -3,7 +3,14 @@ package it.unisa.di.cluelab.polyrec.gdt;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Clustering result.
+ */
 public class ClusteringResult {
+
+    private double cost;
+    private int[] medoids;
+    private ArrayList<ArrayList<Integer>> matrix;
 
     public ClusteringResult(double cost, int[] medoids, ArrayList<ArrayList<Integer>> matrix) {
         super();
@@ -23,10 +30,6 @@ public class ClusteringResult {
         }
         Arrays.sort(medoids);
     }
-
-    private double cost;
-    private int[] medoids;
-    private ArrayList<ArrayList<Integer>> matrix;
 
     public double getCost() {
         return cost;

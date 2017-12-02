@@ -20,8 +20,13 @@ import javax.swing.SwingUtilities;
  * The ComponentResizer allows you to resize a component by dragging a border of the component.
  */
 public class ComponentResizer extends MouseAdapter {
-    private final static Dimension MINIMUM_SIZE = new Dimension(10, 10);
-    private final static Dimension MAXIMUM_SIZE = new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    protected static final int NORTH = 1;
+    protected static final int WEST = 2;
+    protected static final int SOUTH = 4;
+    protected static final int EAST = 8;
+
+    private static final Dimension MINIMUM_SIZE = new Dimension(10, 10);
+    private static final Dimension MAXIMUM_SIZE = new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
     private static Map<Integer, Integer> cursors = new HashMap<Integer, Integer>();
     {
@@ -39,10 +44,6 @@ public class ComponentResizer extends MouseAdapter {
     private Dimension snapSize;
 
     private int direction;
-    protected static final int NORTH = 1;
-    protected static final int WEST = 2;
-    protected static final int SOUTH = 4;
-    protected static final int EAST = 8;
 
     private Cursor sourceCursor;
     private boolean resizing;
@@ -103,7 +104,7 @@ public class ComponentResizer extends MouseAdapter {
     }
 
     /**
-     * Get the drag insets
+     * Get the drag insets.
      *
      * @return the drag insets
      */
@@ -166,7 +167,7 @@ public class ComponentResizer extends MouseAdapter {
     }
 
     /**
-     * Remove listeners from the specified component
+     * Remove listeners from the specified component.
      *
      * @param component
      *            the component the listeners are removed from
@@ -179,7 +180,7 @@ public class ComponentResizer extends MouseAdapter {
     }
 
     /**
-     * Add the required listeners to the specified component
+     * Add the required listeners to the specified component.
      *
      * @param component
      *            the component the listeners are added to
@@ -253,8 +254,8 @@ public class ComponentResizer extends MouseAdapter {
 
         if (direction == 0) {
             source.setCursor(sourceCursor);
-        } else // use the appropriate resizable cursor
-        {
+        } else {
+            // use the appropriate resizable cursor
             final int cursorType = cursors.get(direction);
             final Cursor cursor = Cursor.getPredefinedCursor(cursorType);
             source.setCursor(cursor);
@@ -306,7 +307,7 @@ public class ComponentResizer extends MouseAdapter {
     }
 
     /**
-     * Restore the original state of the Component
+     * Restore the original state of the Component.
      */
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -328,7 +329,7 @@ public class ComponentResizer extends MouseAdapter {
      */
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (resizing == false) {
+        if (!resizing) {
             return;
         }
 
@@ -390,7 +391,7 @@ public class ComponentResizer extends MouseAdapter {
     }
 
     /**
-     * Determine how far the mouse has moved from where dragging started
+     * Determine how far the mouse has moved from where dragging started.
      */
     private int getDragDistance(int larger, int smaller, int snapSize) {
         final int halfway = snapSize / 2;
@@ -405,15 +406,16 @@ public class ComponentResizer extends MouseAdapter {
      * Adjust the drag value to be within the minimum and maximum range.
      */
     private int getDragBounded(int drag, int snapSize, int dimension, int minimum, int maximum) {
-        while (dimension + drag < minimum) {
-            drag += snapSize;
+        int dragb = drag;
+        while (dimension + dragb < minimum) {
+            dragb += snapSize;
         }
 
-        while (dimension + drag > maximum) {
-            drag -= snapSize;
+        while (dimension + dragb > maximum) {
+            dragb -= snapSize;
         }
 
-        return drag;
+        return dragb;
     }
 
     /**

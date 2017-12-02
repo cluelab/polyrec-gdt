@@ -13,19 +13,21 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author roberto
  *
  */
+@SuppressWarnings("checkstyle:multiplestringliterals")
 public class TableToCsv {
+
+    private final JTable table;
 
     public TableToCsv(JTable table) {
         super();
         this.table = table;
     }
 
-    private final JTable table;
-
     /**
-     * Convert and save table to csv file
+     * Convert and save table to csv file.
      * 
      * @throws IOException
+     *             If an exception occurs while writing the file
      */
     public void convert() throws IOException {
 

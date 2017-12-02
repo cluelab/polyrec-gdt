@@ -8,26 +8,31 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+/**
+ * Menu.
+ */
+@SuppressWarnings("checkstyle:multiplestringliterals")
 public class Menu {
 
-    MainFrame mainFrame;
+    protected MainFrame mainFrame;
 
-    JMenuItem exportTemplatesFile;
-    JMenuItem exit;
-    JMenuItem settings;
-    JMenuItem send;
-    JMenuItem replaceClassesSamples;
-    JMenuItem addClassesSamples;
-    JMenuItem replaceClasses;
-    JMenuItem addTemplates;
-    JMenuItem exportRecognizer;
+    // JMenuItem exportTemplatesFile;
+    protected JMenuItem exit;
+    protected JMenuItem settings;
+    protected JMenuItem send;
+    protected JMenuItem replaceClassesSamples;
+    protected JMenuItem addClassesSamples;
+    protected JMenuItem replaceClasses;
+    protected JMenuItem addTemplates;
+    protected JMenuItem exportRecognizer;
 
-    JMenuItem save;
+    protected JMenuItem save;
 
-    JMenuItem saveas;
+    protected JMenuItem saveas;
 
-    JMenuItem newGS;
+    protected JMenuItem newGS;
 
+    @SuppressWarnings({"checkstyle:executablestatementcount", "checkstyle:javancss"})
     public Menu(MainFrame mainFrame) throws IOException {
         this.mainFrame = mainFrame;
         final JMenuBar menuBar = new JMenuBar();

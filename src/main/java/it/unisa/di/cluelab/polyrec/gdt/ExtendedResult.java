@@ -48,6 +48,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import it.unisa.di.cluelab.polyrec.Result;
 
+/**
+ * Result extended with ranking.
+ */
 public class ExtendedResult extends Result {
     private int templateIndex = -1;
     private TreeMap<String, double[]> ranking = new TreeMap<String, double[]>();
@@ -109,8 +112,8 @@ public class ExtendedResult extends Result {
 
         // sorting
         table.setAutoCreateRowSorter(true);
-        final DefaultRowSorter sorter = ((DefaultRowSorter) table.getRowSorter());
-        final ArrayList list = new ArrayList();
+        final DefaultRowSorter<?, ?> sorter = (DefaultRowSorter<?, ?>) table.getRowSorter();
+        final ArrayList<RowSorter.SortKey> list = new ArrayList<RowSorter.SortKey>();
 
         list.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
         sorter.setSortKeys(list);
@@ -126,6 +129,8 @@ public class ExtendedResult extends Result {
         // table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
         table.getColumn(table.getColumnName(0)).setCellRenderer(new DefaultTableCellRenderer() {
+            private static final long serialVersionUID = -7909639359859299385L;
+
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                     boolean hasFocus, int row, int column) {
@@ -168,8 +173,8 @@ public class ExtendedResult extends Result {
 
     // round 'n' to 'd' decimals
     private static double round(double n, double d) {
-        d = Math.pow(10, d);
-        return Math.round(n * d) / d;
+        final double de = Math.pow(10, d);
+        return Math.round(n * de) / de;
     }
 
 }

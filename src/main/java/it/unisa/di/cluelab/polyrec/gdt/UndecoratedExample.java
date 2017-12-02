@@ -21,16 +21,46 @@ import javax.swing.border.LineBorder;
 
 import it.unisa.di.cluelab.polyrec.Gesture;
 
+/**
+ * Undecorated example.
+ */
 public class UndecoratedExample {
 
     private final JFrame frame = new JFrame();
 
+    void createAnsShowGui(Gesture gesture) {
+        final ComponentResizer cr = new ComponentResizer();
+        cr.setMinimumSize(new Dimension(150, 150));
+        cr.setMaximumSize(new Dimension(800, 800));
+        cr.registerComponent(frame);
+        cr.setSnapSize(new Dimension(10, 10));
+        // frame.setUndecorated(true);
+
+        // frame.add(new OutsidePanel(gesture));
+        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        frame.pack();
+        frame.setSize(200, 200);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        frame.setAlwaysOnTop(true);
+        frame.add(new Thumbnail(gesture), BorderLayout.CENTER);
+        System.setProperty("sun.java2d.noddraw", "true");
+
+        // WindowUtils.setWindowTransparent(this.getFrames()[0], true);
+
+    }
+
+    /**
+     * Border panel with JButton.
+     */
     class BorderPanel extends JPanel {
+        private static final long serialVersionUID = 8888602168443119680L;
 
         private JButton label;
-        int pX, pY;
+        private int pX;
+        private int pY;
 
-        public BorderPanel() {
+        BorderPanel() {
             try {
                 label = new JButton(new ImageIcon(ImageIO.read(getClass().getResource("/img/multiply-white-16.png"))));
             } catch (final IOException e1) {
@@ -78,36 +108,18 @@ public class UndecoratedExample {
         }
     }
 
+    /**
+     * Outside panel.
+     */
     class OutsidePanel extends JPanel {
+        private static final long serialVersionUID = 4240469849570562792L;
 
-        public OutsidePanel(Gesture gesture) {
+        OutsidePanel(Gesture gesture) {
             setLayout(new BorderLayout());
             add(new Thumbnail(gesture), BorderLayout.CENTER);
             add(new BorderPanel(), BorderLayout.PAGE_START);
             setBorder(new LineBorder(Color.BLACK, 2));
         }
-    }
-
-    void createAnsShowGui(Gesture gesture) {
-        final ComponentResizer cr = new ComponentResizer();
-        cr.setMinimumSize(new Dimension(150, 150));
-        cr.setMaximumSize(new Dimension(800, 800));
-        cr.registerComponent(frame);
-        cr.setSnapSize(new Dimension(10, 10));
-        // frame.setUndecorated(true);
-
-        // frame.add(new OutsidePanel(gesture));
-        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        frame.pack();
-        frame.setSize(200, 200);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        frame.setAlwaysOnTop(true);
-        frame.add(new Thumbnail(gesture), BorderLayout.CENTER);
-        System.setProperty("sun.java2d.noddraw", "true");
-
-        // WindowUtils.setWindowTransparent(this.getFrames()[0], true);
-
     }
 
     // public static void main(String[] args) {

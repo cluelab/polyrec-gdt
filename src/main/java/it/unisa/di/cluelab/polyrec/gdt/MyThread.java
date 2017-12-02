@@ -8,9 +8,12 @@ import javax.swing.border.LineBorder;
 
 import it.unisa.di.cluelab.polyrec.Gesture;
 
+/**
+ * unused (commented in DashboardScreen).
+ */
 public class MyThread implements Runnable {
 
-    Gesture g;
+    private final Gesture g;
     private final Box templatePanel;
     private final String className;
     private final DashboardScreen dashboardScreen;

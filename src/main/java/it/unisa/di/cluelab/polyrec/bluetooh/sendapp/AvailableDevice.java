@@ -2,6 +2,9 @@ package it.unisa.di.cluelab.polyrec.bluetooh.sendapp;
 
 import javax.bluetooth.RemoteDevice;
 
+/**
+ * Available device.
+ */
 public class AvailableDevice {
     private RemoteDevice device;
     private String obexServiceURL;

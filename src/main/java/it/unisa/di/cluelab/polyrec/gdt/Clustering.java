@@ -10,19 +10,15 @@ import it.unisa.di.cluelab.polyrec.Polyline;
  *
  */
 public class Clustering {
+    private final ExtendedPolyRecognizerGSS recognizer;
 
     public Clustering(ExtendedPolyRecognizerGSS recognizer) {
         super();
         this.recognizer = recognizer;
     }
 
-    ExtendedPolyRecognizerGSS recognizer;
-
     /**
-     * trova il medoide della classe
-     * 
-     * @param className
-     * @return
+     * trova il medoide della classe.
      */
     int overallmedoid(String className) {
 
@@ -56,17 +52,11 @@ public class Clustering {
     }
 
     /**
-     * Algoritmo k-medoids
-     * 
-     * @param className
-     * @param k
-     * @param maxIt
-     * @return
+     * Algoritmo k-medoids.
      */
-    ClusteringResult kmedoids(String className, int k, int maxIt) {
-        if (maxIt == 0) {
-            maxIt = 40;
-        }
+    @SuppressWarnings("checkstyle:executablestatementcount")
+    ClusteringResult kmedoids(String className, int k, int maxIter) {
+        final int maxIt = maxIter == 0 ? 40 : maxIter;
         final ArrayList<Polyline> polylines = recognizer.getTemplate(className);
 
         // matrice del clustering
@@ -96,7 +86,8 @@ public class Clustering {
         // assegnazione dei non medoidi al cluster con medoide più vicino
         double cost = assignNonMedoid(polylines, nonmedoids, clusteringMatrix, k);
 
-        int it = 0;// iterazioni;
+        // iterazioni
+        int it = 0;
 
         while (it < maxIt && nonmedoids.size() > 0) {
             // selezione di un oggetto non medoide
@@ -180,11 +171,10 @@ public class Clustering {
     }
 
     /**
-     * algoritmo silhouette per scegliere il miglior k
-     * 
-     * @param classname
-     * @return
+     * algoritmo silhouette per scegliere il miglior k.
      */
+    @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "checkstyle:executablestatementcount", "checkstyle:javancss",
+        "checkstyle:nestedfordepth", "checkstyle:npathcomplexity"})
     public int silhouette(String classname) {
         final double[] s = new double[recognizer.getTemplate(classname).size()];
         for (int k = 2; k <= recognizer.getTemplate(classname).size() - 1 && k <= 10; k++) {
@@ -303,7 +293,8 @@ public class Clustering {
     }
 
     // selezione dei k medoidi iniziali
-    private ArrayList selectFarthest(String classname, int k) {
+    @SuppressWarnings("unused")
+    private ArrayList<Integer> selectFarthest(String classname, int k) {
 
         final Random rand = new Random();
 

@@ -15,54 +15,34 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 /**
  * @author roberto
  *
  */
-@SuppressWarnings("serial")
 public class MainFrame extends JFrame implements WindowListener {
+    static final String EXTENSION_PGS = "PolyRec gesture set (.pgs)";
+    static final String EXTENSION_XML = "Extnsible markup language (.xml)";
+    static final String EXTENSION_JAR = "Java archive (.jar)";
 
     static final int MAINSCREEN = 0;
     static final int DETAILSCREEN = 1;
 
-    int screen_mode = MAINSCREEN;
+    private static final long serialVersionUID = 4781489406562650482L;
 
-    private String openedFile;// name of opened file
-    private String extOpenedFile;// extension of opened file
+    protected int screenMode = MAINSCREEN;
 
-    static final String EXTENSION_PGS = "PolyRec gesture set (.pgs)";
-    static final String EXTENSION_XML = "Extnsible markup language (.xml)";
-    static final String EXTENSION_JAR = "Java archive (.jar)";
+    // name of opened file
+    private String openedFile;
+    // extension of opened file
+    private String extOpenedFile;
 
     private ExtendedPolyRecognizerGSS recognizer;
 
     private JPanel container;
     private final Menu menu;
 
-    /**
-     * @param args
-     * @throws ClassNotFoundException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws UnsupportedLookAndFeelException
-     * @throws IOException
-     */
-    public static void main(String[] args) throws ClassNotFoundException, InstantiationException,
-            IllegalAccessException, UnsupportedLookAndFeelException, IOException {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-        new MainFrame();
-
-        Settings.loadSettings();
-
-    }
-
-    /**
-     * @throws IOException
-     */
     public MainFrame() throws IOException {
 
         recognizer = new ExtendedPolyRecognizerGSS();
@@ -84,9 +64,6 @@ public class MainFrame extends JFrame implements WindowListener {
 
     }
 
-    /**
-     * @param panel
-     */
     public void setScreen(JPanel panel) {
 
         container = panel;
@@ -210,6 +187,15 @@ public class MainFrame extends JFrame implements WindowListener {
             }
         }
         return false;
+    }
+
+    public static void main(String[] args) throws Exception {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        new MainFrame();
+
+        Settings.loadSettings();
+
     }
 
 }

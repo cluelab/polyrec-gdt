@@ -1,6 +1,5 @@
 package it.unisa.di.cluelab.polyrec.bluetooh;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -10,18 +9,20 @@ import javax.microedition.io.StreamConnection;
 import it.unisa.di.cluelab.polyrec.TPoint;
 import it.unisa.di.cluelab.polyrec.gdt.TemplateScreen;
 
-//not used
+/**
+ * not used.
+ */
 public class ProcessConnectionThread implements Runnable {
 
     private final StreamConnection connection;
-    ProcessConnectionThread thread;
+    // ProcessConnectionThread thread;
 
     // Constant that indicate command from devices
     // private static final int EXIT_CMD = -1;
     // private static final int KEY_RIGHT = 1;
     // private static final int KEY_LEFT = 2;
     // TestApplet3Swing gui;
-    TemplateScreen gui;
+    private final TemplateScreen gui;
 
     // public ProcessConnectionThread(StreamConnection connection, TestApplet3Swing gui) {
     // mConnection = connection;
@@ -41,7 +42,6 @@ public class ProcessConnectionThread implements Runnable {
             boolean first = true;
             ObjectInputStream ois = null;
             while (true) {
-
                 ois = new ObjectInputStream(inputStream);
 
                 final TPoint tpoint = (TPoint) ois.readObject();
@@ -50,21 +50,16 @@ public class ProcessConnectionThread implements Runnable {
                     gui.strokeCompleted();
                     first = true;
                     System.out.println("last");
-
                 } else if (tpoint.getX() == -2) {
-
                     gui.clearCanvas();
                     System.out.println("clear canvas");
-
                 } else if (tpoint.getX() == -3) {
-
                     connection.close();
                     Thread.currentThread().interrupt();
                     System.out.println("stop processthread");
                     ois.close();
                     // this.state = "0";
                     return;
-
                 } else if (first) {
                     System.out.println("first");
                     gui.startStroke();
@@ -76,26 +71,17 @@ public class ProcessConnectionThread implements Runnable {
                     gui.setState(TemplateScreen.STROKE_IN_PROGRESS);
                     gui.setMode(TemplateScreen.CURRENT);
                     gui.repaint();
-                    gui.canvas.repaint();
+                    gui.repaintCanvas();
 
                     first = false;
                 }
-
             }
-        } catch (final EOFException e) {
-            e.printStackTrace();
-
-        } catch (final ClassNotFoundException e) {
+        } catch (ClassNotFoundException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        // ProcessConnectionThread connectionThread = new ProcessConnectionThread(connection, gui);
+        // ProcessConnectionThread connectionThread = new ProcessConnectionThread(connection,gui);
         // Thread processThread = new Thread(connectionThread);
         // processThread.start();
-        catch (final IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
     }
 }
