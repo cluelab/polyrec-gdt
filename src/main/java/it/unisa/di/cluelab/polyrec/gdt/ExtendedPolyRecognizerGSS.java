@@ -465,6 +465,66 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
 
     }
 
+    public String exportJava() {
+        final StringBuilder out = new StringBuilder();
+        out.append("\t// Instantiating the gesture recognizer\n"
+                + "\tprivate PolyRecognizerGSS recognizer = initRecognizer();\n\n"
+                + "\t// Add your actions and call this method from your code with the gesture performed by the user as"
+                + " parameter\n" + "\tprivate void handleGesture(it.unisa.di.cluelab.polyrec.Gesture drawnGesture) {\n"
+                + "\t\tit.unisa.di.cluelab.polyrec.Result r = recognizer.recognize(drawnGesture);\n"
+                + "\t\tif (r.getScore() < 0) {\n"
+                + "\t\t\t// TODO (if needed) use a threshold in the condition above to handle imprecise gestures\n"
+                + "\t\t\treturn;\n\t\t}\n" + "\t\tswitch(r.getName()) {\n");
+        for (final String cn : templates.keySet()) {
+            @SuppressWarnings("deprecation")
+            final String e = org.apache.commons.lang3.StringEscapeUtils.escapeJava(cn);
+            out.append("\t\t\tcase \"" + e + "\":\n\t\t\t\t// TODO add action for: " + cn + "\");\n\t\t\t\tbreak;\n");
+        }
+
+        out.append("\t\t}\n\t}\n\n" + "\t// You do not need to change this method\n"
+                + "\tprivate static PolyRecognizerGSS initRecognizer() {\n"
+                + "\t\tPolyRecognizerGSS r = new PolyRecognizerGSS();\n" + "\t\tString cname;\n");
+        for (final Entry<String, ArrayList<Polyline>> e : templates.entrySet()) {
+            out.append("\t\tcname = \"" + e.getKey() + "\";\n");
+            for (final Polyline poly : e.getValue()) {
+                final Gesture g = poly.getGesture();
+                final String sep = ", ";
+                out.append("\t\taddTemplate(r, cname, " + g.isRotInv() + sep + g.getPointers());
+                double minX = Double.POSITIVE_INFINITY;
+                double minY = Double.POSITIVE_INFINITY;
+                long minT = Long.MAX_VALUE;
+                for (final TPoint p : g.getPoints()) {
+                    if (p.x < minX) {
+                        minX = p.x;
+                    }
+                    if (p.y < minY) {
+                        minY = p.y;
+                    }
+                    if (p.time < minT) {
+                        minT = p.time;
+                    }
+                }
+                minX--;
+                minY--;
+                for (final TPoint p : g.getPoints()) {
+                    out.append(sep + Math.round((p.x - minX) * 100) + sep + Math.round((p.y - minY) * 100) + sep
+                            + (p.time - minT));
+                }
+                out.append(");\n");
+            }
+            out.append('\n');
+        }
+        out.append("\t\treturn r;\n" + "\t}\n\n" + "\t// You do not need to change this method\n"
+                + "\tprivate static void addTemplate"
+                + "(PolyRecognizerGSS rec, String name, boolean rotInv, int numPointers, int... xyts) {\n"
+                + "\t\tit.unisa.di.cluelab.polyrec.Gesture g = new it.unisa.di.cluelab.polyrec.Gesture();\n"
+                + "\t\tfor (int i = 0; i < xyts.length; i += 3) {\n"
+                + "\t\t\tg.addPoint(new it.unisa.di.cluelab.polyrec.TPoint(xyts[i], xyts[i + 1], xyts[i + 2]));\n"
+                + "\t\t}\n" + "\t\tg.setRotInv(rotInv);\n" + "\t\tg.setPointers(numPointers);\n"
+                + "\t\trec.addTemplate(name, g);\n" + "\t}");
+        return out.toString();
+    }
+
     /*
      * Add $1 gesture set samples to the gesture set
      */

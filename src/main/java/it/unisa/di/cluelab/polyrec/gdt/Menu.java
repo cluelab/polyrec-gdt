@@ -80,7 +80,7 @@ public class Menu {
         addTemplates.addActionListener(listener);
         importMenu.add(addTemplates);
 
-        exportRecognizer = new JMenuItem("Export Recognizer (.jar)");
+        exportRecognizer = new JMenuItem("Export Recognizer (Java)");
         exportRecognizer.addActionListener(listener);
         exportRecognizer.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/send.png"))));
 
@@ -98,7 +98,7 @@ public class Menu {
 
         updateMenu();
         menu.add(send);
-        // menu.add(exportRecognizer);
+        menu.add(exportRecognizer);
         menu.addSeparator();
         menu.add(addSamplesMenu);
 

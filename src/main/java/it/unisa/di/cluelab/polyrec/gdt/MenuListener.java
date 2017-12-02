@@ -1,5 +1,8 @@
 package it.unisa.di.cluelab.polyrec.gdt;
 
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -14,9 +17,14 @@ import java.util.Vector;
 import javax.bluetooth.BluetoothStateException;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.DefaultEditorKit;
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -121,37 +129,29 @@ public class MenuListener implements ActionListener {
         }
         // export recognizer
         if (e.getSource() == mainFrame.getMenu().exportRecognizer) {
-
-            final JFileChooser saveFile = new JFileChooser();
-            saveFile.setSelectedFile(new File("polyrec-recognizer2.jar"));
-            final FileNameExtensionFilter filter1 = new FileNameExtensionFilter(MainFrame.EXTENSION_JAR, "jar");
-            saveFile.setFileFilter(filter1);
-            final int retrival = saveFile.showSaveDialog(null);
-
-            if (retrival == JFileChooser.APPROVE_OPTION) {
-
-                final File f1 = new File("polyrec-recognizer2.jar");
-                final File f2;
-                if (saveFile.getSelectedFile().toString().endsWith(".jar")) {
-                    f2 = new File(saveFile.getSelectedFile().toString());
-                } else {
-                    f2 = new File(saveFile.getSelectedFile().toString() + ".jar");
-                }
-
-                try {
-                    copyFile(f1, f2);
-                } catch (final IOException e1) {
-
-                    JOptionPane.showMessageDialog(mainFrame, "Error exporting recognizer\n(" + e1.getMessage() + ")",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                if (mainFrame.getScreen() instanceof DashboardScreen) {
-                    final DashboardScreen screen = (DashboardScreen) mainFrame.getScreen();
-                    screen.display.set("Reconignizer exported", 0);
-                } else if (mainFrame.getScreen() instanceof TemplateScreen) {
-                    final TemplateScreen screen = (TemplateScreen) mainFrame.getScreen();
-                    screen.display.set("Reconignizer exported", 0);
-                }
+            if (mainFrame.getRecognizer().getTamplatesNumber() == 0) {
+                JOptionPane.showMessageDialog(mainFrame, "No gesture to export.", "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            final String code = mainFrame.getRecognizer().exportJava();
+            final String text = "You may recognize gestures with PolyRec in your Java application by pasting the\n"
+                    + "code below into the body of a Java class (you may need to add the PolyRec library\n"
+                    + "to the build path and import it.unisa.di.cluelab.polyrec.PolyRecognizerGSS).\n\n" + code;
+            final JTextArea textarea = new JTextArea(text, 25, 82);
+            textarea.setTabSize(4);
+            textarea.setFont(new Font("monospaced", Font.PLAIN, 14));
+            textarea.setEditable(false);
+            final JPopupMenu popup = new JPopupMenu();
+            final JMenuItem item = new JMenuItem(new DefaultEditorKit.CopyAction());
+            item.setText("Copy");
+            popup.add(item);
+            textarea.setComponentPopupMenu(popup);
+            final JScrollPane scrollPane = new JScrollPane(textarea);
+            final String[] btns = new String[] {"Copy code to clipboard", "Cancel"};
+            if (JOptionPane.showOptionDialog(mainFrame, scrollPane, "Export Recognizer", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.PLAIN_MESSAGE, null, btns, btns[1]) == JOptionPane.YES_OPTION) {
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(code), null);
             }
             return;
         }
