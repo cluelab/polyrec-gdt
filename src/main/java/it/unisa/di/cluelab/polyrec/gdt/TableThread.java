@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -31,7 +32,7 @@ public class TableThread implements Runnable {
 
         this.dashboardScreen = dashboardScreen;
 
-        this.classes = classes;
+        this.classes = Arrays.copyOf(classes, classes.length);
 
     }
 

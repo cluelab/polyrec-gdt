@@ -15,7 +15,7 @@ public class ClusteringResult {
     public ClusteringResult(double cost, int[] medoids, ArrayList<ArrayList<Integer>> matrix) {
         super();
         this.cost = cost;
-        this.medoids = medoids;
+        this.medoids = Arrays.copyOf(medoids, medoids.length);
         this.matrix = matrix;
     }
 
@@ -48,11 +48,11 @@ public class ClusteringResult {
     }
 
     public int[] getMedoids() {
-        return medoids;
+        return Arrays.copyOf(medoids, medoids.length);
     }
 
     public void setMedoids(int[] medoids) {
-        this.medoids = medoids;
+        this.medoids = Arrays.copyOf(medoids, medoids.length);
     }
 
     @Override

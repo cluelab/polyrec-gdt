@@ -29,7 +29,6 @@ public class ObexPutClient {
      * @throws IOException
      *             if a connection error occurs
      */
-    @SuppressWarnings("checkstyle:innerassignment")
     public void send() throws IOException {
 
         System.out.println("Connecting to " + serverURL);
@@ -53,7 +52,8 @@ public class ObexPutClient {
         try (InputStream bInputStream = getClass().getResourceAsStream("/" + APK_FILE)) {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final byte[] buffer = new byte[4096];
-            for (int read; (read = bInputStream.read(buffer, 0, buffer.length)) != -1;) {
+            int read;
+            while ((read = bInputStream.read(buffer, 0, buffer.length)) != -1) {
                 baos.write(buffer, 0, read);
             }
             bFile = baos.toByteArray();

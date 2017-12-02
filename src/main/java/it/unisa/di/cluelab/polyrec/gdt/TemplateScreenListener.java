@@ -55,7 +55,7 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
         templateScreen.canvas.removeMouseMotionListener(templateScreen);
         // pulisci tela canvas
         if (e.getSource() == templateScreen.clearCanvas) {
-            templateScreen.gesturesPanel.removeAll();
+            // templateScreen.gesturesPanel.removeAll();
             templateScreen.showOptions.removeAll();
             templateScreen.clearCanvas();
             return;

@@ -254,13 +254,11 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
         // confrontato con
         final Polyline template = polyPair.getValue();
 
-        final List<Vector> vectorsU = unknown.getVectors();
         if (VERBOSE) {
-            System.out.println(vectorsU);
+            System.out.println(unknown.getVectors());
         }
-        final List<Vector> vectorsT = template.getVectors();
         if (VERBOSE) {
-            System.out.println(vectorsT);
+            System.out.println(template.getVectors());
         }
         Double bestDist = null;
         if (!GSS) {
@@ -272,7 +270,7 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
             if (VERBOSE) {
                 System.out.println("Indicative angleT = " + tAngle);
             }
-            bestDist = getDistanceAtAngle(vectorsU, vectorsT, -uAngle, -tAngle);
+            bestDist = getDistanceAtAngle(unknown.getVectors(), template.getVectors(), -uAngle, -tAngle);
             if (VERBOSE) {
                 System.out.println("Distance at = " + (-uAngle) + "; dist = " + bestDist);
             }

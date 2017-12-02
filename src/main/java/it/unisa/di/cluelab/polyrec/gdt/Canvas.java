@@ -157,7 +157,7 @@ public class Canvas extends JPanel {
                     if (entry.getKey() == TemplateScreen.GESTURE) {
 
                         for (int pointer = 2; pointer <= gesture.getPointers(); pointer++) {
-                            if (pointer % 2 == 1) {
+                            if (pointer % 2 != 0) {
                                 g2.drawLine((int) p1.getX() + 10 * (pointer / 2), (int) p1.getY() + 10 * (pointer / 2),
                                         (int) p2.getX() + 10 * (pointer / 2), (int) p2.getY() + 10 * (pointer / 2));
                             } else {

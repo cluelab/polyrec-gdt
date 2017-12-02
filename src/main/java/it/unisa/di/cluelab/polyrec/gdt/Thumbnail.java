@@ -63,8 +63,8 @@ public class Thumbnail extends JLayeredPane {
 
         final Double r = normalizedGesture.getBoundingBox();
         // per centrare il template
-        final double fattorex = getWidth() / 2 - ((r.getX()) + ((r.getWidth()) / 2));
-        final double fattorey = getHeight() / 2 - ((r.getY()) + ((r.getHeight()) / 2));
+        final double fattorex = getWidth() * 0.5 - ((r.getX()) + ((r.getWidth()) * 0.5));
+        final double fattorey = getHeight() * 0.5 - ((r.getY()) + ((r.getHeight()) * 0.5));
 
         // primo punto
         g2.setStroke(new BasicStroke(5));
@@ -84,7 +84,7 @@ public class Thumbnail extends JLayeredPane {
             for (int pointer = 2; pointer <= normalizedGesture.getPointers(); pointer++) {
                 final int strokesdistance = 10;
 
-                if (pointer % 2 == 1) {
+                if (pointer % 2 != 0) {
                     g2.drawLine((int) p1.getX() + (int) fattorex + strokesdistance * (pointer / 2),
                             (int) p1.getY() + (int) fattorey + strokesdistance * (pointer / 2),
                             (int) p2.getX() + (int) fattorex + strokesdistance * (pointer / 2),

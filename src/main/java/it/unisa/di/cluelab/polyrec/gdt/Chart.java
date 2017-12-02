@@ -245,40 +245,39 @@ public class Chart extends JFrame implements ItemListener {
     }
 
     // con singolo dataset (non usato)
-    @SuppressWarnings("unused")
-    private JFreeChart createChart(final CategoryDataset dataset) {
-        final JFreeChart chart;
-        if (this.type == LINE) {
-            chart = ChartFactory.createLineChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
-                    dataset, PlotOrientation.VERTICAL, true, true, false);
-        } else {
-            chart = ChartFactory.createBarChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
-                    dataset, PlotOrientation.VERTICAL, true, true, false);
-        }
-
-        chart.setBackgroundPaint(Color.white);
-
-        // get a reference to the plot for further customisation...
-        final CategoryPlot plot = chart.getCategoryPlot();
-        plot.setBackgroundPaint(Color.lightGray);
-        plot.setDomainGridlinePaint(Color.white);
-        plot.setRangeGridlinePaint(Color.white);
-        plot.getDomainAxis().setTickLabelFont(new Font("Arial", Font.PLAIN, 16));
-        plot.getDomainAxis().setLabelFont(new Font("Arial", Font.PLAIN, 20));
-        plot.getRangeAxis().setTickLabelFont(new Font("Arial", Font.PLAIN, 16));
-        plot.getRangeAxis().setLabelFont(new Font("Arial", Font.PLAIN, 20));
-
-        if (this.type == BAR) {
-            ((BarRenderer) plot.getRenderer()).setBarPainter(new StandardBarPainter());
-        } else {
-            final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
-            renderer.setBaseShapesVisible(true);
-        }
-        final CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6.0));
-
-        return chart;
-    }
+    // private JFreeChart createChart(final CategoryDataset dataset) {
+    // final JFreeChart chart;
+    // if (this.type == LINE) {
+    // chart = ChartFactory.createLineChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
+    // dataset, PlotOrientation.VERTICAL, true, true, false);
+    // } else {
+    // chart = ChartFactory.createBarChart(title, "Template", rankingTable.getModel().getColumnName(columnIndex),
+    // dataset, PlotOrientation.VERTICAL, true, true, false);
+    // }
+    //
+    // chart.setBackgroundPaint(Color.white);
+    //
+    // // get a reference to the plot for further customisation...
+    // final CategoryPlot plot = chart.getCategoryPlot();
+    // plot.setBackgroundPaint(Color.lightGray);
+    // plot.setDomainGridlinePaint(Color.white);
+    // plot.setRangeGridlinePaint(Color.white);
+    // plot.getDomainAxis().setTickLabelFont(new Font("Arial", Font.PLAIN, 16));
+    // plot.getDomainAxis().setLabelFont(new Font("Arial", Font.PLAIN, 20));
+    // plot.getRangeAxis().setTickLabelFont(new Font("Arial", Font.PLAIN, 16));
+    // plot.getRangeAxis().setLabelFont(new Font("Arial", Font.PLAIN, 20));
+    //
+    // if (this.type == BAR) {
+    // ((BarRenderer) plot.getRenderer()).setBarPainter(new StandardBarPainter());
+    // } else {
+    // final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+    // renderer.setBaseShapesVisible(true);
+    // }
+    // final CategoryAxis domainAxis = plot.getDomainAxis();
+    // domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6.0));
+    //
+    // return chart;
+    // }
 
     @Override
     public void itemStateChanged(ItemEvent e) {

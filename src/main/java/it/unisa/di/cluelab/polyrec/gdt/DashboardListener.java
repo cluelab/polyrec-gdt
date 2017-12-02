@@ -284,7 +284,7 @@ public class DashboardListener implements ActionListener, MouseListener {
 
             if (e.getSource() == dashboardScreen.checkTemplates) {
                 CursorToolkit.startWaitCursor(mainClass.getRootPane());
-                final Properties applicationProps = Settings.applicationProps;
+                final Properties applicationProps = Settings.APPLICATION_PROPS;
 
                 final Display dialogDisplay = new Display();
                 final JPanel displayPanel = new JPanel(new FlowLayout());
@@ -561,30 +561,24 @@ public class DashboardListener implements ActionListener, MouseListener {
                 if (selectedOption == JOptionPane.YES_OPTION) {
                     // CursorToolkit.startWaitCursor(mainScreen);
                     final String[] nameparts = buttonName.split("_");
+                    final ArrayList<Polyline> templates = mainClass.getRecognizer().getTemplate(nameparts[1]);
                     String displayMessage;
                     if (nameparts.length > 2) {
                         displayMessage = "Template " + nameparts[2] + " of class " + nameparts[1].toUpperCase()
-                                + " is now";
+                                + " is now ";
+                        try {
+                            final Gesture g = templates.get(Integer.parseInt(nameparts[2])).getGesture();
+                            g.setRotInv(!g.isRotInv());
+                            displayMessage += g.isRotInv() ? "Rotation Invariant" : "Not Rotation Invariant";
+                        } catch (final Exception e1) {
+                            displayMessage += e1.toString();
+                        }
                     } else {
                         displayMessage = "Templates of class " + nameparts[1].toUpperCase()
                                 + " are now Rotation Invariant";
-                    }
-                    final ArrayList<Polyline> templates = mainClass.getRecognizer().getTemplate(nameparts[1]);
-                    for (int i = 0; i < templates.size(); i++) {
-                        if (nameparts.length > 2 && Integer.parseInt(nameparts[2]) == i) {
-                            if (!templates.get(i).getGesture().isRotInv()) {
-
-                                templates.get(i).getGesture().setRotInv(true);
-                                displayMessage += " Rotation Invariant";
-                            } else {
-                                templates.get(i).getGesture().setRotInv(false);
-                                displayMessage += " Not Rotation Invariant";
-                            }
-                        }
-                        if (nameparts.length <= 2) {
+                        for (int i = 0; i < templates.size(); i++) {
                             templates.get(i).getGesture().setRotInv(true);
                         }
-
                     }
 
                     // int verticalScrollValue = ((MainScreen) mainClass.getScreen()).scrollPane.getVerticalScrollBar()
@@ -764,7 +758,7 @@ public class DashboardListener implements ActionListener, MouseListener {
 
     private String verifySimilarity(int scoreLimit, JEditorPane textArea) {
 
-        String resultString = "";
+        final StringBuilder resultString = new StringBuilder();
         final String[] classes = mainClass.getRecognizer().getClassNames().toArray(new String[0]);
         // per ogni classe
         String classString = "";
@@ -786,20 +780,20 @@ public class DashboardListener implements ActionListener, MouseListener {
                         classes[i], scoreLimit);
 
                 if (r.size() > 0) {
-                    resultString += "<b>Template " + p + " of Class " + classes[i].toUpperCase()
-                            + " is too similar to:</b><br/>";
+                    resultString.append("<b>Template " + p + " of Class " + classes[i].toUpperCase()
+                            + " is too similar to:</b><br/>");
                     for (final Result result : r) {
 
-                        resultString += result.toString() + "<br/>";
+                        resultString.append(result.toString() + "<br/>");
 
                     }
-                    resultString += "<br/>";
+                    resultString.append("<br/>");
                 }
 
             }
 
         }
-        return resultString;
+        return resultString.toString();
 
     }
 
@@ -852,7 +846,7 @@ public class DashboardListener implements ActionListener, MouseListener {
         int rowcount = 0;
         for (int m = 0; m < classes.length; m++) {
 
-            if (className == null || (className != null && classes[m].equals(className))) {
+            if (className == null || className.equals(classes[m])) {
                 // System.out.println("OOOK");
                 final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[m]);
 
@@ -955,7 +949,7 @@ public class DashboardListener implements ActionListener, MouseListener {
             }
         });
 
-        if (className != null || (className == null && dashboardScreen.templatesNum < 30)) {
+        if (className != null || dashboardScreen.templatesNum < 30) {
             final JButton chart = new JButton("Show Chart");
             chart.addActionListener(new ActionListener() {
 

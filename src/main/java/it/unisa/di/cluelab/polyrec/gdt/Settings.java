@@ -26,7 +26,7 @@ import javax.swing.WindowConstants;
 @SuppressWarnings({"checkstyle:classdataabstractioncoupling", "checkstyle:multiplestringliterals"})
 public class Settings extends JFrame {
 
-    protected static Properties applicationProps = new Properties();
+    static final Properties APPLICATION_PROPS = new Properties();
 
     private static final long serialVersionUID = 8009954606425204167L;
 
@@ -53,7 +53,7 @@ public class Settings extends JFrame {
         p.add(scoreLimitLabel);
         final JTextField scoreLimitText = new JTextField(5);
 
-        scoreLimitText.setText(applicationProps.getProperty("scorelimit"));
+        scoreLimitText.setText(APPLICATION_PROPS.getProperty("scorelimit"));
         scoreLimitText.setName("scorelimit");
         scoreLimitLabel.setLabelFor(scoreLimitText);
         p.add(scoreLimitText);
@@ -69,7 +69,7 @@ public class Settings extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                applicationProps.setProperty(scoreLimitText.getName(), scoreLimitText.getText());
+                APPLICATION_PROPS.setProperty(scoreLimitText.getName(), scoreLimitText.getText());
                 saveSettings();
                 dispose();
 
@@ -85,22 +85,21 @@ public class Settings extends JFrame {
     public static void loadSettings() {
 
         try {
-            final FileInputStream in = new FileInputStream("config.properties");
-
-            applicationProps.load(in);
+            try (FileInputStream is = new FileInputStream("config.properties")) {
+                APPLICATION_PROPS.load(is);
+            }
         } catch (final IOException e) {
 
             e.printStackTrace();
         }
-        applicationProps.putIfAbsent("scorelimit", "87");
+        APPLICATION_PROPS.putIfAbsent("scorelimit", "87");
     }
 
     public static void saveSettings() {
         try {
-            final FileOutputStream out = new FileOutputStream("config.properties");
-
-            applicationProps.store(out, "---No Comment---");
-            out.close();
+            try (FileOutputStream out = new FileOutputStream("config.properties")) {
+                APPLICATION_PROPS.store(out, "---No Comment---");
+            }
         } catch (final IOException e) {
 
             e.printStackTrace();

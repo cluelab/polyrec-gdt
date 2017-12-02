@@ -247,7 +247,7 @@ public class MenuListener implements ActionListener {
 
                     }
                     dialog.dispose();
-                    if (discoveredDevices.size() > 0) {
+                    if (discoveredDevices != null && discoveredDevices.size() > 0) {
                         final String[] possibilities = new String[discoveredDevices.size()];
 
                         for (int i = 0; i < discoveredDevices.size(); i++) {
@@ -422,17 +422,13 @@ public class MenuListener implements ActionListener {
 
                     final File f2 = new File("gestures.pgs");
 
-                    final InputStream in = new FileInputStream(f1);
-
-                    final OutputStream out = new FileOutputStream(f2);
-
-                    final byte[] buf = new byte[1024];
-                    int len;
-                    while ((len = in.read(buf)) > 0) {
-                        out.write(buf, 0, len);
+                    try (InputStream in = new FileInputStream(f1); OutputStream out = new FileOutputStream(f2)) {
+                        final byte[] buf = new byte[1024];
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                        }
                     }
-                    in.close();
-                    out.close();
 
                     mainFrame.getRecognizer().loadTemplatesPGS(f1, method == ExtendedPolyRecognizerGSS.REPLACE);
 
@@ -453,17 +449,15 @@ public class MenuListener implements ActionListener {
 
     private void copyFile(File f1, File f2) throws IOException {
 
-        final InputStream in = new FileInputStream(f1);
-
-        final OutputStream out = new FileOutputStream(f2);
-
-        final byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
+        try (InputStream in = new FileInputStream(f1); OutputStream out = new FileOutputStream(f2)) {
+            final byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
         }
-        in.close();
-        out.close();
 
     }
 

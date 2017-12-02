@@ -24,6 +24,8 @@ public class RemoteDeviceDiscovery {
 
     private final Vector<AvailableDevice> devicesDiscovered = new Vector<AvailableDevice>();
 
+    // TODO fix
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("WA_NOT_IN_LOOP")
     public RemoteDeviceDiscovery() throws InterruptedException, BluetoothStateException {
 
         final Object inquiryCompletedEvent = new Object();
@@ -40,6 +42,8 @@ public class RemoteDeviceDiscovery {
         @SuppressWarnings("checkstyle:anoninnerlength")
         final DiscoveryListener listener = new DiscoveryListener() {
 
+            // TODO fix
+            @edu.umd.cs.findbugs.annotations.SuppressFBWarnings({"UW_UNCOND_WAIT", "WA_NOT_IN_LOOP"})
             @Override
             public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
                 System.out.println("Device " + btDevice.getBluetoothAddress() + " found");

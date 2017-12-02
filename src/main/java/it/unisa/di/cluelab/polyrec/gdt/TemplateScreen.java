@@ -120,7 +120,7 @@ public class TemplateScreen extends JPanel
 
     protected double zoom = 1.0;
 
-    protected JPanel gesturesPanel;
+    // protected JPanel gesturesPanel;
 
     protected Box showOptions = Box.createVerticalBox();
 
@@ -135,7 +135,7 @@ public class TemplateScreen extends JPanel
 
     private int state = GESTURE_PROCESSED;
 
-    private Thread bluetoothServer;
+    // private Thread bluetoothServer;
 
     private double score;
 
@@ -576,7 +576,7 @@ public class TemplateScreen extends JPanel
                 display.set(captiontext, 0);
 
                 if (!this.testing && recognizedName != null && !this.className.equals(recognizedName)
-                        && score > java.lang.Double.parseDouble(Settings.applicationProps.getProperty("scorelimit"))) {
+                        && score > java.lang.Double.parseDouble(Settings.APPLICATION_PROPS.getProperty("scorelimit"))) {
                     display.set(captiontext + " - Is not recommended adding drawn Template to another Class", 1);
                 }
 
@@ -986,6 +986,8 @@ public class TemplateScreen extends JPanel
     }
 
     // predisponi gui per disegno template (add template)
+    // TODO fix
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
     @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "checkstyle:executablestatementcount", "checkstyle:javancss",
         "checkstyle:npathcomplexity"})
     public void drawTemplate(int mode, int drawmode, boolean thumbnails) {
@@ -1037,11 +1039,13 @@ public class TemplateScreen extends JPanel
 
                 System.out.println("start thread");
                 try {
-                    waitThread = new WaitThread(this);
+                    final WaitThread wThread = new WaitThread(this);
+                    waitThread = wThread;
 
-                    bluetoothServer = new Thread(waitThread);
+                    final Thread bServer = new Thread(wThread);
+                    // bluetoothServer = bServer;
 
-                    bluetoothServer.start();
+                    bServer.start();
 
                 } catch (final BluetoothStateException e) {
                     JOptionPane.showMessageDialog(null, "Attiva il Bluetooth del PC", "Bluetooth",
@@ -1102,7 +1106,7 @@ public class TemplateScreen extends JPanel
         // Box thumbPanel = Box.createVerticalBox();
         System.out.println("CREATE THUMBNAIL PANEL " + className);
         final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(className);
-        final Box[] templateBoxes = new Box[polylines.size()];
+        // final Box[] templateBoxes = new Box[polylines.size()];
 
         thumbPanel.setBackground(Color.darkGray);
         thumbPanel.setOpaque(true);
@@ -1113,7 +1117,7 @@ public class TemplateScreen extends JPanel
 
             // pannello del template
             final Box templatePanel = Box.createVerticalBox();
-            templateBoxes[p] = templatePanel;
+            // templateBoxes[p] = templatePanel;
             templatePanel.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0, 0)));
 
             // riga panel delete template

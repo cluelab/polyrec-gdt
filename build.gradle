@@ -21,6 +21,9 @@ dependencies {
     compile 'org.jfree:jcommon:1.0.24'
     compile 'org.jfree:jfreechart:1.0.19'
 
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    compileOnly 'com.google.code.findbugs:annotations:3.0.1'
+
     testCompile 'junit:junit:4.12'
 }
 
@@ -31,6 +34,5 @@ applicationDistribution.from('.') {
 }
 
 quality {
-    findbugs = false
     pmd = false
 }

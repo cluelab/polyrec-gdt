@@ -1,9 +1,9 @@
 package it.unisa.di.cluelab.polyrec.gdt;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 import javax.swing.JFileChooser;
 import javax.swing.JTable;
@@ -39,32 +39,32 @@ public class TableToCsv {
         final File file = chooser.getSelectedFile();
 
         if (file != null && state == JFileChooser.APPROVE_OPTION) {
-            final BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+            try (PrintWriter pw = new PrintWriter(file, StandardCharsets.ISO_8859_1.name())) {
 
-            final FeaturesTableModel model = (FeaturesTableModel) table.getModel();
-            for (int h = 0; h < model.getColumnCount(); h++) {
-                bw.write(model.getColumnName(h).toString());
-                if (h + 1 != model.getColumnCount()) {
-                    bw.write(";");
-                }
-            }
-            bw.newLine();
-
-            for (int clmCnt = model.getColumnCount(), rowCnt = model.getRowCount(), i = 0; i < rowCnt; i++) {
-                for (int j = 0; j < clmCnt; j++) {
-                    if (model.getValueAt(i, j) != null) {
-                        final String value = model.getValueAt(i, j).toString();
-                        bw.write(value);
-                    }
-                    if (j + 1 != clmCnt) {
-                        bw.write(";");
+                final FeaturesTableModel model = (FeaturesTableModel) table.getModel();
+                for (int h = 0; h < model.getColumnCount(); h++) {
+                    pw.print(model.getColumnName(h).toString());
+                    if (h + 1 != model.getColumnCount()) {
+                        pw.print(';');
                     }
                 }
-                bw.newLine();
-            }
+                pw.println();
 
-            bw.flush();
-            bw.close();
+                for (int clmCnt = model.getColumnCount(), rowCnt = model.getRowCount(), i = 0; i < rowCnt; i++) {
+                    for (int j = 0; j < clmCnt; j++) {
+                        if (model.getValueAt(i, j) != null) {
+                            final String value = model.getValueAt(i, j).toString();
+                            pw.print(value);
+                        }
+                        if (j + 1 != clmCnt) {
+                            pw.print(';');
+                        }
+                    }
+                    pw.println();
+                }
+
+                pw.flush();
+            }
 
         }
 
