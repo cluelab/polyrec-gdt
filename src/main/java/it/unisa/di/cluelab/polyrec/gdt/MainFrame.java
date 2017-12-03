@@ -23,8 +23,7 @@ import javax.swing.WindowConstants;
  */
 public class MainFrame extends JFrame implements WindowListener {
     static final String EXTENSION_PGS = "PolyRec gesture set (.pgs)";
-    static final String EXTENSION_XML = "Extnsible markup language (.xml)";
-    static final String EXTENSION_JAR = "Java archive (.jar)";
+    static final String EXTENSION_XML = "Extensible markup language (.xml)";
 
     static final int MAINSCREEN = 0;
     static final int DETAILSCREEN = 1;

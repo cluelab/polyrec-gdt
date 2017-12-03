@@ -72,7 +72,7 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
             return;
         }
 
-        if (e.getSource() == templateScreen.saveGesture || e.getSource() == templateScreen.saveGestureRecognized) {
+        if (e.getSource() == templateScreen.saveGesture) {
 
             templateScreen.currentGesture.setRotInv(templateScreen.rotInv.isSelected());
             templateScreen.currentGesture.setPointers((Integer) templateScreen.pointersNum.getValue());

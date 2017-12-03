@@ -53,11 +53,11 @@ public class Menu {
         send.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/bluetooth.png"))));
         send.addActionListener(listener);
 
-        final JMenu addSamplesMenu = new JMenu("Import Template Samples");
+        final JMenu addSamplesMenu = new JMenu("Import Example Templates");
 
         addSamplesMenu.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/incoming.png"))));
 
-        replaceClassesSamples = new JMenuItem("Replace");
+        replaceClassesSamples = new JMenuItem("Replace current templates");
         replaceClassesSamples.setToolTipText("Replace all classes and templates (remove all current)");
         replaceClassesSamples.addActionListener(listener);
         addSamplesMenu.add(replaceClassesSamples);
@@ -70,12 +70,12 @@ public class Menu {
         final JMenu importMenu = new JMenu("Open Gesture Set");
         importMenu.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/folder.png"))));
 
-        replaceClasses = new JMenuItem("Replace");
+        replaceClasses = new JMenuItem("Replace current templates");
         replaceClasses.setToolTipText("Replace all classes and templates (remove all current)");
         replaceClasses.addActionListener(listener);
         importMenu.add(replaceClasses);
 
-        addTemplates = new JMenuItem("Add Templates");
+        addTemplates = new JMenuItem("Add");
         addTemplates.setToolTipText("Add new classes (add new templates to classes  with same name)");
         addTemplates.addActionListener(listener);
         importMenu.add(addTemplates);

@@ -116,7 +116,6 @@ public class TemplateScreen extends JPanel
     protected JButton rotateleft = new JButton();
     protected JSlider slider = new JSlider(1, 3, 1);
     protected JButton saveGesture = new JButton();
-    protected JButton saveGestureRecognized = new JButton();
 
     protected double zoom = 1.0;
 
@@ -272,7 +271,6 @@ public class TemplateScreen extends JPanel
         // saving footer
         rotInv.addItemListener(templateScreenListener);
         saveGesture.addActionListener(templateScreenListener);
-        saveGestureRecognized.addActionListener(templateScreenListener);
 
         // draw with smartphone
 
@@ -650,28 +648,6 @@ public class TemplateScreen extends JPanel
             controlTools.add(pointerNumLabel);
             controlTools.add(rotInv);
             controlTools.add(saveGesture);
-            if (recognizedName != null && !this.className.equals(recognizedName)) {
-                saveGestureRecognized.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                saveGestureRecognized.setOpaque(false);
-                saveGestureRecognized.setBorderPainted(false);
-                try {
-
-                    saveGestureRecognized
-                            .setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/save-24.png"))));
-
-                } catch (final IOException e) {
-
-                    e.printStackTrace();
-                }
-
-                saveGestureRecognized.setName(recognizedName);
-                saveGestureRecognized.setText(
-                        "<html><font color='white' >Save to Class " + recognizedName.toUpperCase() + "</font></html>");
-                saveGestureRecognized.setFont(new Font("Arial", Font.PLAIN, 16));
-                saveGestureRecognized.setVisible(true);
-
-                controlTools.add(saveGestureRecognized);
-            }
 
         }
         showOptions.removeAll();
