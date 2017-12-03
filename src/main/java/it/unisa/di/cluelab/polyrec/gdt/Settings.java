@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -85,8 +86,11 @@ public class Settings extends JFrame {
     public static void loadSettings() {
 
         try {
-            try (FileInputStream is = new FileInputStream("config.properties")) {
-                APPLICATION_PROPS.load(is);
+            final File config = new File("config.properties");
+            if (config.exists()) {
+                try (FileInputStream is = new FileInputStream(config)) {
+                    APPLICATION_PROPS.load(is);
+                }
             }
         } catch (final IOException e) {
 

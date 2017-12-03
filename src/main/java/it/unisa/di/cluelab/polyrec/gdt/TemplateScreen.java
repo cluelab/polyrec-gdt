@@ -1324,6 +1324,7 @@ public class TemplateScreen extends JPanel
 
         final JScrollPane classScrollPane = new JScrollPane(thumbPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        classScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
         return classScrollPane;
 

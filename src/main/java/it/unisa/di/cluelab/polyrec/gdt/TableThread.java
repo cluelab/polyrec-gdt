@@ -27,6 +27,7 @@ public class TableThread implements Runnable {
 
     private final DashboardScreen dashboardScreen;
     private final String[] classes;
+    private final String currentClass;
 
     public TableThread(String[] classes, DashboardScreen dashboardScreen) {
 
@@ -34,6 +35,11 @@ public class TableThread implements Runnable {
 
         this.classes = Arrays.copyOf(classes, classes.length);
 
+        if (dashboardScreen.mainClass.getScreen() instanceof TemplateScreen) {
+            currentClass = ((TemplateScreen) dashboardScreen.mainClass.getScreen()).className;
+        } else {
+            currentClass = null;
+        }
     }
 
     @Override
@@ -41,6 +47,8 @@ public class TableThread implements Runnable {
     public void run() {
         final GridBagConstraints c = new GridBagConstraints();
         final GridBagConstraints last = new GridBagConstraints();
+        Box selBox = null;
+        Box lastBox = null;
         for (int m = 0; m < classes.length; m++) {
             final ArrayList<Polyline> polylines = dashboardScreen.mainClass.getRecognizer().getTemplate(classes[m]);
 
@@ -63,7 +71,11 @@ public class TableThread implements Runnable {
             c.anchor = GridBagConstraints.PAGE_START;
             c.weighty = 1;
 
-            panel.add(dashboardScreen.classPanel(classes[m], polylines.size()));
+            lastBox = dashboardScreen.classPanel(classes[m], polylines.size());
+            if (classes[m].equals(currentClass)) {
+                selBox = lastBox;
+            }
+            panel.add(lastBox);
             dashboardScreen.table.add(panel, c);
 
             // pannello colonna dei templates
@@ -165,6 +177,9 @@ public class TableThread implements Runnable {
         dashboardScreen.upadateCommandsButtons();
         dashboardScreen.statusMessage();
         dashboardScreen.repaint();
-
+        if (selBox != null) {
+            lastBox.scrollRectToVisible(lastBox.getBounds());
+            selBox.scrollRectToVisible(selBox.getBounds());
+        }
     }
 }
