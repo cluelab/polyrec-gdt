@@ -115,6 +115,7 @@ public class TableThread implements Runnable {
                 dashboardScreen.addGestureButtons[m] = new JButton(
                         new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
                 dashboardScreen.addGestureButtons[m].setContentAreaFilled(false);
+                dashboardScreen.addGestureButtons[m].setBorderPainted(false);
 
                 dashboardScreen.addGestureButtons[m].setName("addgesture_" + classes[m]);
 

@@ -282,12 +282,14 @@ public class TemplateScreen extends JPanel
         drawGestureBluetooth.setText("<html><font color='white'>Draw With Smartphone</font></html>");
         drawGestureBluetooth.setToolTipText("Activate BT Server to Draw With Smartphone");
         drawGestureBluetooth.setContentAreaFilled(false);
+        drawGestureBluetooth.setBorderPainted(false);
         drawGestureBluetooth.setCursor(new Cursor(Cursor.HAND_CURSOR));
         drawGestureBluetooth.setFont(fontButtons);
 
         // draw with mouse
         drawGesture.setText("<html><font color='white'>Draw With Mouse</font></html>");
         drawGesture.setContentAreaFilled(false);
+        drawGesture.setBorderPainted(false);
         drawGesture.setCursor(new Cursor(Cursor.HAND_CURSOR));
         drawGesture.setFont(fontButtons);
         drawGesture.addActionListener(templateScreenListener);
@@ -347,6 +349,7 @@ public class TemplateScreen extends JPanel
         showTimedGesture.addActionListener(templateScreenListener);
 
         showTimedGesture.setContentAreaFilled(false);
+        showTimedGesture.setBorderPainted(false);
         showTimedGesture.setOpaque(false);
         showTimedGesture.setFont(fontButtons);
         showTimedGesture.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -355,6 +358,7 @@ public class TemplateScreen extends JPanel
         features.addActionListener(templateScreenListener);
 
         features.setContentAreaFilled(false);
+        features.setBorderPainted(false);
         features.setOpaque(false);
         features.setFont(fontButtons);
         features.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -364,7 +368,17 @@ public class TemplateScreen extends JPanel
 
         // pannello comandi inferiore (SOUTH)
 
-        controlTools = new JToolBar();
+        controlTools = new JToolBar() {
+            private static final long serialVersionUID = 7811060300185516376L;
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // linux fix
+                g.setColor(getBackground());
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
         controlTools.setBackground(new Color(28, 28, 28));
         controlTools.setPreferredSize(new Dimension(0, 50));
         controlTools.setLayout(new FlowLayout());
@@ -616,6 +630,7 @@ public class TemplateScreen extends JPanel
             rotInv.setVisible(true);
             saveGesture.setCursor(new Cursor(Cursor.HAND_CURSOR));
             saveGesture.setOpaque(false);
+            saveGesture.setBorderPainted(false);
             try {
 
                 saveGesture.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/save-24.png"))));
@@ -638,6 +653,7 @@ public class TemplateScreen extends JPanel
             if (recognizedName != null && !this.className.equals(recognizedName)) {
                 saveGestureRecognized.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 saveGestureRecognized.setOpaque(false);
+                saveGestureRecognized.setBorderPainted(false);
                 try {
 
                     saveGestureRecognized
@@ -674,6 +690,7 @@ public class TemplateScreen extends JPanel
         scoreTableButton.setOpaque(false);
         scoreTableButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         scoreTableButton.setContentAreaFilled(false);
+        scoreTableButton.setBorderPainted(false);
         try {
 
             scoreTableButton.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/file.png"))));
@@ -820,6 +837,7 @@ public class TemplateScreen extends JPanel
         rotInvCommand.setText("<html><font color='white' >Rotation Invariant Recognition</font></html>");
         rotInvCommand.setFont(new Font("Arial", Font.PLAIN, 16));
         rotInvCommand.setContentAreaFilled(false);
+        rotInvCommand.setBorderPainted(false);
 
         final ExtendedResult r = mainClass.getRecognizer().recognizeExt(polylines.get(item).getGesture());
         try {
@@ -841,6 +859,7 @@ public class TemplateScreen extends JPanel
 
         rotateleft.addActionListener(templateScreenListener);
         rotateleft.setOpaque(false);
+        rotateleft.setBorderPainted(false);
         rotateleft.setCursor(new Cursor(Cursor.HAND_CURSOR));
         rotateleft.setToolTipText("Rotate Left");
         try {
@@ -852,6 +871,7 @@ public class TemplateScreen extends JPanel
 
         rotateright.addActionListener(templateScreenListener);
         rotateright.setOpaque(false);
+        rotateright.setBorderPainted(false);
         rotateright.setCursor(new Cursor(Cursor.HAND_CURSOR));
         rotateright.setToolTipText("Rotate Right");
         try {
@@ -868,6 +888,7 @@ public class TemplateScreen extends JPanel
         left.addActionListener(templateScreenListener);
         controlTools.add(left);
         left.setOpaque(false);
+        left.setBorderPainted(false);
         left.setCursor(new Cursor(Cursor.HAND_CURSOR));
         left.setToolTipText("Move Left");
         try {
@@ -878,6 +899,7 @@ public class TemplateScreen extends JPanel
         // right.setText("right");
         right.addActionListener(templateScreenListener);
         right.setOpaque(false);
+        right.setBorderPainted(false);
         right.setCursor(new Cursor(Cursor.HAND_CURSOR));
         right.setToolTipText("Move Right");
         try {
@@ -889,6 +911,7 @@ public class TemplateScreen extends JPanel
         controlTools.add(right);
         // up.setText("up");
         up.setOpaque(false);
+        up.setBorderPainted(false);
         up.setCursor(new Cursor(Cursor.HAND_CURSOR));
         try {
             up.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/up-chevron.png"))));
@@ -900,6 +923,7 @@ public class TemplateScreen extends JPanel
         controlTools.add(up);
         // down.setText("down");
         down.setOpaque(false);
+        down.setBorderPainted(false);
         down.setCursor(new Cursor(Cursor.HAND_CURSOR));
         down.setToolTipText("Move Down");
         try {
@@ -919,6 +943,7 @@ public class TemplateScreen extends JPanel
             e1.printStackTrace();
         }
         zoomOut.setOpaque(false);
+        zoomOut.setBorderPainted(false);
         zoomOut.setCursor(new Cursor(Cursor.HAND_CURSOR));
         zoomOut.addActionListener(templateScreenListener);
         zoomOut.setToolTipText("Zoom Out");
@@ -939,6 +964,7 @@ public class TemplateScreen extends JPanel
             e.printStackTrace();
         }
         zoomIn.setOpaque(false);
+        zoomIn.setBorderPainted(false);
         zoomIn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         zoomIn.addActionListener(templateScreenListener);
         zoomIn.setToolTipText("Zoom In");
@@ -1285,6 +1311,7 @@ public class TemplateScreen extends JPanel
             final String iagb = "/img/plus-white-32.png";
             final JButton addGestureButton = new JButton(new ImageIcon(ImageIO.read(getClass().getResource(iagb))));
             addGestureButton.setContentAreaFilled(false);
+            addGestureButton.setBorderPainted(false);
 
             addGestureButton.setName("addgesture_" + className);
 

@@ -236,6 +236,7 @@ public class DashboardScreen extends JPanel {
             final String iPlsW = "/img/plus-white-32.png";
             addClass = new JButton(new ImageIcon(ImageIO.read(getClass().getResource(iPlsW))));
             addClass.setContentAreaFilled(false);
+            addClass.setBorderPainted(false);
 
             addClass.setToolTipText("Add Class with specified name");
             addClass.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -302,6 +303,7 @@ public class DashboardScreen extends JPanel {
         mergeClasses.setCursor(new Cursor(Cursor.HAND_CURSOR));
         mergeClasses.setFont(fontButtons);
         mergeClasses.setContentAreaFilled(false);
+        mergeClasses.setBorderPainted(false);
         try {
             mergeClasses.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/merge.png"))));
         } catch (final IOException e2) {
@@ -319,6 +321,7 @@ public class DashboardScreen extends JPanel {
         deleteAllClasses.setCursor(new Cursor(Cursor.HAND_CURSOR));
         deleteAllClasses.setFont(fontButtons);
         deleteAllClasses.setContentAreaFilled(false);
+        deleteAllClasses.setBorderPainted(false);
         try {
             deleteAllClasses.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/error-24-white.png"))));
         } catch (final IOException e2) {
@@ -370,6 +373,7 @@ public class DashboardScreen extends JPanel {
         checkTemplates.setCursor(new Cursor(Cursor.HAND_CURSOR));
         checkTemplates.setFont(fontButtons);
         checkTemplates.setContentAreaFilled(false);
+        checkTemplates.setBorderPainted(false);
         try {
             checkTemplates.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/success.png"))));
         } catch (final IOException e2) {
@@ -387,6 +391,7 @@ public class DashboardScreen extends JPanel {
         featuresButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         featuresButton.setFont(fontButtons);
         featuresButton.setContentAreaFilled(false);
+        featuresButton.setBorderPainted(false);
         try {
 
             featuresButton.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/table.png"))));
@@ -413,6 +418,7 @@ public class DashboardScreen extends JPanel {
         testRecognizer.setCursor(new Cursor(Cursor.HAND_CURSOR));
         testRecognizer.setFont(fontButtons);
         testRecognizer.setContentAreaFilled(false);
+        testRecognizer.setBorderPainted(false);
 
         testRecognizer.addActionListener(dashboardListener);
         testRecognizer.setEnabled(false);
@@ -533,6 +539,7 @@ public class DashboardScreen extends JPanel {
             classRotInv.addActionListener(dashboardListener);
             classRotInv.setCursor(new Cursor(Cursor.HAND_CURSOR));
             classRotInv.setContentAreaFilled(false);
+            classRotInv.setBorderPainted(false);
 
             try {
                 classRotInv.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/repeat.png"))));
@@ -553,6 +560,7 @@ public class DashboardScreen extends JPanel {
             classNotRotInv.addActionListener(dashboardListener);
             classNotRotInv.setCursor(new Cursor(Cursor.HAND_CURSOR));
             classNotRotInv.setContentAreaFilled(false);
+            classNotRotInv.setBorderPainted(false);
 
             try {
                 classNotRotInv.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/notrotinv.png"))));
@@ -573,6 +581,7 @@ public class DashboardScreen extends JPanel {
             classFeatures.addActionListener(dashboardListener);
             classFeatures.setCursor(new Cursor(Cursor.HAND_CURSOR));
             classFeatures.setContentAreaFilled(false);
+            classFeatures.setBorderPainted(false);
 
             try {
                 classFeatures.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/table.png"))));
@@ -595,6 +604,7 @@ public class DashboardScreen extends JPanel {
             editing.addActionListener(dashboardListener);
             editing.setCursor(new Cursor(Cursor.HAND_CURSOR));
             editing.setContentAreaFilled(false);
+            editing.setBorderPainted(false);
             try {
                 editing.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/img/radar.png"))));
             } catch (final IOException e2) {
@@ -845,6 +855,7 @@ public class DashboardScreen extends JPanel {
                     addGestureButtons[m] = new JButton(
                             new ImageIcon(ImageIO.read(getClass().getResource("/img/plus-white-32.png"))));
                     addGestureButtons[m].setContentAreaFilled(false);
+                    addGestureButtons[m].setBorderPainted(false);
 
                     addGestureButtons[m].setName("addgesture_" + classes[m]);
 
