@@ -491,40 +491,40 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
             out.append("\t\tcname = \"" + e.getKey() + "\";\n");
             for (final Polyline poly : e.getValue()) {
                 final Gesture g = poly.getGesture();
-                final String sep = ", ";
-                out.append("\t\taddTemplate(r, cname, " + g.isRotInv() + sep + g.getPointers());
+                out.append("\t\taddTemplate(r, cname, " + g.isRotInv() + ", " + g.getPointers() + ", \"");
                 double minX = Double.POSITIVE_INFINITY;
                 double minY = Double.POSITIVE_INFINITY;
-                long minT = Long.MAX_VALUE;
+                double maxX = Double.NEGATIVE_INFINITY;
+                double maxY = Double.NEGATIVE_INFINITY;
                 for (final TPoint p : g.getPoints()) {
-                    if (p.x < minX) {
-                        minX = p.x;
-                    }
-                    if (p.y < minY) {
-                        minY = p.y;
-                    }
-                    if (p.time < minT) {
-                        minT = p.time;
-                    }
+                    minX = Math.min(minX, p.x);
+                    minY = Math.min(minY, p.y);
+                    maxX = Math.max(maxX, p.x);
+                    maxY = Math.max(maxY, p.y);
                 }
-                minX--;
-                minY--;
+                final double scale = Character.MAX_VALUE / Math.max(maxX - minX, maxY - minY);
+                long lastT = -1;
                 for (final TPoint p : g.getPoints()) {
-                    out.append(sep + Math.round((p.x - minX) * 100) + sep + Math.round((p.y - minY) * 100) + sep
-                            + (p.time - minT));
+                    @SuppressWarnings("deprecation")
+                    final String t = org.apache.commons.lang3.StringEscapeUtils
+                            .escapeJava((char) Math.round((p.x - minX) * scale)
+                                    + String.valueOf((char) Math.round((p.y - minY) * scale))
+                                    + (lastT == -1 ? '\0' : (char) Math.max(0, p.time - lastT)));
+                    lastT = p.time;
+                    out.append(t);
                 }
-                out.append(");\n");
+                out.append("\");\n");
             }
             out.append('\n');
         }
         out.append("\t\treturn r;\n" + "\t}\n\n" + "\t// You do not need to change this method\n"
                 + "\tprivate static void addTemplate"
-                + "(PolyRecognizerGSS rec, String name, boolean rotInv, int numPointers, int... xyts) {\n"
+                + "(PolyRecognizerGSS rec, String name, boolean rotInv, int numPointers, String xyts) {\n"
                 + "\t\tit.unisa.di.cluelab.polyrec.Gesture g = new it.unisa.di.cluelab.polyrec.Gesture();\n"
-                + "\t\tfor (int i = 0; i < xyts.length; i += 3) {\n"
-                + "\t\t\tg.addPoint(new it.unisa.di.cluelab.polyrec.TPoint(xyts[i], xyts[i + 1], xyts[i + 2]));\n"
-                + "\t\t}\n" + "\t\tg.setRotInv(rotInv);\n" + "\t\tg.setPointers(numPointers);\n"
-                + "\t\trec.addTemplate(name, g);\n" + "\t}");
+                + "\t\tlong lastT = 0;\n" + "\t\tfor (int i = 2, n = xyts.length(); i < n; i += 3) {\n"
+                + "\t\t\tlastT += xyts.charAt(i);\n" + "\t\t\tg.addPoint(new it.unisa.di.cluelab.polyrec.TPoint"
+                + "(xyts.charAt(i - 2), xyts.charAt(i - 1), lastT));\n" + "\t\t}\n" + "\t\tg.setRotInv(rotInv);\n"
+                + "\t\tg.setPointers(numPointers);\n" + "\t\trec.addTemplate(name, g);\n" + "\t}");
         return out.toString();
     }
 
