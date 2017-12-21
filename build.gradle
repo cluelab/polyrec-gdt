@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
     compile files('libraries/bluecove-2.1.1-SNAPSHOT.jar')
-    compile 'it.unisa.di.cluelab:polyrec:0.2.1'
+    compile 'it.unisa.di.cluelab:polyrec:0.2.2'
     compile 'org.apache.commons:commons-lang3:3.7'
     compile 'org.jfree:jcommon:1.0.24'
     compile 'org.jfree:jfreechart:1.0.19'

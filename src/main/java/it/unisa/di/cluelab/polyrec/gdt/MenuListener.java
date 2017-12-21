@@ -326,12 +326,16 @@ public class MenuListener implements ActionListener {
             if (!choosedFile.endsWith(".xml")) {
                 choosedFile = choosedFile + ".xml";
             }
-            mainFrame.getRecognizer().saveTemplatesXML(new File(choosedFile));
+            try (FileOutputStream out = new FileOutputStream(choosedFile)) {
+                mainFrame.getRecognizer().saveTemplatesXML(out);
+            }
 
         } else if (fileExt != null && fileExt.equals(MainFrame.EXTENSION_PGS)) {
 
             final File f1 = new File("gestures.pgs");
-            mainFrame.getRecognizer().saveTemplatesPGS(f1);
+            try (FileOutputStream out = new FileOutputStream(f1)) {
+                mainFrame.getRecognizer().saveTemplatesPGS(out);
+            }
 
             if (!choosedFile.endsWith(".pgs")) {
                 choosedFile = choosedFile + ".pgs";
@@ -412,8 +416,9 @@ public class MenuListener implements ActionListener {
                         return false;
                     }
 
-                    mainFrame.getRecognizer().loadTemplatesXML(openFile.getSelectedFile(),
-                            method == ExtendedPolyRecognizerGSS.REPLACE);
+                    try (FileInputStream in = new FileInputStream(openFile.getSelectedFile())) {
+                        mainFrame.getRecognizer().loadTemplatesXML(in, method == ExtendedPolyRecognizerGSS.REPLACE);
+                    }
                     System.out.println(mainFrame.getRecognizer().getTamplatesNumber());
 
                 } else if (fileExt.equals(MainFrame.EXTENSION_PGS)) {
@@ -430,7 +435,9 @@ public class MenuListener implements ActionListener {
                         }
                     }
 
-                    mainFrame.getRecognizer().loadTemplatesPGS(f1, method == ExtendedPolyRecognizerGSS.REPLACE);
+                    try (FileInputStream in = new FileInputStream(f1)) {
+                        mainFrame.getRecognizer().loadTemplatesPGS(in, method == ExtendedPolyRecognizerGSS.REPLACE);
+                    }
 
                 }
                 mainFrame.setExtOpenedFile(fileExt);

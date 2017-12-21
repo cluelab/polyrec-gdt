@@ -576,12 +576,13 @@ public class TemplateScreen extends JPanel
             }
             r = mainClass.getRecognizer().recognizeExt(currentGesture);
 
-            recognizedName = r.getName();
-            score = r.getScore();
-            if (score == 0) {
+            if (r == null || r.getScore() == 0) {
+                score = 0;
                 final String captiontext = "Not Recognized";
                 display.set(captiontext, 0);
             } else {
+                score = r.getScore();
+                recognizedName = r.getName();
 
                 display.setForeground(defaultColor);
                 final String captiontext = "Recognized as " + recognizedName + " (" + round(score, 2) + ")";

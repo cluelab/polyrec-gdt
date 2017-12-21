@@ -43,7 +43,7 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
     }
 
     @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "checkstyle:executablestatementcount", "checkstyle:javancss",
-        "checkstyle:npathcomplexity"})
+        "checkstyle:npathcomplexity", "checkstyle:returncount"})
     public synchronized ExtendedResult recognizeExt(Gesture gesture) {
         // this.rInvariant = _gesture.isRotInv(); if (this.rInvariant)
         // this.angle = ANGLE_INVARIANT; else this.angle = ANGLE_SENSITIVE;
@@ -51,6 +51,9 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
         final PolylineFinder pf = new DouglasPeuckerReducer(gesture, DPR_PARAMS);
         // polyline del gesto da riconoscere
         final Polyline u = pf.find();
+        if (u.getIndexes().isEmpty()) {
+            return null;
+        }
 
         Double a = Double.POSITIVE_INFINITY;
         String templateName = null;
@@ -472,7 +475,7 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS {
                 + "\t// Add your actions and call this method from your code with the gesture performed by the user as"
                 + " parameter\n" + "\tprivate void handleGesture(it.unisa.di.cluelab.polyrec.Gesture drawnGesture) {\n"
                 + "\t\tit.unisa.di.cluelab.polyrec.Result r = recognizer.recognize(drawnGesture);\n"
-                + "\t\tif (r.getScore() < 0) {\n"
+                + "\t\tif (r == null || r.getScore() < 0) {\n"
                 + "\t\t\t// TODO (if needed) use a threshold in the condition above to handle imprecise gestures\n"
                 + "\t\t\treturn;\n\t\t}\n" + "\t\tswitch(r.getName()) {\n");
         for (final String cn : templates.keySet()) {
