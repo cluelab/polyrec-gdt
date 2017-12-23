@@ -25,6 +25,8 @@ import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import it.unisa.di.cluelab.polyrec.Gesture;
 import it.unisa.di.cluelab.polyrec.GestureInfo;
 import it.unisa.di.cluelab.polyrec.Polyline;
@@ -67,7 +69,12 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
             return;
         }
         if (e.getSource() == templateScreen.drawGestureBluetooth) {
-            templateScreen.drawTemplate(templateScreen.mode, TemplateScreen.SMARTPHONE, false);
+            if (SystemUtils.IS_OS_WINDOWS) {
+                templateScreen.drawTemplate(templateScreen.mode, TemplateScreen.SMARTPHONE, false);
+            } else {
+                JOptionPane.showMessageDialog(templateScreen, "Bluetooth works only on Windows.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
 
             return;
         }

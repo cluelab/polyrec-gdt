@@ -12,11 +12,14 @@ wrapper {
 
 repositories {
     jcenter()
+    maven {
+        url "http://repository.pyx4j.com/maven2-snapshot"
+    }
 }
 
 dependencies {
-    compile files('libraries/bluecove-2.1.1-SNAPSHOT.jar')
     compile 'it.unisa.di.cluelab:polyrec:0.2.2'
+    compile 'net.sf.bluecove:bluecove:2.1.1-SNAPSHOT'
     compile 'org.apache.commons:commons-lang3:3.7'
     compile 'org.jfree:jcommon:1.0.24'
     compile 'org.jfree:jfreechart:1.0.19'

@@ -32,11 +32,12 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.xml.sax.SAXException;
 
-import it.unisa.di.cluelab.polyrec.bluetooh.sendapp.AvailableDevice;
-import it.unisa.di.cluelab.polyrec.bluetooh.sendapp.ObexPutClient;
-import it.unisa.di.cluelab.polyrec.bluetooh.sendapp.RemoteDeviceDiscovery;
+import it.unisa.di.cluelab.polyrec.bluetooth.sendapp.AvailableDevice;
+import it.unisa.di.cluelab.polyrec.bluetooth.sendapp.ObexPutClient;
+import it.unisa.di.cluelab.polyrec.bluetooth.sendapp.RemoteDeviceDiscovery;
 
 /**
  * Menu listener.
@@ -217,6 +218,11 @@ public class MenuListener implements ActionListener {
         }
         // send app to mobile device to draw gestures
         if (e.getSource() == mainFrame.getMenu().send) {
+            if (!SystemUtils.IS_OS_WINDOWS) {
+                JOptionPane.showMessageDialog(mainFrame, "Bluetooth works only on Windows.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             final JOptionPane messagePane = new JOptionPane("Searching for Devices...Please Wait...",
                     JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[] {}, null);

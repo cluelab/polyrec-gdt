@@ -48,7 +48,7 @@ import javax.swing.event.ChangeListener;
 import it.unisa.di.cluelab.polyrec.Gesture;
 import it.unisa.di.cluelab.polyrec.Polyline;
 import it.unisa.di.cluelab.polyrec.TPoint;
-import it.unisa.di.cluelab.polyrec.bluetooh.WaitThread;
+import it.unisa.di.cluelab.polyrec.bluetooth.WaitThread;
 import it.unisa.di.cluelab.polyrec.geom.Rectangle2D.Double;
 
 /**

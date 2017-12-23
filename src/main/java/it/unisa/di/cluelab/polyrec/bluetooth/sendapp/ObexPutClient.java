@@ -1,4 +1,4 @@
-package it.unisa.di.cluelab.polyrec.bluetooh.sendapp;
+package it.unisa.di.cluelab.polyrec.bluetooth.sendapp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import javax.obex.ResponseCodes;
  */
 public class ObexPutClient {
 
-    private static final String APK_FILE = "BluetoothGestures.apk";
+    private static final String APK_FILE = "polyrec-gdt-app-0.2.0.apk";
     private final String serverURL;
 
     public ObexPutClient(String obexServiceURL) {

@@ -1,4 +1,4 @@
-package it.unisa.di.cluelab.polyrec.bluetooh;
+package it.unisa.di.cluelab.polyrec.bluetooth;
 
 import java.io.EOFException;
 import java.io.IOException;

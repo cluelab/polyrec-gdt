@@ -1,4 +1,4 @@
-package it.unisa.di.cluelab.polyrec.bluetooh.sendapp;
+package it.unisa.di.cluelab.polyrec.bluetooth.sendapp;
 
 import javax.bluetooth.RemoteDevice;
 
