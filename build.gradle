@@ -13,7 +13,7 @@ wrapper {
 repositories {
     jcenter()
     maven {
-        url "http://repository.pyx4j.com/maven2-snapshot"
+        url "https://raw.githubusercontent.com/Ardulink/Ardulink-2/master/local-repo"
     }
 }
 
