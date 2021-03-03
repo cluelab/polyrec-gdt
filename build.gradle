@@ -1,14 +1,10 @@
 plugins {
     id 'java'
     id 'application'
-    id 'ru.vyarus.quality' version '2.4.0'
+    id 'ru.vyarus.quality' version '4.5.0'
 }
 
 sourceCompatibility = 1.8
-
-wrapper {
-    gradleVersion = 3.5
-}
 
 repositories {
     jcenter()
@@ -18,16 +14,16 @@ repositories {
 }
 
 dependencies {
-    compile 'it.unisa.di.cluelab:polyrec:0.2.2'
-    compile 'net.sf.bluecove:bluecove:2.1.1-SNAPSHOT'
-    compile 'org.apache.commons:commons-lang3:3.7'
-    compile 'org.jfree:jcommon:1.0.24'
-    compile 'org.jfree:jfreechart:1.0.19'
+    implementation 'it.unisa.di.cluelab:polyrec:0.2.2'
+    implementation 'net.sf.bluecove:bluecove:2.1.1-SNAPSHOT'
+    implementation 'org.apache.commons:commons-lang3:3.7'
+    implementation 'org.jfree:jcommon:1.0.24'
+    implementation 'org.jfree:jfreechart:1.0.19'
 
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 }
 
 mainClassName = 'it.unisa.di.cluelab.polyrec.gdt.MainFrame'
