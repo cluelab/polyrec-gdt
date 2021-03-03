@@ -13,14 +13,12 @@ public class ClusteringResult {
     private ArrayList<ArrayList<Integer>> matrix;
 
     public ClusteringResult(double cost, int[] medoids, ArrayList<ArrayList<Integer>> matrix) {
-        super();
         this.cost = cost;
         this.medoids = Arrays.copyOf(medoids, medoids.length);
         this.matrix = matrix;
     }
 
     public ClusteringResult(double cost, ArrayList<ArrayList<Integer>> matrix) {
-        super();
         this.cost = cost;
 
         this.matrix = matrix;

@@ -299,7 +299,7 @@ public class MenuListener implements ActionListener {
                 @Override
                 protected void done() {
                     // dialog.dispose();
-                };
+                }
             };
             sw.execute();
 
@@ -310,7 +310,6 @@ public class MenuListener implements ActionListener {
     }
 
     /**
-     * 
      * Save gesture set.
      */
     boolean exports(boolean saveas) throws Exception {

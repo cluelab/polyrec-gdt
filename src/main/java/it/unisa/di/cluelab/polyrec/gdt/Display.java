@@ -25,8 +25,6 @@ public class Display extends JLabel {
     private final Color warningColor = new Color(255, 218, 68);
 
     public Display() {
-        super();
-
         setFont(new Font("Arial", Font.PLAIN, 20));
         setVerticalAlignment(SwingConstants.CENTER);
 

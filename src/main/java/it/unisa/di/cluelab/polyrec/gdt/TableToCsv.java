@@ -19,7 +19,6 @@ public class TableToCsv {
     private final JTable table;
 
     public TableToCsv(JTable table) {
-        super();
         this.table = table;
     }
 

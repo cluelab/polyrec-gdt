@@ -488,7 +488,7 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
             round(Math.sin(polyline.getLineSlope(0)), 2),
             // verificare problema linea punti
             round(Math.cos(polyline.getLineSlope(polyline.getNumLines() - 1)), 2), round(globalOrientation, 2),
-            round(Math.cos(globalOrientation), 2), round(Math.sin(globalOrientation), 2), };
+            round(Math.cos(globalOrientation), 2), round(Math.sin(globalOrientation), 2)};
         rowData[0] = row;
 
         final FeaturesTableModel mod = new FeaturesTableModel(rowData, columnHeaders);

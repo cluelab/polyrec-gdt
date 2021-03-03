@@ -14,7 +14,6 @@ public class Clustering {
     private final GDTRecognizer recognizer;
 
     public Clustering(GDTRecognizer recognizer) {
-        super();
         this.recognizer = recognizer;
     }
 

@@ -895,7 +895,7 @@ public class DashboardListener implements ActionListener, MouseListener {
                         // verificare problema linea punti
                         round(Math.cos(polyline.getLineSlope(polyline.getNumLines() - 1)), 2),
                         round(globalOrientation, 2), round(Math.cos(globalOrientation), 2),
-                        round(Math.sin(globalOrientation), 2), };
+                        round(Math.sin(globalOrientation), 2)};
                     rowData[rowcount++] = row;
 
                 }
