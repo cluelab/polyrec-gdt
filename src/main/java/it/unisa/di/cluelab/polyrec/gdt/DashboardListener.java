@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
@@ -138,7 +139,7 @@ public class DashboardListener implements ActionListener, MouseListener {
 
                 }
                 final int[] medoids = bestResult.getMedoids();
-                final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classname);
+                final List<Polyline> polylines = mainClass.getRecognizer().getTemplate(classname);
                 final int size = polylines.size();
 
                 final JSpinner[] inputField = new JSpinner[medoids.length];
@@ -457,7 +458,7 @@ public class DashboardListener implements ActionListener, MouseListener {
 
                                 final String className = classesList.getModel()
                                         .getElementAt(classesIndexes[i]);
-                                mainClass.getRecognizer().addTemplates(firstClass,
+                                mainClass.getRecognizer().addTemplatesPl(firstClass,
                                         mainClass.getRecognizer().getTemplate(className));
                                 mainClass.getRecognizer().removeClass(className);
                             }
@@ -561,7 +562,7 @@ public class DashboardListener implements ActionListener, MouseListener {
                 if (selectedOption == JOptionPane.YES_OPTION) {
                     // CursorToolkit.startWaitCursor(mainScreen);
                     final String[] nameparts = buttonName.split("_");
-                    final ArrayList<Polyline> templates = mainClass.getRecognizer().getTemplate(nameparts[1]);
+                    final List<Polyline> templates = mainClass.getRecognizer().getTemplate(nameparts[1]);
                     String displayMessage;
                     if (nameparts.length > 2) {
                         displayMessage = "Template " + nameparts[2] + " of class " + nameparts[1].toUpperCase()
@@ -601,7 +602,7 @@ public class DashboardListener implements ActionListener, MouseListener {
                     // CursorToolkit.startWaitCursor(mainClass.getRootPane());
                     final String[] nameparts = buttonName.split("_");
 
-                    final ArrayList<Polyline> templates = mainClass.getRecognizer().getTemplate(nameparts[1]);
+                    final List<Polyline> templates = mainClass.getRecognizer().getTemplate(nameparts[1]);
                     for (final Polyline polyline : templates) {
                         polyline.getGesture().setRotInv(false);
                     }
@@ -764,7 +765,7 @@ public class DashboardListener implements ActionListener, MouseListener {
         String classString = "";
         for (int i = 0; i < classes.length; i++) {
 
-            final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[i]);
+            final List<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[i]);
             classString = "<span style='font-family:Arial;'><br/>Checking Class " + classes[i].toUpperCase()
                     + "...</span>";
             if (textArea != null) {
@@ -776,8 +777,8 @@ public class DashboardListener implements ActionListener, MouseListener {
             for (int p = 0; p < polylines.size(); p++) {
 
                 // controlla template con p della classe i
-                final ArrayList<ExtendedResult> r = mainClass.getRecognizer().verifyTemplate(polylines.get(p),
-                        classes[i], scoreLimit);
+                final List<ExtendedResult> r = mainClass.getRecognizer().verifyTemplate(polylines.get(p), classes[i],
+                        scoreLimit);
 
                 if (r.size() > 0) {
                     resultString.append("<b>Template " + p + " of Class " + classes[i].toUpperCase()
@@ -838,7 +839,7 @@ public class DashboardListener implements ActionListener, MouseListener {
             "Length", "Dist First->Last", "BBox Area", "BBox Diagonal", "BBox Angle", "Cos(StartAngle)",
             "Sin(StartAngle)", "Cos(EndAngle)", "GlobalOrientation(Angle First->Last)", "Cos(Angle First->Last)",
             "Sin(Angle First->Last)"};
-        int rowNumbers = mainClass.getRecognizer().getTamplatesNumber();
+        int rowNumbers = mainClass.getRecognizer().getTemplatesNumber();
         if (className != null) {
             rowNumbers = mainClass.getRecognizer().getTemplate(className).size();
         }
@@ -848,11 +849,11 @@ public class DashboardListener implements ActionListener, MouseListener {
 
             if (className == null || className.equals(classes[m])) {
                 // System.out.println("OOOK");
-                final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[m]);
+                final List<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[m]);
 
                 for (int p = 0; p < polylines.size(); p++) {
                     final Polyline polyline = polylines.get(p);
-                    final Gesture normalizedGesture = ExtendedPolyRecognizerGSS.normalizeGesture(polyline.getGesture(),
+                    final Gesture normalizedGesture = GDTRecognizer.normalizeGesture(polyline.getGesture(),
                             150, 150, 0);
 
                     double sumangle = 0;

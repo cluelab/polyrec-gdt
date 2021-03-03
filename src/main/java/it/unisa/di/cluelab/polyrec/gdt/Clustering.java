@@ -1,6 +1,7 @@
 package it.unisa.di.cluelab.polyrec.gdt;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import it.unisa.di.cluelab.polyrec.Polyline;
@@ -10,9 +11,9 @@ import it.unisa.di.cluelab.polyrec.Polyline;
  *
  */
 public class Clustering {
-    private final ExtendedPolyRecognizerGSS recognizer;
+    private final GDTRecognizer recognizer;
 
-    public Clustering(ExtendedPolyRecognizerGSS recognizer) {
+    public Clustering(GDTRecognizer recognizer) {
         super();
         this.recognizer = recognizer;
     }
@@ -22,7 +23,7 @@ public class Clustering {
      */
     int overallmedoid(String className) {
 
-        final ArrayList<Polyline> polylines = recognizer.getTemplate(className);
+        final List<Polyline> polylines = recognizer.getTemplate(className);
         double minDistance = Double.MAX_VALUE;
         int medoid = -1;
         for (int i = 0; i < polylines.size(); i++) {
@@ -57,7 +58,7 @@ public class Clustering {
     @SuppressWarnings("checkstyle:executablestatementcount")
     ClusteringResult kmedoids(String className, int k, int maxIter) {
         final int maxIt = maxIter == 0 ? 40 : maxIter;
-        final ArrayList<Polyline> polylines = recognizer.getTemplate(className);
+        final List<Polyline> polylines = recognizer.getTemplate(className);
 
         // matrice del clustering
         final ArrayList<ArrayList<Integer>> clusteringMatrix = new ArrayList<ArrayList<Integer>>();
@@ -137,8 +138,8 @@ public class Clustering {
     }
 
     // assign non memoids
-    private double assignNonMedoid(ArrayList<Polyline> polylines, ArrayList<Integer> nonmedoids,
-            ArrayList<ArrayList<Integer>> clusteringMatrix, int k) {
+    private double assignNonMedoid(List<Polyline> polylines, List<Integer> nonmedoids,
+            List<ArrayList<Integer>> clusteringMatrix, int k) {
         // inizializza costo del clustering
         double cost = 0;
 

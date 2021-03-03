@@ -54,7 +54,7 @@ public class Thumbnail extends JLayeredPane {
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        final Gesture normalizedGesture = ExtendedPolyRecognizerGSS.normalizeGesture(gesture, this.getWidth(),
+        final Gesture normalizedGesture = GDTRecognizer.normalizeGesture(gesture, this.getWidth(),
                 this.getHeight(), 20);
 
         if (normalizedGesture.getPoints().size() < 2) {

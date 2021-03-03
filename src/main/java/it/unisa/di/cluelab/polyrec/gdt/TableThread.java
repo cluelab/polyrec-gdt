@@ -7,8 +7,8 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -50,7 +50,7 @@ public class TableThread implements Runnable {
         Box selBox = null;
         Box lastBox = null;
         for (int m = 0; m < classes.length; m++) {
-            final ArrayList<Polyline> polylines = dashboardScreen.mainClass.getRecognizer().getTemplate(classes[m]);
+            final List<Polyline> polylines = dashboardScreen.mainClass.getRecognizer().getTemplate(classes[m]);
 
             dashboardScreen.templatesNum += polylines.size();
 

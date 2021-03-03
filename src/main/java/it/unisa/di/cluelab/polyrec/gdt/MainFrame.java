@@ -37,7 +37,7 @@ public class MainFrame extends JFrame implements WindowListener {
     // extension of opened file
     private String extOpenedFile;
 
-    private ExtendedPolyRecognizerGSS recognizer;
+    private GDTRecognizer recognizer;
 
     private JPanel container;
     private final Menu menu;
@@ -148,11 +148,11 @@ public class MainFrame extends JFrame implements WindowListener {
 
     }
 
-    public ExtendedPolyRecognizerGSS getRecognizer() {
+    public GDTRecognizer getRecognizer() {
         return recognizer;
     }
 
-    public void setRecognizer(ExtendedPolyRecognizerGSS recognizer) {
+    public void setRecognizer(GDTRecognizer recognizer) {
         this.recognizer = recognizer;
     }
 

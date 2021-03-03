@@ -17,6 +17,7 @@ import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.bluetooth.BluetoothStateException;
 import javax.imageio.ImageIO;
@@ -388,7 +389,7 @@ public class TemplateScreen extends JPanel
 
     void draw(int mode) {
 
-        final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(className);
+        final List<Polyline> polylines = mainClass.getRecognizer().getTemplate(className);
         canvasGestures.put(mode, adapt(polylines.get(item), mode));
         if (this.mode == GESTURE_TIMED) {
             canvas.paintTimedGesture();
@@ -400,7 +401,7 @@ public class TemplateScreen extends JPanel
     }
 
     private Gesture adapt(Polyline polyline, int mode) {
-        ArrayList<TPoint> points = null;
+        List<TPoint> points = null;
 
         if (mode == POLYLINE || mode == VERTEX) {
             points = (ArrayList<TPoint>) polyline.getPoints();
@@ -781,7 +782,7 @@ public class TemplateScreen extends JPanel
     @SuppressWarnings({"checkstyle:cyclomaticcomplexity", "checkstyle:executablestatementcount", "checkstyle:javancss",
         "checkstyle:methodlength", "checkstyle:npathcomplexity"})
     public void showTemplate() {
-        final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(className);
+        final List<Polyline> polylines = mainClass.getRecognizer().getTemplate(className);
         title2.setText("<html><font color='white'> \u2022 " + className.substring(0, 1).toUpperCase()
                 + className.substring(1) + "  \u2022 Detail</font></html>");
         // pointers number
@@ -1108,7 +1109,7 @@ public class TemplateScreen extends JPanel
     private JScrollPane createThumbsPanel(String className, boolean commands) {
         // Box thumbPanel = Box.createVerticalBox();
         System.out.println("CREATE THUMBNAIL PANEL " + className);
-        final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(className);
+        final List<Polyline> polylines = mainClass.getRecognizer().getTemplate(className);
         // final Box[] templateBoxes = new Box[polylines.size()];
 
         thumbPanel.setBackground(Color.darkGray);

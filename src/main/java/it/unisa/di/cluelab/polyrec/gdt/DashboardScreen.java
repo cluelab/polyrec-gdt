@@ -16,8 +16,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
@@ -800,7 +800,7 @@ public class DashboardScreen extends JPanel {
             final GridBagConstraints c = new GridBagConstraints();
             final GridBagConstraints last = new GridBagConstraints();
             for (int m = 0; m < classes.length; m++) {
-                final ArrayList<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[m]);
+                final List<Polyline> polylines = mainClass.getRecognizer().getTemplate(classes[m]);
 
                 templatesNum += polylines.size();
 

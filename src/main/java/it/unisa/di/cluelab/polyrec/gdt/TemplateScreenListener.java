@@ -451,7 +451,7 @@ public class TemplateScreenListener implements ActionListener, ItemListener {
      * @return JTable with the features
      */
     public JTable getFeatures(Polyline polyline) {
-        final Gesture normalizedGesture = ExtendedPolyRecognizerGSS.normalizeGesture(polyline.getGesture(), 150, 150,
+        final Gesture normalizedGesture = GDTRecognizer.normalizeGesture(polyline.getGesture(), 150, 150,
                 0);
 
         double sumangle = 0;
