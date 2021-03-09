@@ -13,6 +13,7 @@ import java.util.Properties;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -31,7 +32,9 @@ public class Settings extends JFrame {
 
     private static final long serialVersionUID = 8009954606425204167L;
 
-    public Settings() {
+    @SuppressWarnings("checkstyle:executablestatementcount")
+    public Settings(MainFrame mainFrame) {
+
         setTitle("Settings");
 
         setResizable(false);
@@ -60,10 +63,20 @@ public class Settings extends JFrame {
         p.add(scoreLimitText);
         // }
 
+        final JPanel r = new JPanel(new SpringLayout());
+        final JLabel recognizerLabel = new JLabel("Recognizer", SwingConstants.TRAILING);
+        r.add(recognizerLabel);
+        final JComboBox<String> recognizerCB = new JComboBox<>(new String[] {"PolyRec", "$Q", "$P+", "$P"});
+        recognizerCB.setName("recognizer");
+        recognizerCB.setSelectedItem(APPLICATION_PROPS.getProperty(recognizerCB.getName()));
+        r.add(recognizerCB);
+        SpringUtilities.makeCompactGrid(r, numPairs, 2, 10, 10, 10, 30);
+
         // Lay out the panel.
         // rows, cols, initX, initY, xPad, yPad
         SpringUtilities.makeCompactGrid(p, numPairs, 2, 10, 10, 10, 30);
         boxLayout.add(p);
+        boxLayout.add(r);
         final JPanel okPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         final JButton ok = new JButton("OK");
         ok.addActionListener(new ActionListener() {
@@ -71,7 +84,9 @@ public class Settings extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 APPLICATION_PROPS.setProperty(scoreLimitText.getName(), scoreLimitText.getText());
+                APPLICATION_PROPS.setProperty(recognizerCB.getName(), recognizerCB.getSelectedItem().toString());
                 saveSettings();
+                mainFrame.switchRecognizer(Settings.APPLICATION_PROPS.getProperty("recognizer"));
                 dispose();
 
             }
@@ -97,6 +112,7 @@ public class Settings extends JFrame {
             e.printStackTrace();
         }
         APPLICATION_PROPS.putIfAbsent("scorelimit", "87");
+        APPLICATION_PROPS.putIfAbsent("recognizer", "PolyRec");
     }
 
     public static void saveSettings() {

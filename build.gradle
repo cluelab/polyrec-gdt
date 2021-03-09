@@ -8,6 +8,7 @@ sourceCompatibility = 1.8
 
 repositories {
     jcenter()
+    maven { url 'https://jitpack.io' }
     maven {
         url "https://raw.githubusercontent.com/Ardulink/Ardulink-2/master/local-repo"
     }
@@ -19,6 +20,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.jfree:jcommon:1.0.24'
     implementation 'org.jfree:jfreechart:1.0.19'
+    implementation 'com.github.cluelab:dollar-recognizers-java:0b48f62a15'
 
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'com.google.code.findbugs:annotations:3.0.1'

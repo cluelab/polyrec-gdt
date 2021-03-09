@@ -10,12 +10,16 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map.Entry;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+
+import it.unisa.di.cluelab.polyrec.Gesture;
 
 /**
  * @author roberto
@@ -37,14 +41,14 @@ public class MainFrame extends JFrame implements WindowListener {
     // extension of opened file
     private String extOpenedFile;
 
-    private GDTRecognizer recognizer;
+    private transient GDTRecognizer recognizer;
 
     private JPanel container;
-    private final Menu menu;
+    private final transient Menu menu;
 
-    public MainFrame() throws IOException {
+    public MainFrame(String recognizer) throws IOException {
 
-        recognizer = new ExtendedPolyRecognizerGSS();
+        switchRecognizer(recognizer);
 
         final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setTitle("PolyRec GDT");
@@ -176,6 +180,47 @@ public class MainFrame extends JFrame implements WindowListener {
         return menu;
     }
 
+    @SuppressWarnings("checkstyle:cyclomaticcomplexity")
+    public void switchRecognizer(String recognizerName) {
+        GDTRecognizer old = null;
+        switch (recognizerName) {
+            case "PolyRec":
+                if (!(recognizer instanceof ExtendedPolyRecognizerGSS)) {
+                    old = recognizer;
+                    recognizer = new ExtendedPolyRecognizerGSS();
+                }
+                break;
+            case "$Q":
+                if (!(recognizer instanceof DollarRecognizer)
+                        || ((DollarRecognizer) recognizer).getType() != DollarRecognizer.Type.Q) {
+                    old = recognizer;
+                    recognizer = new DollarRecognizer(DollarRecognizer.Type.Q);
+                }
+                break;
+            case "$P+":
+                if (!(recognizer instanceof DollarRecognizer)
+                        || ((DollarRecognizer) recognizer).getType() != DollarRecognizer.Type.P_PLUS) {
+                    old = recognizer;
+                    recognizer = new DollarRecognizer(DollarRecognizer.Type.P_PLUS);
+                }
+                break;
+            case "$P":
+                if (!(recognizer instanceof DollarRecognizer)
+                        || ((DollarRecognizer) recognizer).getType() != DollarRecognizer.Type.P) {
+                    old = recognizer;
+                    recognizer = new DollarRecognizer(DollarRecognizer.Type.P);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Illegal recognizer: " + recognizerName);
+        }
+        if (old != null) {
+            for (Entry<String, List<Gesture>> e : old.getTemplates().entrySet()) {
+                recognizer.addTemplates(e.getKey(), e.getValue());
+            }
+        }
+    }
+
     public static boolean isModalDialogShowing() {
         final Window[] windows = Window.getWindows();
         if (windows != null) {
@@ -191,10 +236,9 @@ public class MainFrame extends JFrame implements WindowListener {
     public static void main(String[] args) throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-        new MainFrame();
-
         Settings.loadSettings();
 
+        new MainFrame(Settings.APPLICATION_PROPS.getProperty("recognizer"));
     }
 
 }

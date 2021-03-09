@@ -75,7 +75,7 @@ public class MenuListener implements ActionListener {
             return;
         }
         if (e.getSource() == mainFrame.getMenu().settings) {
-            new Settings();
+            new Settings(mainFrame);
             return;
         }
         // samples
@@ -146,9 +146,10 @@ public class MenuListener implements ActionListener {
                 return;
             }
             final String code = mainFrame.getRecognizer().exportJava();
-            final String text = "You may recognize gestures with PolyRec in your Java application by pasting the\n"
-                    + "code below into the body of a Java class (you may need to add the PolyRec library\n"
-                    + "to the build path and import it.unisa.di.cluelab.polyrec.PolyRecognizerGSS).\n\n" + code;
+            final String rec = Settings.APPLICATION_PROPS.getProperty("recognizer");
+            final String text = "You may recognize gestures with " + rec + " in your Java application by pasting the\n"
+                    + "code below into the body of a Java class (you may need to add the " + rec + " library\n"
+                    + "to the build path).\n\n" + code;
             final JTextArea textarea = new JTextArea(text, 25, 82);
             textarea.setTabSize(4);
             textarea.setFont(new Font("monospaced", Font.PLAIN, 14));
@@ -459,6 +460,8 @@ public class MenuListener implements ActionListener {
                 mainFrame.setOpenedFile(selectedFile);
 
             }
+        } catch (final RuntimeException e) {
+            throw e;
         } catch (final Exception e) {
             CursorToolkit.stopWaitCursor(mainFrame.getRootPane());
             System.out.println("errore");

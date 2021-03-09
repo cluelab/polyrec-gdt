@@ -402,7 +402,7 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS implements GDTR
     public String exportJava() {
         final StringBuilder out = new StringBuilder();
         out.append("\t// Instantiating the gesture recognizer\n"
-                + "\tprivate PolyRecognizerGSS recognizer = initRecognizer();\n\n"
+                + "\tprivate it.unisa.di.cluelab.polyrec.PolyRecognizerGSS recognizer = initRecognizer();\n\n"
                 + "\t// Add your actions and call this method from your code with the gesture performed by the user as"
                 + " parameter\n" + "\tprivate void handleGesture(it.unisa.di.cluelab.polyrec.Gesture drawnGesture) {\n"
                 + "\t\tit.unisa.di.cluelab.polyrec.Result r = recognizer.recognize(drawnGesture);\n"
@@ -416,10 +416,13 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS implements GDTR
         }
 
         out.append("\t\t}\n\t}\n\n" + "\t// You do not need to change this method\n"
-                + "\tprivate static PolyRecognizerGSS initRecognizer() {\n"
-                + "\t\tPolyRecognizerGSS r = new PolyRecognizerGSS();\n" + "\t\tString cname;\n");
+                + "\tprivate static it.unisa.di.cluelab.polyrec.PolyRecognizerGSS initRecognizer() {\n"
+                + "\t\tit.unisa.di.cluelab.polyrec.PolyRecognizerGSS r = "
+                + "new it.unisa.di.cluelab.polyrec.PolyRecognizerGSS();\n" + "\t\tString cname;\n");
         for (final Entry<String, ArrayList<Polyline>> e : templates.entrySet()) {
-            out.append("\t\tcname = \"" + e.getKey() + "\";\n");
+            @SuppressWarnings("deprecation")
+            final String cname = org.apache.commons.lang3.StringEscapeUtils.escapeJava(e.getKey());
+            out.append("\t\tcname = \"" + cname + "\";\n");
             for (final Polyline poly : e.getValue()) {
                 final Gesture g = poly.getGesture();
                 out.append("\t\taddTemplate(r, cname, " + g.isRotInv() + ", " + g.getPointers() + ", \"");
@@ -449,8 +452,8 @@ public class ExtendedPolyRecognizerGSS extends PolyRecognizerGSS implements GDTR
             out.append('\n');
         }
         out.append("\t\treturn r;\n" + "\t}\n\n" + "\t// You do not need to change this method\n"
-                + "\tprivate static void addTemplate"
-                + "(PolyRecognizerGSS rec, String name, boolean rotInv, int numPointers, String xyts) {\n"
+                + "\tprivate static void addTemplate(it.unisa.di.cluelab.polyrec.PolyRecognizerGSS rec, "
+                + "String name, boolean rotInv, int numPointers, String xyts) {\n"
                 + "\t\tit.unisa.di.cluelab.polyrec.Gesture g = new it.unisa.di.cluelab.polyrec.Gesture();\n"
                 + "\t\tlong lastT = 0;\n" + "\t\tfor (int i = 2, n = xyts.length(); i < n; i += 3) {\n"
                 + "\t\t\tlastT += xyts.charAt(i);\n" + "\t\t\tg.addPoint(new it.unisa.di.cluelab.polyrec.TPoint"
